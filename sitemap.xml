@@ -4,7 +4,60 @@
   
   <url>
     <loc>http://www.adamcowley.co.uk/</loc>
-    <lastmod>2019-04-06T11:11:40+00:00</lastmod>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/categories/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/posts/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/core-api/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/java/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/social/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -14,31 +67,7 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/categories/</loc>
-    <lastmod>2019-04-06T11:11:40+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/nlp/</loc>
-    <lastmod>2019-04-06T11:11:40+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
-    <lastmod>2019-04-06T11:11:40+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/posts/</loc>
-    <lastmod>2019-04-06T11:11:40+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/</loc>
     <lastmod>2019-04-06T11:11:40+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -56,12 +85,6 @@
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/jdbc/</loc>
-    <lastmod>2018-07-06T10:45:54+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
     <lastmod>2018-07-06T10:45:54+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -155,12 +178,6 @@
   <url>
     <loc>http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/</loc>
     <lastmod>2018-02-13T15:18:29+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/java/</loc>
-    <lastmod>2018-02-13T15:18:29+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

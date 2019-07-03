@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Sat, 06 Apr 2019 11:11:40 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 03 Jul 2019 14:21:20 +0100</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Social Feed Cursor Based Pagination</title>
+      <link>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</link>
+      <pubDate>Wed, 03 Jul 2019 14:21:20 +0100</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</guid>
+      <description>Ever since reading the ODBMS interview with David Fox of Adobe, I&amp;rsquo;ve been eager to work on a large scale social network. By switching the underlying database for the Behance social feed from Cassandra to Neo4j,they were able to reduce the number of servers from 48 down to a 3 server Neo4j cluster as well as reduce the operational burden of fanning out writes in order to scale reads.</description>
+    </item>
     
     <item>
       <title>Calculating TF-IDF scores in Neo4j with Cypher</title>
