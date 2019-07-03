@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mocha on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/mocha/</link>
+    <description>Recent content in mocha on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 03 Jun 2016 16:14:47 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/mocha/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Quick TDD setup with Node, ES6, Gulp and Mocha</title>
+      <link>http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/</link>
+      <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/</guid>
+      <description>Having practised Test Driven Development for the last couple of years, I&amp;#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&amp;#8217;t hard to replicate.</description>
+    </item>
+    
+  </channel>
+</rss>

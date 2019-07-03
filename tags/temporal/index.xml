@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>temporal on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/temporal/</link>
+    <description>Recent content in temporal on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Mon, 04 Jun 2018 17:44:38 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/temporal/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using Neo4j Temporal types in JavaScript</title>
+      <link>http://www.adamcowley.co.uk/javascript/neo4j-temporal-dates-javascript/</link>
+      <pubDate>Mon, 04 Jun 2018 17:44:38 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/javascript/neo4j-temporal-dates-javascript/</guid>
+      <description>In my last post I wrote an introduction to the five new Neo4j Temporal data types now supported in Neo4j 3.4. Although the functions themselves are laid out in the detailed documentation, information on how to use these data types in an application are still thin on the ground. In this post, I will walk through a few code samples including how to save temporal data types to the graph and how to retrieve them.</description>
+    </item>
+    
+    <item>
+      <title>An introduction to Temporal Date Types in Neo4j 3.4</title>
+      <link>http://www.adamcowley.co.uk/neo4j/temporal-native-dates/</link>
+      <pubDate>Wed, 16 May 2018 22:25:51 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/temporal-native-dates/</guid>
+      <description>With Neo4j 3.4 GA now out in the wild, a few people have asked me about the new Temporal data types that have been introduced. In this post I will go over the a few of the new additions and provide a working example.
+TL;DR: Jump to&amp;#8230;  Clocks Dates Times Local Dates and Times Durations Truncating Values Config Changes Converting Dates Working Example  When I first started using Neo4j back in 2014, I can remember one thing was missing &amp;#8211; support for native date datatype.</description>
+    </item>
+    
+  </channel>
+</rss>

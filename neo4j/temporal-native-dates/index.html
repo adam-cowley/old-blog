@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>An introduction to Temporal Date Types in Neo4j 3.4 - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="An introduction to Temporal Date Types in Neo4j 3.4" />
+<meta property="og:description" content="A comprehensive guide to using temporal types in Cypher, including Date, Time, DateTime, LocalDate, LocalDateTime and Duration." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/temporal-native-dates/" />
+<meta property="article:published_time" content="2018-05-16T22:25:51&#43;00:00"/>
+<meta property="article:modified_time" content="2018-05-16T22:25:51&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="An introduction to Temporal Date Types in Neo4j 3.4"/>
+<meta name="twitter:description" content="A comprehensive guide to using temporal types in Cypher, including Date, Time, DateTime, LocalDate, LocalDateTime and Duration."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>An introduction to Temporal Date Types in Neo4j 3.4</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-05-16 22:25">
+						16/05/2018 22:25
+					</time>
+				</p>
+
+				
+
+<p>With Neo4j 3.4 GA now out in the wild, a few people have asked me about the new Temporal data types that have been introduced. In this post I will go over the a few of the new additions and provide a working example.</p>
+
+<h3 id="tl-dr-jump-to-8230-strong">TL;DR: Jump to&#8230;</strong></h3>
+
+<ul>
+<li><a href="#clocks">Clocks</a></li>
+<li><a href="#dates">Dates</a></li>
+<li><a href="#time">Times</a></li>
+<li><a href="#local-dates-and-times">Local Dates and Times</a></li>
+<li><a href="#durations">Durations</a></li>
+<li><a href="#truncating-values">Truncating Values</a></li>
+<li><a href="#config-changes">Config Changes</a></li>
+<li><a href="#converting-dates">Converting Dates</a></li>
+<li><a href="#a-working-example-route-planning">Working Example</a></li>
+</ul>
+
+<p>When I first started using Neo4j back in 2014, I can remember one thing was missing &#8211; support for native date datatype. The holy grail. This lead to some pretty <del>complex</del> clever approaches to dates including <a href="https://graphaware.com/neo4j/2014/08/20/graphaware-neo4j-timetree.html" rel="nofollow">Time Trees</a> which represented the dates as a tree of nodes with labels <code>:Year</code>, <code>:Month</code> and <code>:Day</code> and even down to second level.</p>
+
+<p>As the performance of index-backed range seeks improved, the need to maintain these trees of nodes reduced but you were still left with a dilemma. Do you store the properties as a human readable date? Maybe seconds since epoch? Do I need to use <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/" rel="nofollow">APOC</a> to convert the dates.</p>
+
+<p>Luckily, from version 3.4, we no longer need to worry about it.</p>
+
+<p>Neo4j now supports five temporal types, all a combination of date, time and timezone.</p>
+
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th align="center">Supports Date?</th>
+<th align="center">Supports Time?</th>
+<th align="center">Supports Timezone?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Date</td>
+<td>A tuple of Year, Month and Day</td>
+<td align="center">Y</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td>Time</td>
+<td>An instance of a point in time</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td>LocalTime</td>
+<td>A time that is considered “local” in it’s context</td>
+<td align="center"></td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+
+<tr>
+<td>DateTime</td>
+<td>A combination of Date and Time</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+</tr>
+
+<tr>
+<td>LocalDateTime</td>
+<td>A combination of Date and Time that can be considered “local” in it’s context</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="clocks" class="make-it-readable">
+    Clocks
+</h2>
+
+<p>Before I go into the new types, I first need to mention <em>clocks</em>. When creating a new date or time value, you have the option of chosing one of three <em>clocks</em>.</p>
+
+<ul>
+<li><strong>The Transaction clock</strong> &#8211; Uses the date and time at the start of the current transaction &#8211; this is the same as cypher&#8217;s <code>timestamp()</code> function which does not update during the transaction.</li>
+<li><strong>The Statement clock</strong> &#8211; Transactions can contain more than one statement. To use the date and time of the current statement, use the static <code>.statement()</code> function.</li>
+<li><strong>The Realtime Clock</strong> &#8211; This returns the real time date regardless of the transaction and statement start dates. This is the equivalent of <code>apoc.date.currentTimestamp()</code></li>
+</ul>
+
+<p>Each of these functions also accepts a single parameter, allowing you to specify the timezone of the returned instance. For example <code>datetime.statement(&lsquo;Europe/London&rsquo;)</code>. If you don&#8217;t specify a timezone, the server&#8217;s default timezone will be used.</p>
+
+<h2 id="dates" class="make-it-readable">
+    Dates
+</h2>
+
+<h3 id="getting-the-current-date">
+    Getting the Current Date
+</h3>
+
+<p>
+    The <code>date()</code> function can be used to create in instance of a <code>Date</code>. As mentioned earlier, you can call the static method on dates to return a time based on the start of the transaction, statement or realtime.
+</p>
+
+<pre><code>RETURN date(), date.transaction(), date.statement(), date.realtime()
+</code></pre>
+
+<table>
+<tr>
+<th>
+        date
+</th>
+
+<th>
+        date.transaction
+</th>
+
+<th>
+        date.statement
+</th>
+
+<th>
+        date.realtime
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"2018-05-16"</code>
+</td>
+
+<td>
+<code>"2018-05-16"</code>
+</td>
+
+<td>
+<code>"2018-05-16"</code>
+</td>
+
+<td>
+<code>"2018-05-16"</code>
+</td>
+</tr>
+</table>
+
+<p>
+    The date function will also take two optional arguments, a Map of options and/or a timezone in String format.
+</p>
+
+<h3 id="specifying-a-date" class="make-it-readable">
+    Specifying a date
+</h3>
+
+<p>
+    A date can be specified in one of two ways, either by passing through <a href="https://neo4j.com/docs/developer-manual/preview/cypher/syntax/temporal/#cypher-temporal-specify-date" rel="nofollow">a valid ISO 8601 data type</a> as a String, or by providing a map containing the year, month and day.
+</p>
+
+<pre><code>UNWIND [
+  date('2018-01-01'),
+  date({ year: 2018, month: 1, day: 2 })
+] AS date
+RETURN date
+</code></pre>
+
+<table>
+<tr>
+<th>
+        date
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"2018-01-01"</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>"2018-01-02"</code>
+</td>
+</tr>
+</table>
+
+<p class="make-it-readable">
+    The individual units of the date value can be accessed via year, month and day accessors.
+</p>
+
+<pre><code>WITH date('2018-05-16') AS date
+RETURN date.year, date.month, date.day
+</code></pre>
+
+<table>
+<tr>
+<th>
+        date.year
+</th>
+
+<th>
+        date.month
+</th>
+
+<th>
+        date.day
+</th>
+</tr>
+
+<tr>
+<td>
+<code>2018</code>
+</td>
+
+<td>
+<code>5</code>
+</td>
+
+<td>
+<code>16</code>
+</td>
+</tr>
+</table>
+
+<p>
+    Another nice feature of the <a href="https://en.wikipedia.org/wiki/ISO_8601" rel="nofollow">ISO 8601</a> support is the ability to create dates by the week number (<code>2018-W51</code>), quarter (<code>2018-Q2</code>) or ordinal dates (<code>2018-364</code>).
+</p>
+
+<h2 id="time">
+    Time
+</h2>
+
+<p>
+    Time values are created using the <code>time()</code> function. Like a Date, a time instant can be created with either an ISO 8601 string or a map containing hour, minute, second, millisecond and/or nanosecond values. As with the Date, there are accessors for each unit of time held in the
+</p>
+
+<pre><code>UNWIND [
+  time('12:34:56.1234'),
+  time({ hour: 12, minute: 34, second: 45, millisecond: 123, nanosecond: 400000 })
+] AS time
+RETURN time.hour, time.minute, time.second,  time.millisecond, time.nanosecond, time.timezone
+</code></pre>
+
+<table>
+<tr>
+<th>
+        time.hour
+</th>
+
+<th>
+        time.minute
+</th>
+
+<th>
+        time.second
+</th>
+
+<th>
+        time.millisecond
+</th>
+
+<th>
+        time.nanosecond
+</th>
+
+<th>
+        time.timezone
+</th>
+</tr>
+
+<tr>
+<td>
+<code>12</code>
+</td>
+
+<td>
+<code>34</code>
+</td>
+
+<td>
+<code>56</code>
+</td>
+
+<td>
+<code>123</code>
+</td>
+
+<td>
+<code>123400000</code>
+</td>
+
+<td>
+<code>"Z"</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>12</code>
+</td>
+
+<td>
+<code>34</code>
+</td>
+
+<td>
+<code>45</code>
+</td>
+
+<td>
+<code>123</code>
+</td>
+
+<td>
+<code>123400000</code>
+</td>
+
+<td>
+<code>"Z"</code>
+</td>
+</tr>
+</table>
+
+<h2 id="datetime" class="make-it-readable">
+</span></a>DateTime
+</h2>
+
+<p>
+    A <code>DateTime</code> is a combination of both date and time and can be constructed using a combination of the date and time constructs mentioned above.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-UNWIND [" data-lang="UNWIND [">  datetime(&#39;2018-01-02T07:20:30[Europe/London]&#39;),
+  datetime({ year: 2018, month: 1, day: 2, hour:07, minute: 20, second: 30, timezone: &#39;Europe/London&#39; })
+] AS date
+RETURN datetime</code></pre></div>
+<table>
+<tr>
+<th>
+        datetime
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"2018-01-02T07:20:30[Europe/London]"</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>"2018-01-02T07:20:30[Europe/London]"</code>
+</td>
+</tr>
+</table>
+
+<h2 id="local-dates-and-times">
+    Local Dates and Times
+</h2>
+
+<p>
+    Local Dates and Times are simply a way of storing data without the need for extraneous data. Instances of <code>LocalTime</code> and <code>LocalDateTime</code> can be considered &#8220;local&#8221; in their context, meaning a delivery shipped at 16:00 in London would be in in GMT or BST without needing to store the timezone.
+</p>
+
+<p>
+    It is worth noting that local dates and times are not comparable to date and time data that are stored in different timezones. A package shipped from Berlin with a LocalTime of 16:00 could not be compared to the time of the package shipped from London.
+</p>
+
+<pre><code>RETURN localtime(), localdatetime()
+</code></pre>
+
+<table>
+<tr>
+<th>
+        localtime
+</th>
+
+<th>
+        localdatetime
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"18:53:44.727000000"</code>
+</td>
+
+<td>
+<code>"2018-05-16T18:53:44.727000000"</code>
+</td>
+</tr>
+</table>
+
+<h2 id="durations">
+    Durations
+</h2>
+
+<p>
+    Neo4j 3.4 also supports durations. A duration is defined as the difference between two instances in time. To create a duration, we can either pass through a string containing a valid duration string or <a href="https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/#functions-duration-create-components" rel="nofollow">a map containing one or more components</a>
+</p>
+
+<p>
+    The String version starts with a <code>P</code> and then contains one or more of the following
+</p>
+
+<ul>
+<li><code>x</code>Y &#8211; Number of years</li>
+<li><code>x</code>M &#8211; Number of months</li>
+<li><code>x</code>D &#8211; Number of days</li>
+</ul>
+
+<p>
+    And then one or more time units, prefixed with a <code>T</code>
+</p>
+
+<ul>
+<li><code>x</code>H &#8211; Number of hours</li>
+<li><code>x</code>M &#8211; Number of minutes</li>
+<li><code>x</code>S &#8211; Number of seconds with milliseconds after a decimal point.</li>
+</ul>
+
+<p>
+    For example, <code>P2012Y4M2DT14H37M21.545S</code> denotes a duration of 2012 years, 4 months, 2 days; 14 hours, 37 minutes, 21 seconds and 545 milliseconds.
+</p>
+
+<p>
+    Alternatively, the map can contain one or more of: years, quarters, months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.
+</p>
+
+<p>
+    Let&#8217;s take a look at a couple of examples in action&#8230;
+</p>
+
+<pre><code>UNWIND [
+  duration('P30DT4980S'),
+  duration({ days: 30, hours: 1, minutes: 23 })
+] as duration
+RETURN duration
+</code></pre>
+
+<table>
+<tr>
+<th>
+        duration
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"P0M30DT4980S"</code>
+</td>
+</tr>
+
+<tr>
+<td>
+<code>"P0M30DT4980S"</code>
+</td>
+</tr>
+</table>
+
+<p class="make-it-readable">
+    We can sum both a date and a duration together to provide us with a date 90 days in the future.
+</p>
+
+<pre><code>WITH date() as now, duration('P90D') AS duration
+RETURN now, now + duration AS then
+</code></pre>
+
+<table>
+<tr>
+<th>
+        now
+</th>
+
+<th>
+        then
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"2018-05-16"</code>
+</td>
+
+<td>
+<code>"2018-08-14"</code>
+</td>
+</tr>
+</table>
+
+<p>
+    Three months until my birthday, I now expect a birthday present from you&#8230;
+</p>
+
+<h3 id="durations-between-dates" class="make-it-readable">
+    Durations between dates
+</h3>
+
+<p>
+    You can calculate the difference between dates by using the <code>duration.between(start, end)</code> function. This function compares two points in time and returns an instance of a <code>Duration</code>.
+</p>
+
+<pre><code>WITH datetime.transaction() AS start
+CALL apoc.util.sleep(2000)
+WITH start, datetime.realtime() AS end
+RETURN duration.between(start, end) as duration
+</code></pre>
+
+<table>
+<tr>
+<th>
+        duration
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"P0M0DT2.003000000S"</code>
+</td>
+</tr>
+</table>
+
+<p>
+    There are also <code>duration.inSeconds</code>, <code>duration.inDays</code> <code>duration.inMonths</code> functions which discard any smaller components to provide a rounded figure.
+</p>
+
+<h2 id="truncating-values">
+    Truncating Values
+</h2>
+
+<p>
+    Any temporal value can be truncated using the <code>truncate()</code> function. <a href="https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/#functions-temporal-truncate-overview" rel="nofollow">Truncating an instant</a> allows you to round a value to the nearest unit of time &#8211; for example, removing the seconds or milliseconds from a value.
+</p>
+
+<pre><code>datetime.truncate('seconds', myDate)
+</code></pre>
+
+<h2 id="config-changes">
+    Config Changes
+</h2>
+
+<p>
+    There is one additional configuration setting included in <code>neo4j.conf</code>. The <code>db.temporal.timezone</code> setting is used to configure the default timezone for the server. By default this is set to UTC (<code>Z</code>).
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-conf" data-lang="conf">db.temporal.timezone=Europe/London</code></pre></div>
+<h2 id="converting-dates" class="make-it-readable">
+    Converting Dates
+</h2>
+
+<p>
+    If you&#8217;re currently using the <code>timestamp()</code> function or milliseconds since epoch, you can supply a map with <code>epochMillis</code> set to the timestamp property stored on the node.
+</p>
+
+<pre><code>MATCH (e:Event)
+SET e.startDate = datetime({ epochMillis: e.startsAt })
+</code></pre>
+
+<pre><code>If you are storing seconds rather than milliseconds, you can define a &lt;code&gt;epochSeconds&lt;/code&gt; option instead.
+</code></pre>
+
+<p></p></p>
+
+<h2 id="a-working-example-route-planning" class="make-it-readable">
+    A Working Example: Route Planning
+</h2>
+
+<p>
+    To demonstrate how these temperal data types work, I will revisit the Journey Planning project that featured in my talk at <a href="http://graphconnect.com" rel="nofollow">Graph Connect 2017 in London</a>. For brevity, I will use the basic scheduling data rather than the extensive model.
+</p>
+
+<p>
+    Let&#8217;s run a quick cypher statement to set up some test data. First I&#8217;ll create a <code>:Service</code> node, each service will have one or more scheduled <code>:Leg</code> nodes. Each leg will have two relationships to signify which <code>:Station</code> a traveller can board from or alight to.
+</p>
+
+<pre><code>// An array of legs with their origin, destination and departure and arrival times
+WITH [
+  {origin:'PAD', destination:'REA', departsAt:'08:00', arrivesAt:'08:28'},
+  {origin:'REA', destination:'DPW', departsAt:'08:30', arrivesAt:'08:43'},
+  {origin:'DPW', destination:'SWI', departsAt:'08:45', arrivesAt:'08:58'},
+  {origin:'SWI', destination:'CHI', departsAt:'09:00', arrivesAt:'09:13'},
+  {origin:'CHI', destination:'BAT', departsAt:'09:15', arrivesAt:'09:28'},
+  {origin:'BAT', destination:'BRI', departsAt:'09:30', arrivesAt:'10:00'}
+] as legs
+// Create the Service Node
+MERGE (service:Service { reference: '0800-GWR-PAD-BRI' })
+WITH service, legs
+// Create (:Service)-[:HAS_SCHEDULED_LEG]-&gt;(:Leg)
+UNWIND legs AS leg
+MERGE (l:Leg {
+    reference: service.reference + '-'+ leg.origin + '-'+ leg.destination,
+    departsAt: leg.departsAt,
+    arrivesAt: leg.arrivesAt
+})
+MERGE (service)-[:HAS_SCHEDULED_LEG]-&gt;(l)
+// Create (:Station)-[:CAN_BOARD]-&gt;(:Leg)-[:CAN_ALIGHT]-&gt;(:Station)
+MERGE (origin:Station { reference: leg.origin })
+MERGE (destination:Station { reference: leg.destination })
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (l)-[:CAN_ALIGHT]-&gt;(destination)
+// Create (:Leg)-[:NEXT_LEG]-=&gt;(:Leg)
+WITH collect(l) as legs
+UNWIND range(0, size(legs)-2) as idx
+WITH legs[idx] as this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+</code></pre>
+
+<p>This should give us some data to play with.</p>
+
+<p><a href="/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png" target="_blank" rel="nofollow"><img src="/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png" alt="The Data Model" data-canonical-src="/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png" style="max-width:100%;" /></a><br /> <em>Looking good&#8230;</em></p>
+
+<h3 id="creating-a-schedule" class="make-it-readable">
+    Creating a Schedule
+</h3>
+
+<p>
+    As standard, we want customers to be able to book a journey 90 days in advance. Rather than creating the processes manually, it would be useful to create a script that can be run daily to create all services in batch.
+</p>
+
+<p>
+    Each day, we would like to create the schedule for 90 days time. We can do this by adding a 90 day duration to the current date:
+</p>
+
+<pre><code>WITH date() + duration('P90D') AS scheduleDate
+</code></pre>
+
+<p>Then, let&#8217;s match all of the services and their legs <em>(for the sake of argument, let&#8217;s pretend we&#8217;ve also checked that the services are valid for the scheduledDate&#8230;)</em></p>
+
+<pre><code>MATCH (service:Service)
+WITH scheduleDate, service, [ (service)-[:HAS_SCHEDULED_LEG]-&gt;(l) | l ] as legs
+</code></pre>
+
+<p>Then create a <code>:ServiceDay</code> node. We can use the accessors from <code>scheduleDate</code> to create a unique reference for the Service for that particular day. While we&#8217;re at it, we can set the date property to our Date instance.</p>
+
+<pre><code>MERGE (day:ServiceDay {
+  reference: service.reference +'-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET day.date = scheduleDate
+MERGE (service)-[:HAS_SERVICE_DAY]-&gt;(day)
+</code></pre>
+
+<p>Next, unwind the scheduled legs, get the origin and destination stations and create the legs for the service on that day.</p>
+
+<pre><code>WITH scheduleDate, service, legs, day
+UNWIND legs AS leg
+MATCH (origin)-[:CAN_BOARD]-&gt;(leg)-[:CAN_ALIGHT]-&gt;(destination)
+MERGE (l:ServiceDayLeg {
+  reference: leg.reference + '-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET
+    l.departsAt = localtime(leg.departsAt),
+    l.arrivesAt = localtime(leg.arrivesAt),
+    l.duration = duration.between(l.departsAt, l.arrivesAt)
+MERGE (day)-[:HAS_LEG]-&gt;(l)
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (destination)&lt;-[:CAN_ALIGHT]-(l)
+</code></pre>
+
+<p>Why <code>LocalTime</code>? We&#8217;re only dealing with a single timezone so there is no need to store a timezone with the time. If you&#8217;re dealing with services in different countries then you can compare instants in different timezones using <code>Time</code>.</p>
+
+<p>
+    Lastly, let&#8217;s combine the legs together into a linked list so we can traverse through the journey.
+</p>
+
+<pre><code>WITH service, l ORDER BY l.departsAt ASC
+WITH service, collect(l) AS legs
+UNWIND range(0, size(legs)-2) AS idx
+WITH legs[idx] AS this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+</code></pre>
+
+<h3 id="full-cypher-statement" class="make-it-readable">
+    Full Cypher Statement
+</h3>
+
+<pre><code>WITH date() + duration('P90D') AS scheduleDate
+MATCH (service:Service)
+WITH scheduleDate, service, [ (service)-[:HAS_SCHEDULED_LEG]-&gt;(l) | l ] as legs
+// Create Service Day
+MERGE (day:ServiceDay {
+    // We can use the .year, .month, .day accessors on a date type
+    reference: service.reference +'-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+// ... and set the date as a property
+SET day.date = scheduleDate
+MERGE (service)-[:HAS_SERVICE_DAY]-&gt;(day)
+WITH scheduleDate, service, legs, day
+// Unwind the legs
+UNWIND legs AS leg
+MATCH (origin)-[:CAN_BOARD]-&gt;(leg)-[:CAN_ALIGHT]-&gt;(destination)
+MERGE (l:ServiceDayLeg {
+    reference: leg.reference + '-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET
+    // The arrival and departure times can be converted to LocalTime
+    l.departsAt = localtime(leg.departsAt),
+    l.arrivesAt = localtime(leg.arrivesAt),
+    l.duration = duration.between(l.departsAt, l.arrivesAt)
+MERGE (day)-[:HAS_LEG]-&gt;(l)
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (destination)&lt;-[:CAN_ALIGHT]-(l)
+WITH service, l ORDER BY l.departsAt ASC
+WITH service, collect(l) AS legs
+// Create :NEXT_LEG relationships
+UNWIND range(0, size(legs)-2) AS idx
+WITH legs[idx] AS this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+</code></pre>
+
+<p class="make-it-readable">
+    So&#8230;how long will it take me to get home this evening?
+</p>
+
+<pre><code>MATCH (origin:Station {reference: 'PAD'})-[:CAN_BOARD]-&gt;(start:ServiceDayLeg),
+      (destination:Station {reference: 'SWI'})&lt;-[:CAN_ALIGHT]-(end:ServiceDayLeg)
+MATCH path = (start)-[:NEXT_LEG*0..10]-&gt;(end)
+WITH duration.between(start.departsAt, end.arrivesAt) as journeyDuration
+RETURN journeyDuration, journeyDuration.minutes as minutes
+</code></pre>
+
+<table>
+<tr>
+<th>
+        journeyDuration
+</th>
+
+<th>
+        minutes
+</th>
+</tr>
+
+<tr>
+<td>
+<code>"P0M0DT3480S"</code>
+</td>
+
+<td>
+        60
+</td>
+</tr>
+</table>
+
+<h2 id="indexing-temporal-types" class="make-it-readable">
+    Indexing Temporal Types
+</h2>
+
+<p>
+    Equality and range lookups on temporal data types are backed by indexes, making queries extremely fast. Indexes are created in the same manner as before.
+</p>
+
+<pre><code>CREATE INDEX ON :ServiceDay(date)
+</code></pre>
+
+<p>The planner shows that a simple range query uses a <code>NodeIndexSeekByRange</code> stage.</p>
+
+<pre><code>explain MATCH (s:ServiceDay)
+WHERE date('2018-08-12') &amp;gt;= s.date &amp;gt;= date('2018-08-15')
+RETURN s
+</code></pre>
+
+<p style="text-align: center">
+<a href="/uploads/2018/05/plan-2.png" target="_blank" rel="nofollow"><img src="/uploads/2018/05/plan-2.png" alt="The Query Plan shows that range queries are indexed backed" data-canonical-src="/uploads/2018/05/plan-2.png" style="max-width:100%;" /></a>
+</p>
+
+<h2 id="further-reading" class="make-it-readable">
+    Further Reading
+</h2>
+
+<p>
+    Neo4j 3.4 is still in it&#8217;s early stages the moment so many of these features are still in development. Still, you can try them out by <a href="https://neo4j.com/download/other-releases/#releases" rel="nofollow">downloading 3.4.0 from neo4j.com</a> or in Neo4j Desktop. Community posts are scarse, but documentation for all of the new functionality can be found in the preview documentation.
+</p>
+
+<ul>
+<li><a href="https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/" rel="nofollow">Temporal Functions</a></li>
+<li><a href="https://neo4j.com/docs/developer-manual/preview/cypher/syntax/operators/#query-operators-temporal" rel="nofollow">Temporal Operators</a></li>
+<li><a href="https://neo4j.com/docs/developer-manual/preview/cypher/syntax/operators/#cypher-ordering" rel="nofollow">Ordering and comparison of temporal values</a></li>
+</ul>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

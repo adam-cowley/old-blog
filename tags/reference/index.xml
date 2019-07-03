@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>reference on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/reference/</link>
+    <description>Recent content in reference on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 16 Jun 2017 13:25:43 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/reference/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Loading Twitter Data into Neo4j with APOC</title>
+      <link>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</guid>
+      <description>For the Graph Hack at this years Graph Connect, myself and the Dead Pony Club aimed to combine candidate datasets with donation data, Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+My task for the evening was to pull Twitter information into our Graph. Being relatively new to the APOC library, I was genuinely surprised as to how easy this could be done with a couple of queries.</description>
+    </item>
+    
+    <item>
+      <title>ES6 Import &amp; Export - A beginners guide</title>
+      <link>http://www.adamcowley.co.uk/javascript/es6-import-export-a-beginners-guide/</link>
+      <pubDate>Fri, 15 Jul 2016 12:14:19 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/javascript/es6-import-export-a-beginners-guide/</guid>
+      <description>Importing and exporting modules is a big part of Javascript. Before ES6, importing modules could be included into a script by using the require() function. ES6 introduced the import and export keywords which brings Javascript more in line with programming languages like Java and Ruby.
+Basic Import To import a module into a script, you can use the import keyword. Anyone who has looked at a React tutorial will recognise the following syntax:</description>
+    </item>
+    
+    <item>
+      <title>ES6 Promises - 5 Things I Wish I Had Known</title>
+      <link>http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/</link>
+      <pubDate>Thu, 03 Mar 2016 10:21:09 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/</guid>
+      <description>Over the past couple of months I&amp;#8217;ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I&amp;#8217;ve uncovered quite a few gotcha&amp;#8217;s along the way.
+One of the major differences is the Asynchronous nature of JavaScript. If you&amp;#8217;ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
+    </item>
+    
+  </channel>
+</rss>

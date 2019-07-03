@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Using Neo4j Temporal types in JavaScript - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Using Neo4j Temporal types in JavaScript" />
+<meta property="og:description" content="Code samples for working with Temporal types using the official Javascript drivers for Neo4j." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/javascript/neo4j-temporal-dates-javascript/" />
+<meta property="article:published_time" content="2018-06-04T17:44:38&#43;00:00"/>
+<meta property="article:modified_time" content="2018-06-04T17:44:38&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using Neo4j Temporal types in JavaScript"/>
+<meta name="twitter:description" content="Code samples for working with Temporal types using the official Javascript drivers for Neo4j."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Using Neo4j Temporal types in JavaScript</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-06-04 17:44">
+						04/06/2018 17:44
+					</time>
+				</p>
+
+				
+
+<p>In my last post I wrote an introduction to the five new <a href="http://www.adamcowley.co.uk/neo4j/temporal-native-dates/">Neo4j Temporal data types now supported in Neo4j 3.4</a>.   Although the functions themselves are laid out in the <a href="https://neo4j.com/docs/api/javascript-driver/current/">detailed documentation</a>,  information on how to use these data types in an application are still thin on the ground.  In this post, I will walk through a few code samples including how to save temporal data types to the graph and how to retrieve them.</p>
+
+<h2 id="project-setup">Project Setup</h2>
+
+<p>Temporal data types have been supported in all official drivers since version 1.6.  You can install or update the neo4j-driver dependency through npm and yarn.</p>
+
+<pre><code>npm install neo4j-driver
+</code></pre>
+
+<p>Once you have done that, creating a driver and session instances are identical.</p>
+
+<div class="file">
+<span>index.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j-driver&#39;</span>).<span style="color:#a6e22e">v1</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#39;bolt://localhost:7687&#39;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">basic</span>(<span style="color:#e6db74">&#39;neo4j&#39;</span>, <span style="color:#e6db74">&#39;neo&#39;</span>))
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>()
+</code></pre></div>
+<h2>
+    Saving Temporal Data
+</h2>
+
+<p>
+    There are two options for saving temporal data in Neo4j.  The first option is to create an instance of the data type inside inside the application and pass it through to the cypher query as a parameter.  Alternatively, you can pass through a string or object and instantiate the type inside the query itself.
+</p>
+
+<h3>
+    Passing values as Parameters
+</h3>
+
+<p>
+    The temporal data types are <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/1.7/src/v1/index.js#L304">exported via <code>v1</code> property of the neo4j package</a> (and also via the <code>v1.types</code> key) along with a set of helper functions which allow you to determine whether a variable is an instance of any of these types.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> {
+    <span style="color:#75715e">// Type Constructors
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">Duration</span>,
+    <span style="color:#a6e22e">LocalTime</span>,
+    <span style="color:#a6e22e">Time</span>,
+    Date,
+    <span style="color:#a6e22e">LocalDateTime</span>,
+    <span style="color:#a6e22e">DateTime</span>,
+    <span style="color:#75715e">// Helper Functions
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">isDuration</span>,
+    <span style="color:#a6e22e">isLocalTime</span>,
+    <span style="color:#a6e22e">isTime</span>,
+    <span style="color:#a6e22e">isDate</span>,
+    <span style="color:#a6e22e">isLocalDateTime</span>,
+    <span style="color:#a6e22e">isDateTime</span>,
+} <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j-driver&#39;</span>).<span style="color:#a6e22e">v1</span>
+</code></pre></div>
+<p>Here are the links to the individual constructors:</p>
+
+<ul>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Duration.html">Duration</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Date.html">Date</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~DateTime.html">DateTime</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Duration.html">Duration</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~LocalDateTime.html">LocalDateTime</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~LocalTime.html">LocalTime</a></li>
+<li><a href="https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Time.html">Time</a></li>
+</ul>
+
+<p>For argument sake I will go with one of the more complex data types, <code>DateTime</code>.  The DateTime data type takes a harrowing nine arguments:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">new</span> <span style="color:#a6e22e">DateTime</span>(
+    <span style="color:#a6e22e">year</span>,
+    <span style="color:#a6e22e">month</span>,
+    <span style="color:#a6e22e">day</span>,
+    <span style="color:#a6e22e">hour</span>,
+    <span style="color:#a6e22e">minute</span>,
+    <span style="color:#a6e22e">second</span>,
+    <span style="color:#a6e22e">nanosecond</span>,
+    <span style="color:#a6e22e">timeZoneOffsetSeconds</span>,
+    <span style="color:#a6e22e">timeZoneId</span>
+)
+</code></pre></div>
+<p>You can instantiate a DateTime and pass that inside an object of parameters in the second parameter in any <code>session.run</code> or <code>tx.run</code> call. Bolt will handle the transportation of the data and Neo4j will handle the persistence.</p>
+
+<div class="file">
+    <span>index.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(
+    <span style="color:#e6db74">&#39;CREATE (e:Event { id: $id, title: $title, startsAt: $startsAt }) RETURN e&#39;</span>,
+    {
+        <span style="color:#a6e22e">id</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+        <span style="color:#a6e22e">title</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Test Event&#39;</span>,
+        <span style="color:#a6e22e">startsAt</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">types</span>.<span style="color:#a6e22e">DateTime</span>(<span style="color:#ae81ff">2018</span>, <span style="color:#ae81ff">01</span>, <span style="color:#ae81ff">02</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">34</span>, <span style="color:#ae81ff">56</span>, <span style="color:#ae81ff">123400000</span>, <span style="color:#e6db74">&#39;Z&#39;</span>)
+    }
+)
+</code></pre></div>
+<p><strong>NB: make sure your nanoseconds are in the hundreds of millions</strong></p>
+
+<p>Creating instances of data types is solid way of doing things. The benefit being that you will have no nasty surprises or data saved in inconsistent formats. Equally, you may not want to go through the trouble of importing the types into your project. Or you may just not like the look of the constructors. If this is the case, you can always use Cypher&hellip;</p>
+
+<p>&nbsp;</p>
+
+<h3>
+Storing Temporal data Using Cypher
+</h3>
+
+<p>
+<a href="https://www.adamcowley.co.uk/neo4j/temporal-native-dates/" target="_blank">As mentioned in my previous post</a>, Cypher offers a really convenient API for creating dates and times. This way, you only have to pass through the parts that are required and not worry about smaller fractions of time.
+</p>
+
+<p>
+You can either pass through the individual units as their own parameter.
+</p>
+
+<div class="file">
+  <span>Providing Individual Parameters</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">:param startsAtYear =&gt; 2018
+:param startsAtMonth =&gt; 01
+:param startsAtDay =&gt; 02
+RETURN datetime({ year: $startsAtYear, month: $startsAtMonth, day: $startsAtDay })</code></pre></div>
+<p>However if for some reason you feel you need to miss a unit, your query will fail with a missing parameter query. If you prefer, you could instead send a single object containing the required units.</p>
+
+<div class="file">
+  <span>Sending a single Object</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">:param startsAt =&gt; { year: 2018, month: 01, day: 02 }
+RETURN datetime(startsAt)</code></pre></div>
+<p>Just make sure you use the appropriate function to cast the property as a date.</p>
+
+<p>
+As temporal functions also accept strings, you could also send a valid string as a parameter.
+</p>
+
+<p>If you&#8217;re currently working with native JavaScript Dates, the easiest thing to send the milliseconds since epoch as a parameter and then construct the date in cypher by providing a <code>epochMillis</code> value.</p>
+
+<div class="file">
+<span>Construct Parameters</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">startsAt</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date()
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">startsAt</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">getTime</span>() }
+</code></pre></div>
+<div class="file">
+<span>Cypher Statement</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">RETURN date({ epochMillis: $startsAt })</code></pre></div>
+<h2>
+  Working with Temporal Data Types
+</h2>
+
+<p>
+  Instances of temporal data types provide the same accessors as Cypher. Dates include <code>.year</code>, <code>month</code> and <code>.day</code> accessors, and time types include <code>hour</code>, <code>minute</code>, <code>second</code>, <code>nanosecond</code>. Depending on the construction of the time, the object may also return a non-null <code>timeZoneOffsetSeconds</code> or <code>timeZoneId</code> property.
+</p>
+
+<p>
+  <a href="https://github.com/neo4j/neo4j-javascript-driver#read-integers" target="_blank">Due to the issues with Integers in Javascript</a>. these accessors will return an instance of a neo4j <code>Integer</code>. To convert this into a number, you can call to the <code>toNumber()</code> function. If you would like to skip this option, you can <a href="https://neo4j.com/docs/api/javascript-driver/current/function/index.html#configuration">set the <code>disableLosslessIntegers</code> option to true</a> when instantiating the driver. <a href="https://github.com/neo4j/neo4j-javascript-driver/pull/323" target="_blank">You can read more about this option here</a>.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">cypher</span>, <span style="color:#a6e22e">params</span>)
+.<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">res</span> =&gt; {
+    <span style="color:#75715e">// Access the Property
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">startsAt</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">records</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;e&#39;</span>).<span style="color:#a6e22e">properties</span>.<span style="color:#a6e22e">startsAt</span>
+    <span style="color:#75715e">// Use Accessors
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;year&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">year</span>.<span style="color:#a6e22e">toNumber</span>())  <span style="color:#75715e">// 2018
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;month&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">month</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 01
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;day&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">day</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 02
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;hour&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">hour</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 12
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;minute&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">minute</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 34
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;second&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">second</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 56
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;nanosecond&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">nanosecond</span>.<span style="color:#a6e22e">toNumber</span>()) <span style="color:#75715e">// 123400000
+</span><span style="color:#75715e"></span>})
+</code></pre></div>
+<p>The <code>.toString()</code> function returns an ISO8601 date string. This can be used to create a native date.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;toString&#39;</span>, <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">toString</span>()) <span style="color:#75715e">// 2018-01-02T12:34:56.1234Z
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">nativeDate</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date( <span style="color:#a6e22e">startsAt</span>.<span style="color:#a6e22e">toString</span>() ) ) <span style="color:#75715e">// Date(&#34;2018-01-02T12:34:56.123Z&#34;)
+</span></code></pre></div>
+<h2>
+  Full Scripts
+</h2>
+
+<p>
+  I have created a <a href="https://gist.github.com/adam-cowley/284eae06730b787359c4bd54349bdef9" target="_blank">Gist</a> with full versions of the code above. For more information on the drivers you can check the <a href="https://github.com/neo4j/neo4j-javascript-driver" target="_blank">driver documentation on github</a> or check out the <a href="https://neo4j.com/docs/api/javascript-driver/current/">detailed documentation</a>.
+</p>
+
+<p>
+  Happy coding!
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

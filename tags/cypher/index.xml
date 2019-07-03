@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cypher on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/cypher/</link>
+    <description>Recent content in Cypher on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Wed, 06 Sep 2017 11:55:37 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/cypher/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mastering Ouril with Neo4j</title>
+      <link>http://www.adamcowley.co.uk/neo4j/mastering-ouril-with-neo4j/</link>
+      <pubDate>Wed, 06 Sep 2017 11:55:37 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/mastering-ouril-with-neo4j/</guid>
+      <description>On a recent holiday to Cape Verde, I became obsessed with the local game Ouril.
+ Showing the locals how #Ouril can be improved with an install of Neo4j Enterprise edition. #alwaysbeclosing 🇨🇻 A post shared by Adam Cowley (@adamcowley) on Aug 14, 2017 at 8:10am PDT   Ouril is a strategy game originating in Africa (also known as Oware, Wari, Ayò amongst others) where the goal is to sew seeds counter-clockwise around a board of twelve holes 6 of each belonging to one of the two players.</description>
+    </item>
+    
+    <item>
+      <title>Loading Twitter Data into Neo4j with APOC</title>
+      <link>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</guid>
+      <description>For the Graph Hack at this years Graph Connect, myself and the Dead Pony Club aimed to combine candidate datasets with donation data, Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+My task for the evening was to pull Twitter information into our Graph. Being relatively new to the APOC library, I was genuinely surprised as to how easy this could be done with a couple of queries.</description>
+    </item>
+    
+    <item>
+      <title>WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations</title>
+      <link>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/</link>
+      <pubDate>Tue, 07 Mar 2017 15:50:49 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/</guid>
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Content Based Recommendations Now that we have some data in our Database, we can use the information to create recommendations for the user.</description>
+    </item>
+    
+  </channel>
+</rss>

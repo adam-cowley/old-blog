@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JDBC on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/jdbc/</link>
+    <description>Recent content in JDBC on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 06 Jul 2018 10:45:54 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/jdbc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC</title>
+      <link>http://www.adamcowley.co.uk/neo4j/importing-google-analytics-to-neo4j-via-bigquery-using-apoc-jdbc/</link>
+      <pubDate>Fri, 06 Jul 2018 10:45:54 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/importing-google-analytics-to-neo4j-via-bigquery-using-apoc-jdbc/</guid>
+      <description>Google Analytics has been the defacto analytics platform for years. The major problem with this is that Google owns your data and the reporting platform can be difficult to work with.
+However, for those with deep pockets and a Google Analytics 360 account, you can link your account with BigQuery and receive automated periodic imports. The BigQuery tables can then be used to import the data into Neo4j, giving you the ability to explore the data using Cypher.</description>
+    </item>
+    
+  </channel>
+</rss>

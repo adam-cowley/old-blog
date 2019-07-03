@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures" />
+<meta property="og:description" content="This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  PageRank with APOC Since the 3.0 release of Neo4j, the system has supported Procedures. Unlike Unmanaged Extensions which are called via the REST API, Procedures can be invoked directly through a cypher statement." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-4-pagerank-with-apoc/" />
+<meta property="article:published_time" content="2017-04-03T13:48:37&#43;00:00"/>
+<meta property="article:modified_time" content="2017-04-03T13:48:37&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures"/>
+<meta name="twitter:description" content="This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  PageRank with APOC Since the 3.0 release of Neo4j, the system has supported Procedures. Unlike Unmanaged Extensions which are called via the REST API, Procedures can be invoked directly through a cypher statement."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2017-04-03 13:48">
+						03/04/2017 13:48
+					</time>
+				</p>
+
+				
+
+<p>This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:</p></p>
+
+<ol>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/">Part 1: Hooks &amp; Data Modelling</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-2-content-based/">Part 2: Content Based Recommendations</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/">Part 3: Collaborative Filtering</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-4-pagerank-with-apoc/">WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures</a></li>
+</ol>
+
+<h2 id="pagerank-with-apoc">PageRank with APOC</h2>
+
+<p>Since the 3.0 release of Neo4j, the system has supported <a href="https://neo4j.com/docs/developer-manual/current/extending-neo4j/procedures/">Procedures</a>.  Unlike <a href="https://neo4j.com/docs/java-reference/current/">Unmanaged Extensions</a> which are called via the REST API, Procedures can be invoked directly through a cypher statement.  The yielded values of the procedure, whether they be nodes, relationships or other arbitrary values can then be used within the cypher statement.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CALL my.procedure() YIELD node, score
+SET node.score = score</code></pre></div>
+<p>Unfortunately for me, like Unmanaged Extensions, Procedures are written in Java.  However, luckily for me and the Neo4j community as a whole, Neo have already done a lot of the heavy lifting for us already and combined a huge number of utilities and algorithms into a single, easy to install package.  Introducing, <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/">APOC Procedures</a>.</p>
+
+<h2>
+    APOC Procedures
+</h2>
+
+<p>
+    APOC &#8211; the technician of the Nebuchadnezzar in the Matrix, &#8220;Awesome Package of Components&#8221; or &#8220;Awesome Procedures on Cypher&#8221;  depending on who you ask &#8211; comes with over 200 procedures out of the box and thanks to the awesome Neo4j community that number is constantly growing.  APOC procedures range from anything as simple as loading JSON from a URL and date and time utilities all the way to complex graph algorithms including betwenness, centrality and <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra&#8217;s shortest path</a> algorithm.
+</p>
+
+<h3>
+    Installing APOC
+</h3>
+
+<p>
+    Installing APOC is surprisingly easy.  All you need to do is head over to the Github repository, find the appropriate release for your version of Neo4j (3.1.x, 3.2.x), download the <code>apoc-3.x.jar</code> file and place it the <code>plugins</code> directory of your Neo4j install and restart the server.
+</p>
+
+<p>
+    Once installed open up the explorer at :7474 and run the following query to get a list of all procedures with a name and description.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CALL apoc.help(&#34;apoc&#34;) YIELD name, text
+RETURN *</code></pre></div>
+<p><a href="/uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42.png"><img class="alignnone size-full wp-image-200" src="/uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42.png" alt="" srcset="/uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42.png 1030w, /uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42-250x133.png 250w, /uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42-768x409.png 768w, /uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42-700x373.png 700w, /uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42-120x64.png 120w" sizes="(max-width: 1030px) 100vw, 1030px" /></a>
+</p></p>
+
+<p>
+    The full documentation can be found at <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/">https://neo4j-contrib.github.io/neo4j-apoc-procedures/</a>
+</p>
+
+<h2>
+    PageRank
+</h2>
+
+<p>
+<a href="https://en.wikipedia.org/wiki/PageRank">PageRank</a>, named after Google cofounder Larry Page, is the algorithm used by Google to rank their search engine results.  The algorithm will use the number and quality of links to a node within our graph to provide a centrality score.  The higher the better.  PageRank uses a variant of what is known as Eigenvector Centrality, where the rank of nodes are affected by the ranking of adjacent nodes.  Relationships to higher scoring nodes will contribute more to the score of a node than the connections to any lower scoring nodes.
+</p>
+
+<p>
+    In our recommendation graph,  the algorithm will count the connection to categories, and most importantly the links between Users and Posts to rank nodes by importance.
+</p>
+
+<p>
+    One gotcha of this procedure in APOC, is that although we can specify the nodes we would like to calculate a score on, when calculating a PageRank for a set of nodes the procedure will compute scores for the entire graph at once.  In reality this is a good thing as the eigenvector centrality will mean, but this can be very memory intensive on larger graphs.
+</p>
+
+<p>
+    We can view a list of PageRank queries by running the following query.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CALL apoc.help(&#34;apoc.algo.pagerank&#34;) YIELD name, text
+RETURN *</code></pre></div>
+<table class="table data">
+<tr>
+<th>
+        name
+</th>
+
+<th>
+        text
+</th>
+</tr>
+
+<tr>
+<td>
+        apoc.algo.pageRank
+</td>
+
+<td>
+        CALL apoc.algo.pageRank(nodes) YIELD node, score &#8211; calculates page rank for given nodes
+</td>
+</tr>
+
+<tr>
+<td>
+        apoc.algo.pageRankStats
+</td>
+
+<td>
+        CALL apoc.algo.pageRankStats({iterations:_,types:_,write:true,&#8230;}) YIELD nodeCount &#8211; calculates page rank on graph for given nodes and potentially writes back
+</td>
+</tr>
+
+<tr>
+<td>
+        apoc.algo.pageRankWithConfig
+</td>
+
+<td>
+        CALL apoc.algo.pageRankWithConfig(nodes,{iterations:_,types:_}) YIELD node, score, info &#8211; calculates page rank for given nodes
+</td>
+</tr>
+
+<tr>
+<td>
+        apoc.algo.pageRankWithCypher
+</td>
+
+<td>
+        CALL apoc.algo.pageRankWithCypher({iterations, node_cypher, rel_cypher, write, property, numCpu}) &#8211; calculates page rank based on cypher input
+</td>
+</tr>
+</table>
+
+<p>
+    &nbsp;
+</p>
+
+<p>
+    To run PageRank, we need to provide a collection of nodes to the <code>apoc.algo.pageRank</code> procedure.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (p:Post) WITH COLLECT(p) as posts
+CALL apoc.algo.pageRank(posts) YIELD node, score
+RETURN node.title, score
+ORDER BY score DESC LIMIT 5</code></pre></div>
+<p>This query will provide us with similar results to below.</p>
+
+<table>
+<tr>
+<th>
+        node.title
+</th>
+
+<th>
+        score
+</th>
+</tr>
+
+<tr>
+<td>
+        WordPress Recommendations with Neo4j
+</td>
+
+<td>
+        0.8957
+</td>
+</tr>
+
+<tr>
+<td>
+        Quick TDD setup with Node, ES6, Gulp and Mocha
+</td>
+
+<td>
+        0.6485
+</td>
+</tr>
+
+<tr>
+<td>
+        ES6 Import & Export – A beginners guide
+</td>
+
+<td>
+        0.5532
+</td>
+</tr>
+
+<tr>
+<td>
+        ES6 Promises – 5 Things I Wish I’d Known
+</td>
+
+<td>
+        0.2284
+</td>
+</tr>
+
+<tr>
+<td>
+        2,100 startups in 1 building?
+</td>
+
+<td>
+        0.2124
+</td>
+</tr>
+</table>
+
+<p>
+    We can also return scores for pages in a particular Category by tweaking the query above before passing the collection of nodes to the procedure.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (c:Category {slug:&#34;neo4j&#34;})&lt;-[:HAS_TAXONOMY]-(p:Post) WITH COLLECT(p) as posts
+CALL apoc.algo.pageRank(posts) YIELD node, score
+RETURN node.title, score
+ORDER BY score DESC LIMIT 5</code></pre></div>
+<h3>
+    Configuring PageRank
+</h3>
+
+<p>
+    By default the <code>apoc.algo.pageRank</code> procedure will use all relationships in order to calculate a ranking.  From our dataset, you can see that we have taxonomy tags that at this stage may not be useful for ranking our nodes.
+</p>
+
+<p>
+<a href="/uploads/2017/04/graph.png"><img class="alignnone size-full wp-image-209" src="/uploads/2017/04/graph.png" alt="" srcset="/uploads/2017/04/graph.png 733w, /uploads/2017/04/graph-250x121.png 250w, /uploads/2017/04/graph-700x338.png 700w, /uploads/2017/04/graph-120x58.png 120w" sizes="(max-width: 733px) 100vw, 733px" /></a>
+</p>
+
+<p>
+    The <code>apoc.algo.pageRankWithConfig</code> procedure will allow us to define types.  This procedure accepts two arguments, firstly the nodes to calculate scores from and a configuration object.  To specify the relationships that we would like to include, we can provide them in a pipe delimited string.  At this point, we can also set the number of iterations we would like to run while computing the graph.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (p:Post) WITH COLLECT(p) AS posts
+CALL apoc.algo.pageRankWithConfig(posts, {iterations:3, types:&#34;VISITED&#34;}) YIELD node, score
+RETURN node, score
+ORDER BY score DESC</code></pre></div>
+<p>You can view the full documentation for the PageRank algorithm procedure at <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_pagerank_algorithm">https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_pagerank_algorithm</a></p>
+
+<h2>
+    Other Useful Procedures
+</h2>
+
+<p>
+    PageRank is the tip of the iceberg when it comes to APOC procedures.  We could also look at using the following procedures to get some interesting insight into our Graph.
+</p>
+
+<ul>
+<li><code>apoc.algo.closeness</code> and <code>apoc.algo.betweeness</code> &#8211; calculate the connectivity and centrality and of users and articles.</li>
+<li><code>apoc.spatial.*</code> &#8211; Use the User&#8217;s location to provide location based recommendations or weight results by distance.</li>
+<li><code>apoc.es.*</code> &#8211; Integrate results with Elasticsearch for better search based capabilities.</li>
+</ul>
+
+<p>
+    Check out the <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/">Official User Guide</a> and <a href="https://github.com/neo4j-contrib/neo4j-apoc-procedures">Repository</a> for more inspiration.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

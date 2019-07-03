@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Using Neo4j-OGM with Spring Boot - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Using Neo4j-OGM with Spring Boot" />
+<meta property="og:description" content="In my last post, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the Neo4j-OGM to encapsulate your business logic into java objects that can be mapped directly to the graph.
+&nbsp;
+Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/" />
+<meta property="article:published_time" content="2018-02-21T10:54:24&#43;00:00"/>
+<meta property="article:modified_time" content="2018-02-21T10:54:24&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using Neo4j-OGM with Spring Boot"/>
+<meta name="twitter:description" content="In my last post, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the Neo4j-OGM to encapsulate your business logic into java objects that can be mapped directly to the graph.
+&nbsp;
+Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Using Neo4j-OGM with Spring Boot</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-02-21 10:54">
+						21/02/2018 10:54
+					</time>
+				</p>
+
+				
+
+<p><a href="http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/">In my last post</a>, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the <a href="https://github.com/neo4j/neo4j-ogm" target="_blank" rel="noopener">Neo4j-OGM</a> to encapsulate your business logic into java objects that can be mapped directly to the graph.</p>
+
+<p>&nbsp;</p>
+
+<p>Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.  While calling Cypher queries through the official drivers can work well for smaller projects or complex queries, this can become hard work when working with larger applications.</p>
+
+<p>A set of simple annotations can turn any class into a Domain Entity that can be manipulated with Java and persisted through an OGM session.  The OGM uses Cypher under the hood to interact with Neo4j through either Bolt or HTTP(s) protocols or in embedded mode.</p>
+
+<p>The main benefit to this approach is that all domain knowledge can be encapsulated into code.  As a fan of Domain Driven Design, the patterns of repositories and services fit nicely into this pattern.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>To get started with Neo4j-OGM, you&#8217;ll need to include the Neo4j OGM Core and the appropriate driver dependency. In this case, I will be using the bolt driver.</p>
+
+<div class="file">
+<span>build.gradle</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">dependencies <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>core:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
+    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>api:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
+    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>bolt<span style="color:#f92672">-</span>driver:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>Once you have the dependencies, you can start to create domain entities.</p>
+
+<h2>
+    Creating Entities
+</h2>
+
+<p>
+    In this post, we&#8217;ll look at creating a simple social graph.  The graph will consist of <strong>:Person</strong> nodes related to each other with <strong>:KNOWS</strong> relationships.  Each person will have a first name, last name.  Each <strong>:KNOWS</strong> relationship will have a <em>createdAt</em> property.
+</p>
+
+<h3>
+    Identifiers
+</h3>
+
+<p>
+    The OGM uses an ID property to identify nodes and relationships.  Because we will use this on all entities and relationships, we can create a base class that all other entities extend.
+</p>
+
+<p>
+    First, we create a new class annotated with the <code>@NodeEntity</code> annotation.
+</p>
+
+<div class="file">
+<span>Entity.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeEntity</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Entity</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+<p>Next, we define a property to hold the ID.  This takes two annotations, the <code>@Id</code> annotation identifies the field as the identifier and the <code>@GeneratedValue</code> is used with the <code>@Id</code> annotation to define a generation strategy.</p>
+
+<div class="file">
+<span>Entity.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Id</span>
+<span style="color:#a6e22e">@GeneratedValue</span>
+<span style="color:#66d9ef">private</span> Long id<span style="color:#f92672">;</span>
+<span style="color:#66d9ef">public</span> Long <span style="color:#a6e22e">getId</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> id<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>There are two strategies for ID generation, a UUID strategy or Internal ID strategy which is uses by default.</p>
+
+<h3>
+    Person <code>NodeEntity</code>
+</h3>
+
+<p>
+    We can extend the Entity class to create a new Person class, again annotated as a `@NodeEntity`.
+</p>
+
+<div class="file">
+<span>Person.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeEntity</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">extends</span> Entity <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> String firstName<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> String lastName<span style="color:#f92672">;</span>
+    <span style="color:#a6e22e">@Relationship</span><span style="color:#f92672">(</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> <span style="color:#f92672">)</span>
+    Set<span style="color:#f92672">&lt;</span>Knows<span style="color:#f92672">&gt;</span> knows<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>Inside this class I have defined two properties; firstName and lastName and defined a set of relationships using the <code>@Relationship </code>annotation.</p>
+
+<p>
+    In order to interact with these objects using Java, we can define getters and setters which manipulate these properties.
+</p>
+
+<div class="file">
+<span>Person.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setLastName</span><span style="color:#f92672">(</span>String lastName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lastName</span> <span style="color:#f92672">=</span> lastName<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getLastName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> lastName<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<h3>
+    Knows <code>RelationshipEntity</code>
+</h3>
+
+<p>
+    In the <code>Person</code> class, I have defined the <code>knows</code> property as a <code>Set</code> of objects with a type of <code>Knows</code>.  This class will be annotated as a <code>@RelationshipEntity</code>.  This annotation takes a type property which will be used when the data is saved or read.
+</p>
+
+<div class="file">
+<span>Knows.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RelationshipEntity</span><span style="color:#f92672">(</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> <span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Knows</span> <span style="color:#66d9ef">extends</span> Entity <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+<p>As with the Person entity, we assign properties directly to the relationship.  <code>RelationshipEntity</code> classes take a couple of extra annotations.  The <code>@StartNode</code> and <code>@EndNode</code> annotations identify the entities that are used as the start and end nodes of the relationships.  In this case, the start and end nodes for the relationship will be instances of the <code>Person</code> class that we defined above.</p>
+
+<div class="file">
+<span>Knows.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@StartNode</span>
+Person source<span style="color:#f92672">;</span>
+<span style="color:#a6e22e">@EndNode</span>
+Person target<span style="color:#f92672">;</span></code></pre></div>
+<p>At the time of writing, Neo4j doesn&#8217;t support dates as a <a href="https://neo4j.com/docs/developer-manual/current/drivers/cypher-values/" target="_blank" rel="noopener">valid data type</a>.  Instead, we can choose to store the date as a string or the seconds since epoch as a Long.  In order to use dates in our application, we can use a <strong>Converter </strong>to handle the conversion when storing the data and again when retrieving the information from the database.  The OGM comes with the following converters:</p>
+
+<ul>
+<li><code>@DateLong</code> &#8211; Converts <code>java.util.Date</code> or <code>java.time.Instant</code> to <code>Long</code>.</li>
+<li><code>@DateString</code> &#8211; Converts <code>java.util.Date</code> or <code>java.time.Instant</code> to<i> a </i>String.  By default, this will be converted to ISO 8601 format (yyyy-MM-dd&#8217;T&#8217;HH:mm:ss.SSSXXX) but a date format string can also be provided with the annotation.</li>
+<li><code>@EnumString</code> &#8211; Converts an enum to String.</li>
+<li><code>@NumberString</code> &#8211; Converts any object that extends <code>java.lang.Number</code> to a <code>String</code>.  This method can be used to handle BigInteger or BigDecimal data types.</li>
+</ul>
+
+<p>
+    My personal preference is to store dates in Long format, so I&#8217;ll use the <code>@DateLong</code> annotation.
+</p>
+
+<div class="file">
+<span>Knows.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@DateLong</span>
+Date since<span style="color:#f92672">;</span></code></pre></div>
+<p>Now we can use native java dates, while the OGM takes care of the conversion when hydrating the object or persisting it back to the graph.</p>
+
+<div class="file">
+<span>Knows.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setSince</span><span style="color:#f92672">(</span>Date since<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">since</span> <span style="color:#f92672">=</span> since<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">public</span> Date <span style="color:#a6e22e">getSince</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> since<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<h2>
+    Accessing Data with Sessions
+</h2>
+
+<p>
+    We interact with the model using Sessions.  The OGM comes with a Session Factory that we can use to open a new session within a request.  In order to use this inside a service, we can expose it as a <code>@Bean</code>.  The configuration of the session is slightly different to the configuration of the official driver, but we can use the same configuration from <code>application.properties</code>.
+</p>
+
+<div class="file">
+<span>Neo4jConfiguration.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Bean</span>
+<span style="color:#66d9ef">public</span> org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ogm</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Configuration</span> <span style="color:#a6e22e">getConfiguration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ogm</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Configuration</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Builder</span><span style="color:#f92672">()</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">uri</span><span style="color:#f92672">(</span> getUri<span style="color:#f92672">()</span> <span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">credentials</span><span style="color:#f92672">(</span> username<span style="color:#f92672">,</span> password <span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>In this snippet, we&#8217;re using the OGM&#8217;s Configuration Builder to create a configuration object and exposing this as a bean.  Then, we can create a method that will take this configuration and use it to create an instance of the <code>SessionFactory</code>.  We can pass through an optional set of package names which the session factory will scan for domain objects.</p>
+
+<div class="file">
+<span>Neo4jConfiguration.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> SessionFactory <span style="color:#a6e22e">getSessionFactory</span><span style="color:#f92672">(</span>Neo4jConfiguration config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SessionFactory<span style="color:#f92672">(</span> config<span style="color:#f92672">.</span><span style="color:#a6e22e">getConfiguration</span><span style="color:#f92672">(),</span> <span style="color:#e6db74">&#34;co.adamcowley.neobeans&#34;</span> <span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>By default the SessionFactory will be treated as a <a href="https://en.wikipedia.org/wiki/Singleton_pattern" target="_blank" rel="noopener">singleton</a> and instantiated only once across the application.</p>
+
+<h2>
+    Injecting into Services
+</h2>
+
+<p>
+    Ideally, when modifying data held within the graph, we will do in a single responsibility class.  In Domain Driven Design terms, these are known as Services and are defined as objects that perform standalone changes to the model while retaining no encapsulated state.   Spring comes with a <code>@Service</code> stereotype annotation which can be applied to these classes.  This will indicate to Spring that this should be treated as a component that can be autowired into the application.
+</p>
+
+<p>
+    At the moment, we don&#8217;t have any data in the graph.  So let&#8217;s create a service that will create a new Person and give it a <code>@Service</code> annotation.  As this has been declared as a Spring component, we can annotate the constructor function.  This will ensure that on instantiation, each parameter will be instantiated and injected into the class.  As we will be interacting with the graph, we can autowire the <code>SessionFactory</code>.
+</p>
+
+<div class="file">
+<span>CreatePerson.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Service</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CreatePerson</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> SessionFactory sessionFactory<span style="color:#f92672">;</span>
+    <span style="color:#a6e22e">@Autowired</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CreatePerson</span><span style="color:#f92672">(</span>SessionFactory sessionFactory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sessionFactory</span> <span style="color:#f92672">=</span> sessionFactory<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<h2>
+    Persisting Data
+</h2>
+
+<p>
+    We can use sessions to encapsulate business logic, in this case we can ensure that a person is created with both a first name and last name.  Once our business logic has been satisfied, we need to persist the changes in the database.  Inside a session, we have the ability to either save or delete information.  By calling the save method on a session, the OGM will take care of saving the data, either creating or updating each record as appropriate.  Where we are interacting with multiple users and relationships in sequence, we can also set an arbitrary depth to save to with each relationship in chain counting as one step.
+</p>
+
+<div class="file">
+<span>CreatePerson.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>String firstName<span style="color:#f92672">,</span> String lastName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Person output <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Person<span style="color:#f92672">();</span>
+    output<span style="color:#f92672">.</span><span style="color:#a6e22e">setFirstName</span><span style="color:#f92672">(</span> firstName <span style="color:#f92672">);</span>
+    output<span style="color:#f92672">.</span><span style="color:#a6e22e">setLastName</span><span style="color:#f92672">(</span> lastName <span style="color:#f92672">);</span>
+
+    Session session <span style="color:#f92672">=</span> sessionFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">openSession</span><span style="color:#f92672">();</span>
+
+    session<span style="color:#f92672">.</span><span style="color:#a6e22e">save</span><span style="color:#f92672">(</span> output <span style="color:#f92672">);</span>
+
+    <span style="color:#66d9ef">return</span> output<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>Here, I have instantiated a new Person object, used the setter functions to set their first and last names.  Then, after opening a new session, the object is created.</p>
+
+<p>
+    Similar to the SessionFactory, we can use the <code>@Autowired</code> annotation to inject an instance of this service into any component.  In this case, I am using a POST request within a REST Controller to accept a firstName and lastName in the post body and passed these through to the function before returning the newly created node.
+</p>
+
+<div class="file">
+<span>PersonController.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonController</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> CreatePerson service<span style="color:#f92672">;</span>
+    <span style="color:#a6e22e">@Autowired</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PersonController</span><span style="color:#f92672">(</span>CreatePerson service<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">service</span> <span style="color:#f92672">=</span> service<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">postIndex</span><span style="color:#f92672">(</span> <span style="color:#a6e22e">@RequestBody</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> body <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        String firstName <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> body<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;firstName&#34;</span><span style="color:#f92672">);</span>
+        String lastName <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> body<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;lastName&#34;</span><span style="color:#f92672">);</span>
+
+        Person output <span style="color:#f92672">=</span> service<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>firstName<span style="color:#f92672">,</span> lastName<span style="color:#f92672">);</span>
+
+        <span style="color:#66d9ef">return</span> output<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<h2>
+    Reading Data
+</h2>
+
+<p>
+<a href="https://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/" target="_blank" rel="noopener">In the previous post</a> I used the driver to execute a cypher query to return a paginated list of results.  The Session interface offers a number of ways to load data, either using a collection of ID&#8217;s or using Filter before sorting and limiting the results.
+</p>
+
+<h3>
+    Loading a Collection
+</h3>
+
+<p>
+    The <code>.loadAll()</code> method will allow you to load a paginated <code>Collection</code> of results. To filter results, the method will accept one or more <code title="org.neo4j.ogm.cypher.Filter">Filter</code> instances. To paginate the results, you can provide a <code title="org.neo4j.ogm.cypher.query.Pagination">Pagination</code> instance with the page number (zero based) and a limit.
+</p>
+
+<div class="file">
+<span>PersonController.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> Collection<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span>
+    <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> page<span style="color:#f92672">,</span>
+    <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> limit<span style="color:#f92672">)</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>Here I have created a <code>Pagination</code> instance using the page and limit parameters retrieved from the request.  This is then passed to the <code>session.loadAll</code> method along with the class that the results should be bound to.
+</p></p>
+
+<p>
+    To find a single node in the graph, you can use the<em> </em><em>load</em> method.
+</p>
+
+<div class="file">
+<span>PersonController.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people/{id}&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">GET</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span> <span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> Long id <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Session session <span style="color:#f92672">=</span> factory<span style="color:#f92672">.</span><span style="color:#a6e22e">openSession</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">return</span> session<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span> Person<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> id <span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<h2 id="conclusion">Conclusion</h2>
+
+<p>
+    Using an O(R/G)M can be a great approach to software development. Not least because they allow you to enforce business rules within your code base but also promote good coding standards and improve maintainability. From a Graph point of view, this could also lower the barrier to entry for developers starting out with graph databases. Any Java developer can interact with the Graph using plain Java rather than learning yet another query language.
+</p>
+
+<p>
+    If you are using the OGM with Spring, it is well worth taking a look at the <a href="https://projects.spring.io/spring-data-neo4j/" target="_blank">Spring Data Neo4j</a> project which uses the same annotation-styled approach while also providing repository patterns for retrieving and persisting data.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

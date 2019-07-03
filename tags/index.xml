@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/</link>
+    <description>Recent content in Tags on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Sat, 06 Apr 2019 11:11:40 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>NLP</title>
+      <link>http://www.adamcowley.co.uk/tags/nlp/</link>
+      <pubDate>Sat, 06 Apr 2019 11:11:40 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/nlp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>BigQuery</title>
+      <link>http://www.adamcowley.co.uk/tags/bigquery/</link>
+      <pubDate>Fri, 06 Jul 2018 10:45:54 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/bigquery/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JDBC</title>
+      <link>http://www.adamcowley.co.uk/tags/jdbc/</link>
+      <pubDate>Fri, 06 Jul 2018 10:45:54 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/jdbc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>neo4j</title>
+      <link>http://www.adamcowley.co.uk/tags/neo4j/</link>
+      <pubDate>Fri, 06 Jul 2018 10:45:54 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/neo4j/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>drivers</title>
+      <link>http://www.adamcowley.co.uk/tags/drivers/</link>
+      <pubDate>Mon, 04 Jun 2018 17:44:38 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/drivers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>http://www.adamcowley.co.uk/tags/javascript/</link>
+      <pubDate>Mon, 04 Jun 2018 17:44:38 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nodejs</title>
+      <link>http://www.adamcowley.co.uk/tags/nodejs/</link>
+      <pubDate>Mon, 04 Jun 2018 17:44:38 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/nodejs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>temporal</title>
+      <link>http://www.adamcowley.co.uk/tags/temporal/</link>
+      <pubDate>Mon, 04 Jun 2018 17:44:38 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/temporal/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>node</title>
+      <link>http://www.adamcowley.co.uk/tags/node/</link>
+      <pubDate>Fri, 02 Mar 2018 19:15:42 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/node/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>promises</title>
+      <link>http://www.adamcowley.co.uk/tags/promises/</link>
+      <pubDate>Fri, 02 Mar 2018 19:15:42 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/promises/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sdn</title>
+      <link>http://www.adamcowley.co.uk/tags/sdn/</link>
+      <pubDate>Wed, 21 Feb 2018 10:54:24 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/sdn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring</title>
+      <link>http://www.adamcowley.co.uk/tags/spring/</link>
+      <pubDate>Wed, 21 Feb 2018 10:54:24 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/spring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring boot</title>
+      <link>http://www.adamcowley.co.uk/tags/spring-boot/</link>
+      <pubDate>Wed, 21 Feb 2018 10:54:24 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/spring-boot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring data neo4j</title>
+      <link>http://www.adamcowley.co.uk/tags/spring-data-neo4j/</link>
+      <pubDate>Wed, 21 Feb 2018 10:54:24 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/spring-data-neo4j/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
+      <link>http://www.adamcowley.co.uk/tags/java/</link>
+      <pubDate>Tue, 13 Feb 2018 15:18:29 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cypher</title>
+      <link>http://www.adamcowley.co.uk/tags/cypher/</link>
+      <pubDate>Wed, 06 Sep 2017 11:55:37 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/cypher/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>apoc</title>
+      <link>http://www.adamcowley.co.uk/tags/apoc/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/apoc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>reference</title>
+      <link>http://www.adamcowley.co.uk/tags/reference/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/reference/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>twitter</title>
+      <link>http://www.adamcowley.co.uk/tags/twitter/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/twitter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Recommendations</title>
+      <link>http://www.adamcowley.co.uk/tags/recommendations/</link>
+      <pubDate>Mon, 03 Apr 2017 13:48:37 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/recommendations/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pagerank</title>
+      <link>http://www.adamcowley.co.uk/tags/pagerank/</link>
+      <pubDate>Mon, 03 Apr 2017 13:48:37 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/pagerank/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wordpress</title>
+      <link>http://www.adamcowley.co.uk/tags/wordpress/</link>
+      <pubDate>Tue, 07 Mar 2017 15:50:49 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/wordpress/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>php</title>
+      <link>http://www.adamcowley.co.uk/tags/php/</link>
+      <pubDate>Tue, 07 Mar 2017 13:48:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/php/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tutorials</title>
+      <link>http://www.adamcowley.co.uk/tags/tutorials/</link>
+      <pubDate>Tue, 07 Mar 2017 13:48:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/tutorials/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>es2015</title>
+      <link>http://www.adamcowley.co.uk/tags/es2015/</link>
+      <pubDate>Fri, 15 Jul 2016 12:14:19 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/es2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>export</title>
+      <link>http://www.adamcowley.co.uk/tags/export/</link>
+      <pubDate>Fri, 15 Jul 2016 12:14:19 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/export/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>import</title>
+      <link>http://www.adamcowley.co.uk/tags/import/</link>
+      <pubDate>Fri, 15 Jul 2016 12:14:19 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/import/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gulp</title>
+      <link>http://www.adamcowley.co.uk/tags/gulp/</link>
+      <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/gulp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mocha</title>
+      <link>http://www.adamcowley.co.uk/tags/mocha/</link>
+      <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/mocha/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tdd</title>
+      <link>http://www.adamcowley.co.uk/tags/tdd/</link>
+      <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/tdd/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

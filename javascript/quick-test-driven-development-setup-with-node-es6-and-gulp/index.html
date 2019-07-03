@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Quick TDD setup with Node, ES6, Gulp and Mocha - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Quick TDD setup with Node, ES6, Gulp and Mocha" />
+<meta property="og:description" content="Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/" />
+<meta property="article:published_time" content="2016-06-03T16:14:47&#43;00:00"/>
+<meta property="article:modified_time" content="2016-06-03T16:14:47&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Quick TDD setup with Node, ES6, Gulp and Mocha"/>
+<meta name="twitter:description" content="Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Quick TDD setup with Node, ES6, Gulp and Mocha</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2016-06-03 16:14">
+						03/06/2016 16:14
+					</time>
+				</p>
+
+				
+
+<p>Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.</p>
+
+<p>Laravel, a framework I have used for the past few years, has come with a gulp extension called <a href="https://laravel.com/docs/master/elixir">Elixir</a> since version 5.0 which is a massive timesaver. Simply type <code>gulp tdd</code>  into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate.</p>
+
+<p>Of course, there are a number of testing frameworks out there for testing NodeJS applications which go beyond the scope of this post. Suffice to say, I&#8217;ve tried a few and combining the Mocha testing framework with Chai&#8217;s assertion library has been the one that stuck with me.</p>
+
+<h2 id="setting-up">Setting up</h2>
+
+<p>Getting up and running is easy with Gulp, simply load in the <code>gulp-mocha</code> package using <code>npm</code>. This will load the dependencies and add to the devDependencies options to your <code>package.json</code> file and make sure they are available.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install --save-dev gulp gulp-mocha babel-register babel-preset-es2015 chai</code></pre></div>
+<p>Inside <code>package.json</code> you should now see your dependencies. By requiring babel-register, we are able to test ES6 features straight away.</p>
+
+<p>
+    At this point, we also need to register the es2015 default. This can be done by <a href="https://babeljs.io/docs/usage/babelrc/">creating a <code>.babelrc</code> file</a> in the root directory of the project or by adding our settings to the <code>package.json</code> file</a>.   For berevity, let&#8217;s add the es2015 preset into our <code>package.json</code> file. Once finished, your <code>package.json</code> file should resembling the contents below.
+</p>
+
+<div class="file">
+  <span>package.json</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;devDependencies&#34;</span>: {
+    <span style="color:#f92672">&#34;babel-preset-es2015&#34;</span>: <span style="color:#e6db74">&#34;^6.9.0&#34;</span>,
+    <span style="color:#f92672">&#34;babel-register&#34;</span>: <span style="color:#e6db74">&#34;^6.9.0&#34;</span>,
+    <span style="color:#f92672">&#34;chai&#34;</span>: <span style="color:#e6db74">&#34;^3.5.0&#34;</span>,
+    <span style="color:#f92672">&#34;gulp&#34;</span>: <span style="color:#e6db74">&#34;^3.9.1&#34;</span>,
+    <span style="color:#f92672">&#34;gulp-mocha&#34;</span>: <span style="color:#e6db74">&#34;^2.2.0&#34;</span>
+  },
+  <span style="color:#f92672">&#34;babel&#34;</span>: {
+    <span style="color:#f92672">&#34;presets&#34;</span>: [<span style="color:#e6db74">&#34;es2015&#34;</span>]
+  }
+}</code></pre></div>
+<h2>
+    Some Code to Test
+</h2>
+
+<p>Now, let&#8217;s create something to test. As a simple example, let&#8217;s create a function that will sum the list of arguments. This is a good demonstration of the spread operator that exists within ES6.</p>
+
+<div class="file">
+  <span>src/sum.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">sum</span>(...<span style="color:#a6e22e">figures</span>) {
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">figures</span>.<span style="color:#a6e22e">reduce</span>((<span style="color:#a6e22e">total</span>, <span style="color:#a6e22e">current</span>) =&gt; {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">total</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">current</span>;
+  });
+}
+</code></pre></div>
+<h2>
+      Running Tests
+</h2>
+
+<p>
+      Now we have some code, let&#8217;s write out first test. Mocha can be run directly via command line by installing the <code>mocha</code> package globally in <code>npm</code>.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install -g mocha</code></pre></div>
+<p>
+Because we&#8217;re using ES6 features, we will need to use the <code>--compilers</code> option when running our tests otherwise node will throw an <code>Unexpected token "import"</code> error. Here we are telling mocha to use babel core when it encounters any <code>js</code> files.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-hs" data-lang="hs"><span style="color:#a6e22e">mocha</span> <span style="color:#75715e">--compilers js:babel-core/register</span></code></pre></div>
+<p>
+Running this now, we should receive an error telling us that mocha cannot resolve the path or pattern.
+</p>
+
+<h2>
+Writing a Test
+</h2>
+
+<p>
+By default, mocha looks for tests in the <code>test/</code> directory. You can change this by adding a specific path or pattern to your mocha call but for now let&#8217;s stick with the defaults. Let&#8217;s create a simple test.
+</p>
+
+<div class="file">
+<span>test/sum.spec.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> {<span style="color:#a6e22e">expect</span>} <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;chai&#39;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">sum</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;../src/sum.js&#39;</span>;
+<span style="color:#a6e22e">describe</span>(<span style="color:#e6db74">&#39;src/sum.js&#39;</span>, <span style="color:#a6e22e">_</span> =&gt; {
+  <span style="color:#a6e22e">it</span>(<span style="color:#e6db74">&#39;should add 1 + 1 to make two&#39;</span>, () =&gt; {
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">sum</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>);
+    <span style="color:#a6e22e">expect</span>(<span style="color:#a6e22e">result</span>).<span style="color:#a6e22e">to</span>.<span style="color:#a6e22e">equal</span>(<span style="color:#ae81ff">2</span>);
+  })
+})
+</code></pre></div>
+<p>If we have done everything right, we should be able to run our test via the command line and get a successful response.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mocha --compilers js:babel-core/register
+  src/sum.js
+    ✓ should add <span style="color:#ae81ff">1</span> + <span style="color:#ae81ff">1</span> to make two</code></pre></div>
+<h2>
+Automating with Gulp
+</h2>
+
+<p>
+Now we&#8217;ve got our test suite, we can use gulp to automatically run the suite.
+</p>
+
+<p>
+To access gulp via the command line, we will need to install it globally using npm.<br />
+
+
+
+```sh
+npm install -g gulp
+```
+
+
+Once installed, we can run any task we have defined in the <code>gulpfile.js</code> file via the command line. For example, to run the <code>taskname</code> task we would type the following.
+
+```sh
+gulp taskname
+```
+
+<br /> If no task name is supplied, gulp will attempt to run a task named <code>default</code>.</p>
+
+<p>
+  Let&#8217;s create a task within our gulpfile to allow us to run our test suite with mocha.
+</p>
+
+<div class="file">
+<span>gulpfile.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">gulp</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;gulp&#39;</span>),
+  <span style="color:#a6e22e">mocha</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;gulp-mocha&#39;</span>),
+  <span style="color:#a6e22e">babel</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;babel-register&#39;</span>);
+<span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;test&#39;</span>, <span style="color:#66d9ef">function</span>() {
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">src</span>([<span style="color:#e6db74">&#39;test/*.js&#39;</span>])
+    .<span style="color:#a6e22e">pipe</span>(<span style="color:#a6e22e">mocha</span>({
+      <span style="color:#a6e22e">compilers</span><span style="color:#f92672">:</span><span style="color:#a6e22e">babel</span>
+  }));
+});
+</code></pre></div>
+<p>
+Firstly, we&#8217;re importing the gulp, mocha and babel dependencies in to our gulp file for use. Next, we&#8217;ve created a task called <code>test</code> which will use the <code>gulp.src</code> function to find all files matching the supplied pattern and then pipe the contents into our mocha testing framework. By passing the babel dependency through will ensure that mocha will interpret our ES6 code correctly.
+</p>
+
+<p>
+If we run this gulp task, we should receive a message telling us our tests are passing.
+</p>
+
+<pre><code>[09:00:00] Using gulpfile ~/_/gulpfile.js
+[09:00:00] Starting 'test'...
+  src/sum.js
+    ✓ should add 1 + 1 to make two
+  1 passing (6ms)
+[09:00:00] Finished 'test' after 245 ms
+</code></pre>
+
+<p>
+Great, but right now we&#8217;re no further forward than when we were running mocha manually. By utilising <code>gulp.watch()</code>, we can listen for changes in our file and subsequently run our gulp tasks. Let&#8217;s take advantage of this by creating a new task which will watch for changes in our files and run our test suite.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;tdd&#39;</span>, <span style="color:#66d9ef">function</span>() {
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">watch</span>([<span style="color:#e6db74">&#39;src/*.js&#39;</span>,<span style="color:#e6db74">&#39;test/*.js&#39;</span>], [<span style="color:#e6db74">&#39;test&#39;</span>]);
+})
+</code></pre></div>
+<p>
+  When changes are made to any of the <code>.js</code> files in the <code>src/</code> or <code>test/</code> directories our entire test suite will re-run and instantly identify any problems with our changes.
+</p>
+
+<h2>
+  Extra Credit &#8211; Single Tests
+</h2>
+
+<p>
+  This approach is great for smaller test suites but as your TDD project grows, running hundreds to thousands of tests for each change can grind your productivity to a halt. <code>gulp.watch</code> also emits a <code>change</code> event that passes through information on the file that has been changed. We can use this to listen for changes to our test suites and only run the suite that has been changed. For this I will create a <code>tdd-single</code> task.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;tdd-single&#39;</span>, <span style="color:#66d9ef">function</span>() {
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">watch</span>(<span style="color:#e6db74">&#39;test/*.js&#39;</span>)
+    .<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;change&#39;</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">file</span>) {
+      <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">src</span>(<span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">path</span>)
+        .<span style="color:#a6e22e">pipe</span>(<span style="color:#a6e22e">mocha</span>({
+          <span style="color:#a6e22e">compilers</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">babel</span>
+        }))
+    });
+});
+</code></pre></div>
+<p>
+This is perfect for unit testing scenarios where you are individual units of source code.
+</p>
+
+<h2>
+Conclusion
+</h2>
+
+<p>
+TDD is becoming a more and more important part of the development process for ensuring quality. Gulp and Mocha work hand in hand to allow you to quickly create a solid testing environment and will save you headaches in the long run when trying to debug your code.
+</p>
+
+<p>
+The source for this blog post is <a href="https://github.com/adam-cowley/quick-tdd-node" target="_blank">available on github</a>.
+</p>
+
+<p>
+Happy testing!
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

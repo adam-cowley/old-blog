@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations" />
+<meta property="og:description" content="This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Content Based Recommendations Now that we have some data in our Database, we can use the information to create recommendations for the user." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/" />
+<meta property="article:published_time" content="2017-03-07T15:50:49&#43;00:00"/>
+<meta property="article:modified_time" content="2017-03-07T15:50:49&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations"/>
+<meta name="twitter:description" content="This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Content Based Recommendations Now that we have some data in our Database, we can use the information to create recommendations for the user."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2017-03-07 15:50">
+						07/03/2017 15:50
+					</time>
+				</p>
+
+				
+
+<p>This post is part of a series on building a recommendation engine with WordPress. If you haven&#8217;t already done so, check out the posts below:</p></p>
+
+<ol>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/">Part 1: Hooks &amp; Data Modelling</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-2-content-based/">Part 2: Content Based Recommendations</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/">Part 3: Collaborative Filtering</a></li>
+<li><a href="/neo4j/wordpress-recommendations-neo4j-part-4-pagerank-with-apoc/">WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures</a></li>
+</ol>
+
+<h2 id="content-based-recommendations">Content Based Recommendations</h2>
+
+<p>Now that we have some data in our Database, we can use the information to create recommendations for the user. The simplest recommendation we can provide is recommending posts in the same category.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (p:Post)-[:HAS_TAXONOMY]-&gt;(:Taxonomy)&lt;-[:HAS_TAXONOMY]-(recommended:Post)
+WHERE p.ID = 1234
+RETURN recommended</code></pre></div>
+<p>However, WordPress does this already. We can do <em>a lot</em> better. As we also have the post&#8217;s author, we can use this information as an additional recommendation criteria. If a site has multiple authors, this could be a good indicator of post quality and therefore our recommendations should treat it as such.</p>
+
+<h2>
+    Relating the Author
+</h2>
+
+<p>
+    Firstly, let&#8217;s create a function to merge the User into our Graph by their ID.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CREATE CONSTRAINT ON (u:User) ASSERT u.user_id IS UNIQUE</code></pre></div>
+<div class="file">
+<span>User.php</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#75715e">&lt;?php</span>
+<span style="color:#66d9ef">namespace</span> <span style="color:#a6e22e">Neopress</span>;
+<span style="color:#66d9ef">use</span> <span style="color:#a6e22e">GraphAware\Neo4j\Client\Transaction\Transaction</span>;
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span> {
+    <span style="color:#e6db74">/**
+</span><span style="color:#e6db74">     * Create a Cypher Query for a Category
+</span><span style="color:#e6db74">     *
+</span><span style="color:#e6db74">     * @param  Int $post_id
+</span><span style="color:#e6db74">     * @return void
+</span><span style="color:#e6db74">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">merge</span>(<span style="color:#a6e22e">Transaction</span> $tx, $user_id) {
+        $cypher <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;MERGE (u:User {user_id: {user_id}})&#39;</span>;
+        $tx<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">push</span>($cypher, [<span style="color:#e6db74">&#39;user_id&#39;</span> <span style="color:#f92672">=&gt;</span> $user_id]);
+    }
+}
+</code></pre></div>
+<p>Now, we can add the extra queries to our transaction that will run this merge query and attach the User to their post via an <code>:AUTHORED</code> relationship.</p>
+
+<div class="file">
+<span>Post.php</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php">// Create Author
+User::merge($tx, $author);
+
+// Relate Author to Post
+$cypher = &#39;
+    MATCH (p:Post {ID: {post_id}})
+    MATCH (u:User {user_id: {user_id}})
+    MERGE (u)-[:AUTHORED]-&gt;(p)
+&#39;;
+
+$tx-&gt;push($cypher, [&#39;post_id&#39; =&gt; $post_id, &#39;user_id&#39; =&gt; $user_id]);</code></pre></div>
+<p>If you hit Update on your post, you will now see that the User has been related to the post.</p>
+
+<p>
+    It&#8217;s worth noting at this stage that the our <code>:AUTHORED</code> relationships are directed towards our Post where the <code>:HAS_TAXONOMY</code> relationship is an outward relationship to our Taxonomy nodes. Luckily, Neo4j allows us to traverse in both directions by omitting a direction and traverse multiple types by separating them by a pipe (|). As we&#8217;d like to give our <code>:AUTHORED</code> relationship more weight than a categorisation, I have added in a quick <code>CASE</code> statement to give the recommendation a score based on the type of connection.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (p:Post {ID: 110})-[:HAS_TAXONOMY|AUTHORED]-(target),
+    (target)-[:HAS_TAXONOMY|AUTHORED]-(recommendation:Post)
+WITH labels(target) as labels,
+    recommendation.title as recommendation,
+    case when &#39;User&#39; in labels(target) then 10 else 5 end as weight
+RETURN recommendation, collect(DISTINCT labels) as labels, sum(weight) as weighting
+ORDER BY weighting DESC LIMIT 5</code></pre></div>
+<table>
+<tr>
+<th>
+        recommendation
+</th>
+
+<th>
+        labels
+</th>
+
+<th>
+        weighting
+</th>
+</tr>
+
+<tr>
+<td>
+        WordPress Recommendations with Neo4j
+</td>
+
+<td>
+        [[User],[Taxonomy,Category]]
+</td>
+
+<td>
+        15
+</td>
+</tr>
+
+<tr>
+<td>
+        Quick TDD setup with Node, ES6, Gulp and Mocha
+</td>
+
+<td>
+        [[User],[Taxonomy,Category]]
+</td>
+
+<td>
+        15
+</td>
+</tr>
+
+<tr>
+<td>
+        ES6 Import & Export – A beginners guide
+</td>
+
+<td>
+        [[User],[Taxonomy,Category]]
+</td>
+
+<td>
+        15
+</td>
+</tr>
+
+<tr>
+<td>
+        ES6 Promises – 5 Things I Wish I’d Known
+</td>
+
+<td>
+        [[User],[Taxonomy,Category]]
+</td>
+
+<td>
+        15
+</td>
+</tr>
+
+<tr>
+<td>
+        2,100 startups in 1 building?
+</td>
+
+<td>
+        [[Taxonomy,Category]]
+</td>
+
+<td>
+        5
+</td>
+</tr>
+</table>
+
+<p>
+    Although the last post is in the same category, as the post is written by another User it receives a lower score than the rest. Now that we&#8217;ve got a working query, let&#8217;s create a new <code>Recommendation</code> class that we can use in our Themes.
+</p>
+
+<div class="file">
+<span>Recommend.php</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#75715e">&lt;?php</span>
+<span style="color:#66d9ef">namespace</span> <span style="color:#a6e22e">Neopress</span>;
+
+<span style="color:#66d9ef">use</span> <span style="color:#a6e22e">WP_Query</span>;
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Recommend</span> {
+    <span style="color:#e6db74">/**
+</span><span style="color:#e6db74">     * Provide a simple list of recommendations by Taxonomy
+</span><span style="color:#e6db74">     *
+</span><span style="color:#e6db74">     * @param  int $post_id [description]
+</span><span style="color:#e6db74">     * @return WP_Query
+</span><span style="color:#e6db74">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">byTaxonomy</span>($post_id) {
+        $cypher <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;
+</span><span style="color:#e6db74">            MATCH (p:Post)-[:HAS_TAXONOMY]-&gt;(:Taxonomy)&lt;-[:HAS_TAXONOMY]-(recommended:Post)
+</span><span style="color:#e6db74">            WHERE p.ID = {post_id}
+</span><span style="color:#e6db74">            AND recommended.status = &#34;publish&#34;
+</span><span style="color:#e6db74">            RETURN id(recommended) as ID, recommended.created_at
+</span><span style="color:#e6db74">            ORDER BY recommended.created_at DESC
+</span><span style="color:#e6db74">            LIMIT 5
+</span><span style="color:#e6db74">        &#39;</span>;
+        $params <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;post_id&#39;</span> <span style="color:#f92672">=&gt;</span> $post_id];
+        $results <span style="color:#f92672">=</span> <span style="color:#a6e22e">Neopress</span><span style="color:#f92672">::</span><span style="color:#a6e22e">client</span>()<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">run</span>($cypher, $params);
+        <span style="color:#75715e">// Get Post IDs from Query
+</span><span style="color:#75715e"></span>        $ids <span style="color:#f92672">=</span> [];
+        <span style="color:#66d9ef">foreach</span> ($results<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">getRecords</span>() <span style="color:#66d9ef">as</span> $row) {
+            <span style="color:#a6e22e">array_push</span>($ids, $row<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;ID&#39;</span>));
+        }
+        <span style="color:#75715e">// Query
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WP_Query</span>([
+            <span style="color:#e6db74">&#39;post__in&#39;</span> <span style="color:#f92672">=&gt;</span> $ids
+        ]);
+    }
+}
+</code></pre></div>
+<p>In this file I have created a static method that will run a Cypher query to get our recommendations, take the ID&#8217;s and then use these to run a WP_Query to get the posts from the WordPress with the matching IDs. We can use this in our Themes by calling the method statically.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php">$posts = Neopress\Recommend::byWeighting(get_the_id());
+foreach ($posts as $post) {
+    // Echo Something
+}</code></pre></div>
+<h2>
+    Conclusion
+</h2>
+
+<p>
+    Now we&#8217;ve done the heavy lifting, we can see that providing contextual recommendations is relatively simple. To improve the recommendations we could look at supplementing the graph with extra information from our posts, or using the <code>updated_post_meta</code> action to add extra meta data and relationships into to the graph. Ultimately, the recommendation engine is only as good as the information.
+</p>
+
+<p>
+    Next we will look at using Collaborative Filtering to provide a more personalised recommendation.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

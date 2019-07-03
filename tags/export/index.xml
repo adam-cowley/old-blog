@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>export on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/export/</link>
+    <description>Recent content in export on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 15 Jul 2016 12:14:19 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/export/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ES6 Import &amp; Export - A beginners guide</title>
+      <link>http://www.adamcowley.co.uk/javascript/es6-import-export-a-beginners-guide/</link>
+      <pubDate>Fri, 15 Jul 2016 12:14:19 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/javascript/es6-import-export-a-beginners-guide/</guid>
+      <description>Importing and exporting modules is a big part of Javascript. Before ES6, importing modules could be included into a script by using the require() function. ES6 introduced the import and export keywords which brings Javascript more in line with programming languages like Java and Ruby.
+Basic Import To import a module into a script, you can use the import keyword. Anyone who has looked at a React tutorial will recognise the following syntax:</description>
+    </item>
+    
+  </channel>
+</rss>

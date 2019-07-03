@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC" />
+<meta property="og:description" content="Take back control of your website visit data by importing it into Neo4j via BigQuery." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/importing-google-analytics-to-neo4j-via-bigquery-using-apoc-jdbc/" />
+<meta property="article:published_time" content="2018-07-06T10:45:54&#43;00:00"/>
+<meta property="article:modified_time" content="2018-07-06T10:45:54&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC"/>
+<meta name="twitter:description" content="Take back control of your website visit data by importing it into Neo4j via BigQuery."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-07-06 10:45">
+						06/07/2018 10:45
+					</time>
+				</p>
+
+				
+
+<p>Google Analytics has been the defacto analytics platform for years. The major problem with this is that Google owns your data and the reporting platform can be difficult to work with.</p>
+
+<p>However, for those with deep pockets and a Google Analytics 360 account, you can link your account with BigQuery and receive automated periodic imports. The BigQuery tables can then be used to import the data into Neo4j, giving you the ability to explore the data using Cypher.</p>
+
+<h2 id="a-id-user-content-setting-up-your-google-project-class-anchor-href-setting-up-your-google-project-aria-hidden-true-span-aria-hidden-true-class-octicon-octicon-link-span-a-setting-up-your-google-project"><a id="user-content-setting-up-your-google-project" class="anchor" href="#setting-up-your-google-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting up your Google Project</h2>
+
+<p>Firstly head over to the <a href="https://console.cloud.google.com/" rel="nofollow">Google APIs Console</a> and log in with your Google account. Once you are there, either create a new project or select an existing one. If you are creating a new project, give it a name and click <strong>Create</strong>.</p>
+
+<p><a href="/uploads/2018/06/neo4j-bigquery-create-account.png" target="_blank" rel="nofollow"><img src="/uploads/2018/06/neo4j-bigquery-create-account.png" alt="Create an Account" style="max-width:400px; margin: auto; display: block" /></a></p>
+
+<p>Next, you&#8217;ll need some credentials to connect to BigQuery. You can use OAuth to connect through a google account, but it is by far easier to create a <em>Service Account</em>. On the left hand menu, go to <strong>IAM &amp; admin</strong>, then <strong>Service accounts</strong>. At the top of the page you should see a link to <strong>Create Service Account</strong>.</p>
+
+<p><a href="/uploads/2018/06/neo4j-bigquery-create-service-account.png" target="_blank" rel="nofollow"><img src="/uploads/2018/06/neo4j-bigquery-create-service-account.png" alt="Create a Service Account"  style="max-width:400px; margin: auto; display: block" /></a></p>
+
+<p>Give the account a name and modify the Service account ID if necessary. The account requires a role of <code>bigquery.jobs.create</code> to run queries, so if you don&#8217;t feel comfortable assigning <em>Project &gt; Owner</em>, at the very least set the role to <em>Big Query Data &gt; Big Query Job User</em>. Check the <em>Furnish a new Private Key</em> and select JSON. Once you&#8217;ve created the account, make a note of the account ID (<code>*@projectname.iam.gserviceaccount.com</code>) and the location of the downloaded key file (or move it to your $NEO4J_HOME). We&#8217;ll need this later on.</p>
+
+<p>Lastly, we&#8217;ll be using <code>apoc.load.jdbc</code> to connect to BigQuery. Make sure to add the <a href="https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases">latest version of APOC</a> and the <a href="https://cloud.google.com/bigquery/partners/simba-drivers/" rel="nofollow">SIMBA JDBC drivers for BigQuery</a> to your <code>$NEO4J_HOME/plugins</code> folder.</p>
+
+<h2 id="a-id-user-content-linking-google-analytics-to-bigquery-class-anchor-href-linking-google-analytics-to-bigquery-aria-hidden-true-span-aria-hidden-true-class-octicon-octicon-link-span-a-linking-google-analytics-to-bigquery"><a id="user-content-linking-google-analytics-to-bigquery" class="anchor" href="#linking-google-analytics-to-bigquery" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Linking Google Analytics to BigQuery</h2>
+
+<p>If you are an <em>OWNER</em> of a property, this can be done with a single click. Under Admin, select the Property that you would like to link to. Then, in the <em>PROPERTY</em> column, click <strong>All Products</strong> and then <strong>Link BigQuery</strong>.</p>
+
+<p><a href="https://support.google.com/analytics/answer/3416092" rel="nofollow">The official guide to setting up Google Analytis to BigQuery Export</a></p>
+
+<h2 id="a-id-user-content-exploring-the-data-set-class-anchor-href-exploring-the-data-set-aria-hidden-true-span-aria-hidden-true-class-octicon-octicon-link-span-a-exploring-the-data-set"><a id="user-content-exploring-the-data-set" class="anchor" href="#exploring-the-data-set" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exploring the Data Set</h2>
+
+<p>So you can follow along, I will be using the <a href="https://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801" rel="nofollow">sample dataset</a> made available by Google. You can easily switch out the <code>bigquery-public-data</code> project and <code>google_analytics_sample</code> dataset for your own.</p>
+
+<p>The tables are exported daily in the format of <code>ga_sessions_{YYYY}{MM}{DD}</code>. A really nice feature of BigQuery is that you can run queries on multiple tables at once using a wildcard (<code>ga_sessons_201807*</code>) or a where clause (<code>_TABLE_SUFFIX &gt;= '20180701'</code>). But <strong>beware</strong>, you&#8217;re billed by the data that you process during the query. So if you run a query for all tables in a particular year, you could end up with a hefty bill.</p>
+
+<p>If you <a href="ttps://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801">head to the schema viewer</a>, you&#8217;ll see that there is a lot of information available.</p>
+
+<p>BigQuery uses it&#8217;s own version of SQL to run queries. Let&#8217;s run a query in the console to explore the data.</p>
+
+<pre><code>SELECT
+  fullVisitorId,
+  visitorId,
+  visitNumber,
+  visitId,
+  visitStartTime,
+  date,
+  hits.time,
+  hits.page.pagePath,
+  hits.page.pageTitle,
+  hits.page.hostname,
+  trafficSource.campaign,
+  trafficSource.source,
+  trafficSource.medium,
+  trafficSource.keyword,
+  trafficSource.adwordsClickInfo.campaignId,
+  geoNetwork.continent,
+  geoNetwork.subcontinent,
+  geoNetwork.country,
+  geoNetwork.region,
+  geoNetwork.city,
+  geoNetwork.latitude,
+  geoNetwork.longitude
+FROM [bigquery-public-data:google_analytics_sample.ga_sessions_20170801] LIMIT 1000
+</code></pre>
+
+<p><a href="https://docs.google.com/spreadsheets/d/1Ef6TxSs1d2lDAPgfdGitS6b9_KIbZqhHikxUSgZ-yXk/edit?usp=sharing" rel="nofollow">View an export of the top 1000 rows on Google Sheets</a></p>
+
+<h3 id="strong-a-note-on-unnesting-data-strong"><strong>A Note on Unnesting Data</strong></h3>
+
+<p>The <code>hits</code> and <code>customDimensions</code> columns inside each <code>ga<em>sessions</em>*</code> table are <em>REPEATED</em> fields. Unfortunately, at the moment apoc.load.jdbc does not handle these correctly. These can be <em>unnested</em> into individual rows using the <code>UNNEST</code> function. It means that the cypher query has to do slightly more work but we can get around the issue of multiple duplicates by using <code>MERGE</code> statements instead of <code>CREATE</code>.</p>
+
+<h3>
+<a id="user-content-as-a-graph" class="anchor" href="#as-a-graph" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>As a Graph
+</h3>
+
+<p><a href="/uploads/2018/06/neo4j-bigquery-whiteboard.jpg" target="_blank" rel="nofollow"><img src="/uploads/2018/06/neo4j-bigquery-whiteboard.jpg" alt="The Graph Diagram on a whiteboard" style="max-width:400px; margin: auto; display: block" /></a></p>
+
+<p>We could represent this in a graph as a set of <code>Visitor</code>s, each of which has multiple <code>:Visits</code> which contain one or more <code>:Hits</code>. Each hit (either a pageview or an event) takes place on a <code>:Page</code> which belongs to a <code>:Domain</code>. There is also information on the user&#8217;s location, the app that they used. Custom Dimensions and the Traffic Source (source, medium, keywords, adwords content) may also be useful for linking to existing customer records and tracking the success of campaigns. I will stick to a more basic model for now.</p>
+
+<p><a href="/uploads/2018/06/neo4j-bigquery-model.png" target="_blank" rel="nofollow"><img src="/uploads/2018/06/neo4j-bigquery-model.png" alt="Extracted Graph Model"  style="max-width:400px; margin: auto; display: block" /></a></p>
+
+<h2>
+<a id="user-content-importing-to-neo4j-using-apoc--jdbc" class="anchor" href="#importing-to-neo4j-using-apoc--jdbc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing to Neo4j using APOC & JDBC
+</h2>
+
+<p>In order to connect to a JDBC source, we need to build up a connection string. APOC includes a <code>apoc.load.jdbc</code> function that yields a stream of <code>row</code>s, each property of which can be accessed through dot or square bracket notation.</p>
+
+<pre><code>CALL apoc.load.jdbc(connectionString, queryOrTable)
+YIELD row
+RETURN row.property
+</code></pre>
+
+<h4>
+<a id="user-content-the-connection-string" class="anchor" href="#the-connection-string" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Connection String
+</h4>
+
+<p>To build a connection string to connect to BigQuery, we&#8217;ll need the <em>Service account id</em> and <em>Private key</em> generated above. The JDBC Connection string take a combination of:</p>
+
+<ul>
+<li><code>jdbc:bigquery://<a href="https://www.googleapis.com/bigquery/v2:443">https://www.googleapis.com/bigquery/v2:443</a>;</code> &#8211; The JDBC URL for the BigQuery API</li>
+<li><code>ProjectId=neo4j-bigquery-test;</code> &#8211; The Name of the Project</li>
+<li><code>OAuthType=0</code>&#8211; Instructs the driver to use service-based authentication. You can also use user-based OAuth authentication by setting this to <code>1</code> but this involves popups and copy and pasting urls &amp; keys.</li>
+<li><code>OAuthServiceAcctEmail=new-service-account@neo4j-bigquery-test2.iam.gserviceaccount.com</code> &#8211; The Service account ID set up earlier</li>
+<li><code>OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json</code> &#8211; The path to the key file that downloaded when the credentials were created</li>
+</ul>
+
+<p>The full string should look something like this:</p>
+
+<pre><code>jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json
+</code></pre>
+
+<p>This connection string is a bit unweildy. When calling <code>apoc.load.jdbc</code>, the procedure will check <code>neo4j.conf</code> file for a corresponding alias under <code>apoc.jdbc.&lt;alias&gt;.url</code>.</p>
+
+<div class="file">
+<span>neo4j.conf</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-conf" data-lang="conf"># BigQuery Connection String
+apoc.jdbc.BigQuery.url=jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json</code></pre></div>
+<p>This makes subsequent calls simpler and protects queries from changes to keys in the future.</p>
+
+<pre><code>CALL apoc.load.jdbc('BigQuery', queryOrTable)
+YIELD row
+</code></pre>
+
+<p>Much nicer.</p>
+
+<h3>
+<a id="user-content-the-query" class="anchor" href="#the-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Query
+</h3>
+
+<p>
+Let&#8217;s take the query above and run it through Neo4j with our credentials. When running the query through JDBC, you&#8217;ll need to change the format of the table names from <code>[project:dataset.table]</code> to <code>project.dataset.table</code> for example<br /> <code>bigquery-public-data.google_analytics_sample.ga_sessions_20170801</code>.
+</p>
+
+<pre><code>CALL apoc.load.jdbc('BigQuery', 'SELECT
+  fullVisitorId,
+  visitorId,
+  visitNumber,
+  visitId,
+  visitStartTime,
+  date,
+  h.time,
+  h.hitNumber,
+  h.page.pagePath,
+  h.page.pageTitle,
+  h.page.hostname
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_20170801`, UNNEST(hits) AS h')
+YIELD row
+// ...
+</code></pre>
+
+<p>Now we can use the row to merge the <code>:Visitor</code>, <code>:Visit</code> and <code>:Hit</code> nodes before merging the relationships together.</p>
+
+<p>The start time of the visit is stored as seconds since epoch, so we can store this as a <a href="https://www.adamcowley.co.uk/neo4j/temporal-native-dates/" rel="nofollow">DateTime property introduced in Neo4j 3.4</a>, setting the <code>epochSeconds</code> value in the constructor.</p>
+
+<p>There is no natural key for the hit, so I have combined the visit&#8217;s unique ID and the hit number to make a unique key. Where the <code>isInteraction</code> property is free, I have used the foreach hack to set a conditional label to signify that this was an event rather than a pageview.</p>
+
+<pre><code>// ...
+YIELD row
+
+MERGE (visitor:Visitor { fullVisitorId: row.fullVisitorId })
+SET visitor.visitorId = row.visitorId
+MERGE (visit:Visit { visitId: row.visitId })
+SET
+visit.number = toInteger(row.visitNumber),
+visit.startedAt = datetime({ epochSeconds: toInteger(row.visitStartTime) })
+
+
+MERGE (hit:Hit { hitId: row.visitId + '-'+ row.hitNumber })
+SET
+hit.number = toInteger(row.hitNumber),
+hit.timestamp = datetime({ epochSeconds: toInteger(row.time) })
+
+
+Foreach Hack to set Interaction label
+FOREACH (run IN CASE WHEN hit.isInteraction = 'tru [1] ELSE [] END |
+  SET hit:Interaction
+)
+MERGE (host:Host { hostname: tname })
+MERGE (page:Page { url: row.hostname + row.pagePath })
+ge.hostname = row.hostname, page.path = row.pagePath
+MERGE (host)-[:HAS_PAGE]-&gt;(page)
+MERGE (visitor)-[:HAS_VISIT]-&gt;(visit)
+(visit)-[:HAS_HIT]-&gt;(hit)
+MERGE (hit)-[:FOR_PAGE]-&gt;(page);
+</code></pre>
+
+<h3>
+<a id="user-content-linked-lists" class="anchor" href="#linked-lists" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Linked Lists
+</h3>
+
+<p>Linked Lists of nodes are useful for a number of situations. Because we have numbers on each hit and visit, we can query, collect and connect them together. This will be useful when analysing user behaviour.</p>
+
+<pre><code>MATCH (visitor:Visitor)-[:HAS_VISIT]-&gt;(visit)
+// Order visits in ascending order
+WITH visitor, visit ORDER BY visit.number ASC
+// Collect the visits
+isitor, collect(visit) AS visits
+// Unwind the ordered collection
+ range(0, size(visits)-2) AS idx
+WITH visits[idx] AS this, visits[idx+1] AS next
+MERGE (this)-[:NEXT_VISIT]-&gt;(next)
+</code></pre>
+
+<p>I use this technique quite often to create linked lists. First, match the nodes that you are interested in before putting them into the correct order. Next, collect up the nodes &#8211; this allows you to calculate the size of the collection and unwind a range of indexes that can be used to create aliases between the two nodes.</p>
+
+<p>With larger datasets, you sometimes need to be a little more cute. Using a <code>:LAST_HIT</code> relationship and identifying new nodes with a temporary label would cut down the number of nodes and relationships touched by the query on a larger dataset.</p>
+
+<p>We can do the same to link up the visits.</p>
+
+<pre><code>MATCH (visit:Visit)-[:HAS_HIT]-&gt;(hit)
+// Order visits in ascending ord
+WITH visit, hit ORDER BY hit.number ASC
+// Collect the visits
+isit, collect(hit) AS hits
+// Unwind the ordered collection
+ range(0, size(hits)-2) AS idx
+WITH hits[idx] AS this, hits[idx+1] AS next
+MERGE (this)-[:NEXT_HIT]-&gt;(next)
+</code></pre>
+
+<h2>
+<a id="user-content-analysis" class="anchor" href="#analysis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Analysis
+</h2>
+
+<p>Now we can start to use the power of the graph to explore the data.</p>
+
+<h3>
+<a id="user-content-what-pages-are-users-returning-to" class="anchor" href="#what-pages-are-users-returning-to" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What pages are users visiting?
+</h3>
+
+<pre><code>MATCH (v:Visitor)-[:HAS_VISIT]-&gt;()-[:HAS_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p:Page)
+WHERE v.fullVisitorId = {fullVisitorId}
+RETURN v.fullVisitorId, p.path, count(*) as visits
+ORDER BY visits DESC
+</code></pre>
+
+<table>
+<tr>
+<th>
+        v.fullVisitorId
+</th>
+
+<th>
+        p.path
+</th>
+
+<th>
+        visits
+</th>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/store.html&#8221;
+</td>
+
+<td>
+        151
+</td>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/store.html/quickview&#8221;
+</td>
+
+<td>
+        147
+</td>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/google+redesign/apparel/mens+tshirts/google+mens+bayside+graphic+tee.axd&#8221;
+</td>
+
+<td>
+        1
+</td>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/basket.html&#8221;
+</td>
+
+<td>
+        1
+</td>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/home&#8221;
+</td>
+
+<td>
+        1
+</td>
+</tr>
+
+<tr>
+<td>
+        &#8220;7342454030115611747&#8221;
+</td>
+
+<td>
+        &#8220;/google+redesign/office/stickers/youtube+custom+decals.axd&#8221;
+</td>
+
+<td>
+        1
+</td>
+</tr>
+</table>
+
+<h3>
+<a id="user-content-next-pages" class="anchor" href="#next-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Next Pages
+</h3>
+
+<p>
+  The <code>:NEXT_HIT</code> relationship allows us to see where a user goes next during their visit.
+</p>
+
+<pre><code>MATCH (p1:Page)&lt;-[:FOR_PAGE]-()-[:NEXT_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p2)
+WHERE p1 &amp;lt;&amp;gt; p2
+RETURN p1.url, p2.url, count(*) as total
+ORDER BY total DESC
+LIMIT 5
+</code></pre>
+
+<table>
+<tr>
+<th>
+      p1.path
+</th>
+
+<th>
+      p2.path
+</th>
+
+<th>
+      total
+</th>
+</tr>
+
+<tr>
+<td>
+      &#8220;/basket.html&#8221;
+</td>
+
+<td>
+      &#8220;/yourinfo.html&#8221;
+</td>
+
+<td>
+      521
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/basket.html&#8221;
+</td>
+
+<td>
+      &#8220;/signin.html&#8221;
+</td>
+
+<td>
+      470
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/yourinfo.html&#8221;
+</td>
+
+<td>
+      &#8220;/payment.html&#8221;
+</td>
+
+<td>
+      451
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/nest/nest-usa&#8221;
+</td>
+
+<td>
+      &#8220;/google+redesign/nest/nest-usa/quickview&#8221;
+</td>
+
+<td>
+      417
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/nest/nest-usa/quickview&#8221;
+</td>
+
+<td>
+      &#8220;/google+redesign/nest/nest-usa&#8221;
+</td>
+
+<td>
+      380
+</td>
+</tr>
+</table>
+
+<h3>
+<a id="user-content-exit-pages" class="anchor" href="#exit-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exit Pages
+</h3>
+
+<p>
+  Excluding sessions with a single pageview, where are users exiting the site? By matching a hit where there is both an incoming <code>:NEXT_HIT</code> relationship and no outgoing <code>:NEXT_HIT</code> relationship, we can identify page a user has left the site from.
+</p>
+
+<pre><code>MATCH (h:Hit)-[:FOR_PAGE]-&gt;(p:Page)
+WHERE ( ()-[:NEXT_HIT]-&gt;(h) ) AND NOT ( (h)-[:NEXT_HIT]-&gt;() )
+RETURN p.path, count(h) as exists
+ORDER BY exists DESC LIMIT 10
+</code></pre>
+
+<table>
+<tr>
+<th>
+      p.path
+</th>
+
+<th>
+      exists
+</th>
+</tr>
+
+<tr>
+<td>
+      &#8220;/home&#8221;
+</td>
+
+<td>
+      588
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/shop+by+brand/youtube&#8221;
+</td>
+
+<td>
+      195
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/asearch.html&#8221;
+</td>
+
+<td>
+      163
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/apparel/mens/mens+t+shirts&#8221;
+</td>
+
+<td>
+      133
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/myaccount.html?mode=vieworderdetail&#8221;
+</td>
+
+<td>
+      108
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/nest/nest-usa&#8221;
+</td>
+
+<td>
+      97
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/basket.html&#8221;
+</td>
+
+<td>
+      97
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/electronics&#8221;
+</td>
+
+<td>
+      73
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/signin.html&#8221;
+</td>
+
+<td>
+      58
+</td>
+</tr>
+
+<tr>
+<td>
+      &#8220;/google+redesign/shop+by+brand/youtube/quickview&#8221;
+</td>
+
+<td>
+      56
+</td>
+</tr>
+</table>
+
+<h2>
+<a id="user-content-conclusion" class="anchor" href="#conclusion" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conclusion
+</h2>
+
+<p>
+        We&#8217;ve just scratched the surface of what is possible when analysing web traffic in Neo4j. With a small amount of extra effort, you can create a sophisticated import script that maps a wealth of information into the graph. Combining this information with existing data sources, for example identifying customers from mailshots using custom dimensions, can lead to a deeper insight into a customer.
+</p>
+
+<p>
+        Just remember, GDPR&#8230;
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

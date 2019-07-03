@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Mastering Ouril with Neo4j - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Mastering Ouril with Neo4j" />
+<meta property="og:description" content="How a Graph Database can help you to master board games like Ouril" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/mastering-ouril-with-neo4j/" />
+<meta property="article:published_time" content="2017-09-06T11:55:37&#43;00:00"/>
+<meta property="article:modified_time" content="2017-09-06T11:55:37&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mastering Ouril with Neo4j"/>
+<meta name="twitter:description" content="How a Graph Database can help you to master board games like Ouril"/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Mastering Ouril with Neo4j</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2017-09-06 11:55">
+						06/09/2017 11:55
+					</time>
+				</p>
+
+				
+
+<p>On a recent holiday to Cape Verde, I became obsessed with the local game <a href="http://en.wikipedia.org/wiki/Oware">Ouril</a>.</p>
+
+<blockquote class="instagram-media" style="margin: 1px; background: #FFF; border: 0; border-radius: 3px; box-shadow: 0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); max-width: 658px; padding: 0; width: calc(100% - 2px);" data-instgrm-captioned="" data-instgrm-version="7">
+<div style="padding: 8px;">
+<div style="background: #F8F8F8; line-height: 0; margin-top: 40px; padding: 50.0% 0; text-align: center; width: 100%;">
+</div>
+
+<p style="margin: 8px 0 0 0; padding: 0 4px;">
+<a style="color: #000; font-family: Arial,sans-serif; font-size: 14px; font-style: normal; font-weight: normal; line-height: 17px; text-decoration: none; word-wrap: break-word;" href="https://www.instagram.com/p/BXx1vJ-gi0o/" target="_blank" rel="noopener">Showing the locals how #Ouril can be improved with an install of Neo4j Enterprise edition. #alwaysbeclosing 🇨🇻</a>
+</p>
+
+<p style="color: #c9c8cd; font-family: Arial,sans-serif; font-size: 14px; line-height: 17px; margin-bottom: 0; margin-top: 8px; overflow: hidden; padding: 8px 0 7px; text-align: center; text-overflow: ellipsis; white-space: nowrap;">
+      A post shared by Adam Cowley (@adamcowley) on <time style="font-family: Arial,sans-serif; font-size: 14px; line-height: 17px;" datetime="2017-08-14T15:10:39+00:00">Aug 14, 2017 at 8:10am PDT</time>
+</p>
+</div>
+</blockquote>
+
+<p>Ouril is a strategy game originating in Africa (also known as Oware, Wari, Ayò amongst others) where the goal is to <em>sew</em> seeds counter-clockwise around a board of twelve holes 6 of each belonging to one of the two players. At the end of each move, if the last whole and any adjacent holes on the opposing players half of the board affected during a move have two or three seeds, these are then captured by that player. The aim of the game is to capture more seeds than your opponent.</p>
+
+<p>One thing that struck me about the game is how easy it would be to replicate the gameplay in Neo4j.</p>
+
+<p>&nbsp;</p>
+
+<h2 id="setting-up-the-board">Setting up the board</h2>
+
+<p><img style="display: block; max-width: 420px; margin: auto;" src="https://scontent.flhr4-2.fna.fbcdn.net/v/t31.0-8/20776493_10155360970665923_6154710080411570953_o.jpg?oh=4106a4d6f59dc1d3c3920172a45c9f2d&oe=5A2470DE" alt="The Board" /></p>
+
+<p>At the start of the game, each of the 12 holes contain 4 seeds.  As the seeds inside each of these holes are sewn counter-clockwise, I have linked each hole in ascending order with the final bucket linking back to the hole at <code>position: 1</code>.</p>
+
+<div class="file">
+<span>// 1. Create the board</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CREATE
+    (b1:Bucket:P1Bucket {position: 1})-[:SEWS_TO]-&gt;
+    (b2:Bucket:P1Bucket {position: 2})-[:SEWS_TO]-&gt;
+    (b3:Bucket:P1Bucket {position: 3})-[:SEWS_TO]-&gt;
+    (b4:Bucket:P1Bucket {position: 4})-[:SEWS_TO]-&gt;
+    (b5:Bucket:P1Bucket {position: 5})-[:SEWS_TO]-&gt;
+    (b6:Bucket:P1Bucket {position: 6})-[:SEWS_TO]-&gt;
+    (b7:Bucket:P2Bucket {position: 7})-[:SEWS_TO]-&gt;
+    (b8:Bucket:P2Bucket {position: 8})-[:SEWS_TO]-&gt;
+    (b9:Bucket:P2Bucket {position: 9})-[:SEWS_TO]-&gt;
+    (b10:Bucket:P2Bucket {position: 10})-[:SEWS_TO]-&gt;
+    (b11:Bucket:P2Bucket {position: 11})-[:SEWS_TO]-&gt;
+    (b12:Bucket:P2Bucket {position: 12})-[:SEWS_TO]-&gt;(b1)
+RETURN *</code></pre></div>
+<p>Each hole starts with 4 seeds.  We should also create two players at this stage, give them a name and reset the number of seeds.</p>
+
+<div class="file">
+<span>// 2. Reset the board</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (h:Hole) set h.seeds = 4
+MERGE (p1:Player {number: 1}) SET p1:NextPlayer, p1.name = &#39;Adam&#39;, p1.seeds = 0
+MERGE (p2:Player {number: 2}) SET p2.name = &#39;Lauren&#39;, p2.seeds = 0</code></pre></div>
+<p><a href="/uploads/2017/08/ouril-1.png"><img class="alignnone size-full wp-image-270" src="/uploads/2017/08/ouril-1.png" alt="" srcset="/uploads/2017/08/ouril-1.png 904w, /uploads/2017/08/ouril-1-250x111.png 250w, /uploads/2017/08/ouril-1-768x342.png 768w, /uploads/2017/08/ouril-1-700x312.png 700w, /uploads/2017/08/ouril-1-120x53.png 120w" sizes="(max-width: 904px) 100vw, 904px" /></a>
+</p></p>
+
+<p>
+    Now we have our board set up, it is time to play the first move.
+</p>
+
+<h2>
+    Playing the First Move
+</h2>
+
+<p>
+    When playing a move, a player will take all of the seeds from one of their holes and sew them into the adjacent holes.  Due to the <code>SEWS_TO</code> relationship, we can do this with a single Cypher query.
+</p>
+
+<p>
+    As we will end up to reusing this query, we can parameterise it so we only have to reset the parameter before making the same move.
+</p>
+
+<pre><code>:param position:2
+</code></pre>
+
+<p>Then we can make a move.</p>
+
+<div class="file">
+<span>// 4. Play a move</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (target:Hole {position: {position} })
+
+with target.seeds as seeds, target
+SET target.seeds = 0
+
+with target, seeds
+MATCH path = (target)-[:SEWS_TO*12]-&gt;(:Hole)
+
+WITH seeds, nodes(path) as holes
+UNWIND range(1, seeds) as index
+
+WITH index, holes[index] as hole
+SET hole.seeds = hole.seeds + 1
+
+WITH head(collect(hole)) AS last
+SET last:LastHole</code></pre></div>
+<p>When the move is played, the target Hole should first be emptied.  Then the query uses the <code>RANGE</code> function to create an array of numbers between 1 and the number of <code>seeds</code> currently inside the target hole.  These are then unwound using the <code>UNWIND</code> function to identify and increment each of the nodes within the path.  Finally, we take the last Hole node to be updated and give it a <code>:LastHole</code> label to use during the next step.</p>
+
+<h2>
+    Capturing Seeds
+</h2>
+
+<p>
+    Once a move has been played, all that is left is to collect up the captured seeds.  If the last hole or any adjacent holes clockwise to the last hole have two or three seeds, these are captured and added to the player&#8217;s score.  At the end of the game, the player with the most seeds wins.  This query is slightly more complicated, but luckily Cypher can handle all of this for us.
+</p>
+
+<p>
+    First we need to find the last hole added to, and then find a path backwards using a variable length path.  By setting the lower bound to 0, this will include the starting node inside the path.  As there can only be a maximum of 6 holes, I have capped the path to 6 traversals.  Once we have the path, we need to ensure that the holes belong to the opponent and that there are two or three seeds in each.  We can do this using the all list predicate.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (first:LastHole)
+WITH first, filter( label in labels(first) where label &lt;&gt; “LastHole”) as labels
+MATCH path = (first)&lt;-[:SEWS_TO*0..6]-(last:Hole)
+WHERE all( node in nodes(path)
+AND (node = first OR labels(node) = labels)
+AND node.seeds &gt;= 2 AND node.seeds &gt;= 3 )</code></pre></div>
+<p>Once we&#8217;ve found all paths, we need to take the path with single path the highest number of nodes.  To find the total number of seeds captured in this round, we can use the <code>REDUCE</code> function to sum the number of seeds.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">WITH labels, nodes(path) as holes, length(nodes(path)) as length, reduce(total = 0, n in nodes(path) | total + n.seeds) as captured
+ORDER BY length DESC LIMIT 1</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">MATCH (player:NextPlayer)
+SET player.seeds = player.seeds + captured
+REMOVE player:NextPlayer</code></pre></div>
+<p>The :NextPlayer label should then be removed from the current player and added to the other player ready for their turn.</p>
+
+<pre><code>WITH player, holes
+MATCH (other:Player) WHERE other &amp;lt;&amp;gt; player
+SET other:NextPlayer
+</code></pre>
+
+<p>Then we just need to remove the captured seeds from the holes.</p>
+
+<pre><code>WITH holes
+UNWIND holes as hole
+SET hole.seeds = 0
+</code></pre>
+
+<p>Here is the query in full:</p>
+
+<div class="file">
+<span>// Full Query</span>
+</div>
+
+<pre><code>//  Get the last hole
+MATCH (first:LastHole)
+
+// Get a list of the labels without the last hole
+WITH first, filter( label in labels(first) where label &amp;lt;&amp;gt; “LastHole”) as labels
+
+// Get the last 6 adjacent holes
+MATCH path = (first)&lt;-[:SEWS_TO*0..6]-(last:Hole)
+
+// Check that they have the same labels and have
+WHERE all( node in nodes(path) WHERE (node = first OR labels(node) = labels) AND node.seeds &amp;gt;= 2 AND node.seeds &amp;lt;= 3 )
+
+// Get the nodes within the path, number of nodes in the path and total captured seeds
+WITH labels, nodes(path) as holes, length(nodes(path)) as length, reduce(total = 0, n in nodes(path) | total + n.seeds) as captured
+
+// Only take the longest path
+ORDER BY length DESC LIMIT 1
+
+// Increment Captured and remove the NextPlayer label
+MATCH (player:NextPlayer)
+SET player.seeds = player.seeds + captured
+REMOVE player:NextPlayer
+
+// Set NextPlayer label on other player
+WITH player, holes
+MATCH (other:Player) WHERE other &amp;lt;&amp;gt; player
+SET other:NextPlayer
+
+// Remove the seeds from the Holes
+WITH holes
+UNWIND holes as hole
+SET hole.seeds = 0
+</code></pre>
+
+<h2>
+    Transactions
+</h2>
+
+<p>
+    As Neo4j is an <a href="https://en.wikipedia.org/wiki/ACID" target="_blank">ACID compliant database</a>, we could batch these queries all up into a single transaction with any of the <a href="https://neo4j.com/developer/" target="_blank">official drivers</a>.  This would allow more advanced error checking and where applicable, the transaction could be rolled back if any player tried to break the rules.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

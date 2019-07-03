@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Using the Neo4j Driver with NodeJS - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Using the Neo4j Driver with NodeJS" />
+<meta property="og:description" content="A guide to using the Neo4j Driver in a NodeJS application" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/javascript/using-the-neo4j-driver-with-nodejs/" />
+<meta property="article:published_time" content="2018-03-02T19:15:42&#43;00:00"/>
+<meta property="article:modified_time" content="2018-03-02T19:15:42&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using the Neo4j Driver with NodeJS"/>
+<meta name="twitter:description" content="A guide to using the Neo4j Driver in a NodeJS application"/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Using the Neo4j Driver with NodeJS</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-03-02 19:15">
+						02/03/2018 19:15
+					</time>
+				</p>
+
+				
+
+<p>After writing all about how to <a href="http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/">use the official Neo4j Drivers in a Spring application</a>, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS.  Over the past few years I&#8217;ve written many applications in NodeJS that talk to Neo4j applications, to the point where I built <a href="https://github.com/adam-cowley/neode" target="_blank" rel="noopener">an OGM to take care of the frustrating CRUD boilerplate</a> when setting up a Neo4j project in node.  More about that later&#8230;</p>
+
+<ul>
+<li><a href="#tldr">TL;DR &#8211; View the full Code example</a></li>
+</ul>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>To get started, you&#8217;ll need to <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">download and install nodejs and npm</a> (or yarn if you prefer).  Once you&#8217;ve <a href="https://docs.npmjs.com/cli/init" target="_blank" rel="noopener">initiated your project</a>, you can install the driver via npm.</p>
+
+<pre><code>npm install --save neo4j-driver
+</code></pre>
+
+<h2>
+    Creating a Driver instance
+</h2>
+
+<p>
+    Now the driver can be included in the project.  The official drivers for all languages are namespaced by version, so we need to keep that in mind when creating a driver.
+</p>
+
+<div class="file">
+<span>CommonJS</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-const neo4j = require('neo4j').v1;" data-lang="const neo4j = require('neo4j').v1;">const driver = new neo4j.driver(&#34;bolt://localhost:7687&#34;, neo4j.auth.driver(&#34;neo4j&#34;, &#34;p455word&#34;));</code></pre></div>
+<p>Or using ES6 import:</p>
+
+<div class="file">
+<span>ES6</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-import { v1 as neo4j } from 'neo4j-driver';" data-lang="import { v1 as neo4j } from 'neo4j-driver';">const driver = new neo4j.driver(&#34;bolt://localhost:7687&#34;, neo4j.auth.driver(&#34;neo4j&#34;, &#34;p455word&#34;));</code></pre></div>
+<p>In both of these examples, I&#8217;m creating a new instance of the driver and connecting to <code>bolt://localhost:7687</code>. I&#8217;ve used a basic auth token, but as with Java Neo4j also supports <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L39" target="_blank" rel="noopener">Kerberos tokens</a> and <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L42" target="_blank" rel="noopener">custom authentication schemes</a>.</p>
+
+<p>Providing the <code>bolt+routing</code> scheme to the connection string will ensure a Routing Driver is instantiated.  This will balance read and write queries across a Causal Cluster.  Where you are using a multi-datacenter setup or advanced routing policies, you can append a routing context to the end of the connection string.</p>
+
+<pre><code>bolt+routing://localhost:7687?policy=uk
+</code></pre>
+
+<h2>
+        Running a Query
+</h2>
+
+<p>
+        To run one or more queries, you&#8217;ll first need to create a Session.  These sessions act as a container for a logical sequence of transactions (queries) and will borrow connections from the driver&#8217;s connection pool as necessary.  These sessions should be considered lightweight and disposable.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>();
+</code></pre></div>
+<p>
+        Inside a session you can run three types of transactions.  Running queries inside atomic transactions allow you to you to complete an entire unit of work and committing once all statements have succeeded.  Should anything go wrong, the database can be rolled back to it’s original state.
+</p>
+
+<h3>
+        Read or Write?
+</h3>
+
+<p>
+        When creating a session, you can declare a mode as either read or write.  This can ensure that the driver routes the queries to the right place.  Constants for read and write sessions can be taken from <code>v1.session.READ</code> or <code>v1.session.WRITE</code>.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>(<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">READ</span>);
+</code></pre></div>
+<h3>
+        Auto-commit Transactions
+</h3>
+
+<p><span class="s1">Auto-commit transactions are sent to the server and acknowledged immediately.  We can do by calling the <code>run</code> method on the session.  This method accepts two parameters, a parameterised Cypher query string and an optional object containing parameters in key, value format.</span>
+</p></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cypher</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person {name: {name} }) RETURN count(p) AS count&#34;</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> };
+
+<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">cypher</span>, <span style="color:#a6e22e">params</span>);
+</code></pre></div>
+<p class="p1">
+<span class="s1">It is recommended that these transactions are only used for one-off statements and not used in production. </span>
+</p>
+
+<h3>
+            Read & Write Transactions
+</h3>
+
+<p>
+            We can run a transaction in one of two ways, either by calling <code>session.beginTransaction()</code> which returns a transaction object, or calling <code>session.readTransaction()</code> or <code>session.writeTransaction()</code> with a function containing the work for that transaction.  The first argument for this function will be a transaction.  We can use this to <code>run</code> queries.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">writeTransaction</span>(<span style="color:#a6e22e">tx</span> =&gt; {
+    <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: {name} });&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> });
+});
+</code></pre></div>
+<h3>
+            Declarative Syntax
+</h3>
+
+<p>
+            The more declarative approach uses <code>session.beginTransaction()</code>.  This returns a transaction which can be used similarly to above
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tx</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">beginTransaction</span>();
+<span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: {name} });&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> })
+    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">res</span> =&gt; {
+        <span style="color:#75715e">// Run another query with the tx variable...
+</span><span style="color:#75715e"></span>    })
+    .<span style="color:#a6e22e">then</span>(() =&gt; {
+        <span style="color:#75715e">// Everything is OK, the transaction will be committed
+</span><span style="color:#75715e"></span>    })
+    .<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">e</span> =&gt; {
+        <span style="color:#75715e">// The transaction will be rolled back, now handle the error.
+</span><span style="color:#75715e"></span>    });
+</code></pre></div>
+<p>
+            Transactions will be automatically committed once the function succeeds, or rolled back if an error is thrown during the chain.
+</p>
+
+<h2>
+            Consuming Results
+</h2>
+
+<p>
+            There are two ways of a consuming results.
+</p>
+
+<h3>
+            Using Promises
+</h3>
+
+<p>
+            The previous example uses the method.  When the entire query is completed, the results will be collected and can be acted on at once.  This method will return an instance of a  Statement <a href="https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/result.js~Result.html" target="_blank" rel="noopener">Result</a>.  This contains information about the query and an array of records which can be accessed through the <i>records</i> property. The values returned in a <a href="https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/record.js~Record.html" target="_blank" rel="noopener">Record</a> can be accessed using the <code>get</code> method.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;MATCH (p:Person) RETURN p.name AS name&#34;</span>)
+    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">result</span> =&gt; {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">records</span>.<span style="color:#a6e22e">length</span>); <span style="color:#75715e">// Number of records returned
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">records</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">record</span> =&gt; { <span style="color:#75715e">// Iterate through records
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>( <span style="color:#a6e22e">record</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;name&#34;</span>) ); <span style="color:#75715e">// Access the name property from the RETURN statement
+</span><span style="color:#75715e"></span>        });
+    })
+    .<span style="color:#a6e22e">then</span>(() =&gt; <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">close</span>()); <span style="color:#75715e">// Always remember to close the session
+</span></code></pre></div>
+<h2 id="await">Await</h2>
+
+<p>Because the <code>run</code> function returns a <code>Promise</code>, you can use the await keyword to execute the funtion syncronously.</p>
+
+<pre><code>const result = session.run(&quot;MATCH (p:Person) RETURN p.name AS name&quot;)
+
+result.records.forEach(record =&gt; { // Iterate through records
+    console.log( record.get(&quot;name&quot;) ); // Access the name property from the RETURN statement
+});
+</code></pre>
+
+<h3>
+            Subscribing to Streams
+</h3>
+
+<p>
+            You may have noticed that when a query is executed in the browser, you see two numbers; when the database starts to stream results and when the query is executed.  If you would like to consume the results as they are streamed, you can use the <code>subscribe</code> method.   The subscribe function accepts an object with callbacks for when a record is received (<code>onNext</code>), when the stream is completed (<code>onCompleted</code>) and on error (<code>onError</code>).
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;MATCH (p:Person) RETURN p.name AS name&#34;</span>)
+    .<span style="color:#a6e22e">subscribe</span>({
+        <span style="color:#a6e22e">onNext</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">record</span>) =&gt; {
+            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">record</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;name&#39;</span>)); <span style="color:#75715e">// Consume the same Record object as above
+</span><span style="color:#75715e"></span>        },
+        <span style="color:#a6e22e">onCompleted</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span> () {
+            <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">close</span>();
+        },
+        <span style="color:#a6e22e">onError</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">error</span>) {
+            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">error</span>);
+        }
+    });
+</code></pre></div>
+<h3>
+            Gotcha: Integers
+</h3>
+
+<p>
+            While the Neo4j type system supports 64-bit integers, JavaScript is unable to handle these correctly.  In order to support Cypher&#8217;s type system, the driver will convert integer values into an instance of a neo4j <a href="https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/integer.js~Integer.html" target="_blank" rel="noopener">Integer</a>.  In order to work with these
+</p>
+
+<p>
+<a href="https://github.com/neo4j/neo4j-javascript-driver#a-note-on-numbers-and-the-integer-type" target="_blank" rel="noopener">Read more on Integers.</a>
+</p>
+
+<h2>
+            What about CRUD operations?
+</h2>
+
+<p>
+            Generic CRUD operations can be a pain to implement.  Writing the boilerplate to run write operations can take time, and for this reason I wrote <a href="https://github.com/adam-cowley/neode" target="_blank" rel="noopener">Neode</a>.  The aim of Neode is to make working with Neo4j as easy as possible &#8211; it uses <code>dotenv</code> to take variables from a <code>.env</code> file and supports schema generation, validation and UUID&#8217;s out of the box.<br /> For more information, head to <a href="https://github.com/adam-cowley/neode" target="_blank" rel="noopener">github.com/adam-cowley/neode</a> or <a href="https://github.com/adam-cowley/neode-example">check out the example project</a> based on the Movies sandbox.
+</p>
+
+<h2 id="tldr">
+            TL;DR &#8211; Code Example
+</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Require Neo4j
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j-driver&#39;</span>).<span style="color:#a6e22e">v1</span>;
+
+<span style="color:#75715e">// Create Driver
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;bolt://localhost:7687&#34;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">basic</span>(<span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;neo&#34;</span>));
+
+<span style="color:#75715e">// Create Driver session
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>();
+
+<span style="color:#75715e">// Run Cypher query
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cypher</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;MATCH (n) RETURN count(n) as count&#39;</span>;
+<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">cypher</span>)
+    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">result</span> =&gt; {
+        <span style="color:#75715e">// On result, get count from first record
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">count</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">records</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;count&#39;</span>);
+        <span style="color:#75715e">// Log response
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>( <span style="color:#a6e22e">count</span>.<span style="color:#a6e22e">toNumber</span>() );
+    })
+    .<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">e</span> =&gt; {
+        <span style="color:#75715e">// Output the error
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">e</span>);
+    })
+    .<span style="color:#a6e22e">then</span>(() =&gt; {
+        <span style="color:#75715e">// Close the Session
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">close</span>();
+    })
+    .<span style="color:#a6e22e">then</span>(() =&gt; {
+        <span style="color:#75715e">// Close the Driver
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">close</span>();
+    });
+</code></pre></div>
+<h2>
+            Further Reading
+</h2>
+
+<p>
+            The <a href="https://neo4j.com/developer/javascript/">Neo4j Developer Page</a> provides a comprehensive guide to all options available to you and example projects. <a href="https://gist.github.com/adam-cowley/0e86d581d3e416045bd407291d53ac73" target="_blank" rel="noopener">This gist</a> provides a basic example of how to use <a href="https://gist.github.com/adam-cowley/0e86d581d3e416045bd407291d53ac73" target="_blank" rel="noopener">Neo4j in an Express middleware</a>.
+</p>
+
+<p>
+            These drivers can also be used in front end developments, albeit with the caveat that you&#8217;ll need to connect directly to the Bolt server.  This is the way that the Neo4j Browser works.
+</p>
+
+<p>
+            If you&#8217;re a fan of VueJS, I have also created <a href="https://github.com/adam-cowley/vue-neo4j" target="_blank" rel="noopener">vue-neo4j</a> to provide a simple interface for executing Cypher queries Vue components.
+</p>
+
+<p>
+            Happy coding!
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

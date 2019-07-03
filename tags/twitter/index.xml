@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>twitter on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/twitter/</link>
+    <description>Recent content in twitter on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Fri, 16 Jun 2017 13:25:43 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/twitter/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Loading Twitter Data into Neo4j with APOC</title>
+      <link>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</link>
+      <pubDate>Fri, 16 Jun 2017 13:25:43 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</guid>
+      <description>For the Graph Hack at this years Graph Connect, myself and the Dead Pony Club aimed to combine candidate datasets with donation data, Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+My task for the evening was to pull Twitter information into our Graph. Being relatively new to the APOC library, I was genuinely surprised as to how easy this could be done with a couple of queries.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Loading Twitter Data into Neo4j with APOC - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Loading Twitter Data into Neo4j with APOC" />
+<meta property="og:description" content="For the Graph Hack at this years Graph Connect, myself and the Dead Pony Club aimed to combine candidate datasets with donation data, Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+My task for the evening was to pull Twitter information into our Graph. Being relatively new to the APOC library, I was genuinely surprised as to how easy this could be done with a couple of queries." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/" />
+<meta property="article:published_time" content="2017-06-16T13:25:43&#43;00:00"/>
+<meta property="article:modified_time" content="2017-06-16T13:25:43&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Loading Twitter Data into Neo4j with APOC"/>
+<meta name="twitter:description" content="For the Graph Hack at this years Graph Connect, myself and the Dead Pony Club aimed to combine candidate datasets with donation data, Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+My task for the evening was to pull Twitter information into our Graph. Being relatively new to the APOC library, I was genuinely surprised as to how easy this could be done with a couple of queries."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Loading Twitter Data into Neo4j with APOC</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2017-06-16 13:25">
+						16/06/2017 13:25
+					</time>
+				</p>
+
+				
+
+<p>For the Graph Hack at this years <a href="http://graphconnect.com">Graph Connect</a>, myself and the <em>Dead Pony Club</em> aimed to combine candidate datasets with donation data,  Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.</p>
+
+<p>My task for the evening was to pull Twitter information into our Graph.  Being relatively new to the <a href="https://github.com/neo4j-contrib/neo4j-apoc-procedures/">APOC library</a>, I was genuinely surprised as to how easy this could be done with a couple of queries.  APOC comes with <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/index31.html#_load_json">apoc.load.json</a> and <a href="https://neo4j-contrib.github.io/neo4j-apoc-procedures/index31.html#_load_json_from_twitter_with_additional_parameters"> apoc.load.jsonParams</a> functions that make it really easy to ingest third party APIs with Cypher and load them directly into the graph without writing an application.</p>
+
+<h2 id="getting-a-valid-access-token">Getting a valid Access Token</h2>
+
+<p>The first step was to get a valid access token that would be used to identify the user and grant access to the API.   You can create your own application by logging into <a href="https://apps.twitter.com/">Twitter Application Management</a>.  Once you have an application, head to the Keys and Access Tokens tab and take the Consumer Key and Consumer Secret.  These should be Base64 encoded in <code>{key}:{secret}</code> format and then posted to Twitter&#8217;s API as a Basic authorization header.</p>
+
+<pre><code>curl -X POST &quot;https://api.twitter.com/oauth2/token&quot;
+-H &quot;Authorization: Basic &lt;Base64EncodedValue&gt;&quot; -d &quot;grant_type=client_credentials&quot;
+</code></pre>
+
+<p>
+    The API will return a bearer token that can then be used in all of our queries.
+</p>
+
+<pre><code>{&quot;token_type&quot;:&quot;bearer&quot;,&quot;access_token&quot;:&quot;AAAAAAAAAAAAAAAAAAAAAIivBQ...&quot;}
+</code></pre>
+
+<p>
+        There are more elegant ways of setting this up for use in a Cypher query but for brevity I ended up setting a parameter in the Neo4j Browser.  This also closely mimics the way you would run a cypher query from an application using parameters.
+</p>
+
+<pre><code>:param token: &lt;access_token property&gt;
+</code></pre>
+
+<h2>
+        Retrieving a Tweet
+</h2>
+
+<p>
+        I wanted to write a cypher query that could be as close to a real world implementation as possible.  I also wanted the dataset to grow organically.  With that in mind,  the best approach was to create a query that would find any tweets in the database with an ID but no inward <code>:TWEETED</code> relationship, pull the information from the graph.
+</p>
+
+<p>
+        I picked <a href="https://twitter.com/adamcowley/status/847738850990411776">a tweet</a> that I knew had a lot of information against it; a retweet of another tweet, with retweets of it&#8217;s own, mentions and hashtags and created that node in the database.
+</p>
+
+<p><a href="/uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57.png"><img class="alignnone size-full wp-image-224" src="/uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57.png" alt="" srcset="/uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57.png 653w, /uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57-250x216.png 250w, /uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57-120x103.png 120w" sizes="(max-width: 653px) 100vw, 653px" /></a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">CREATE (t:Tweet {id_str:&#34;847738850990411776&#34;})</code></pre></div>
+<p>The next step was to use APOC to get the information from the Twitter API.    As I mentioned earlier, the APOC library comes with two functions for pulling JSON.  <code>apoc.load.json </code> can be used in scenarios where only a simple HTTP GET request is required but as I needed to provide a bearer token this required using <code>apoc.load.jsonParams</code>.  <code>jsonParams</code> accepts three arguments; the URL, a map of configuration options and the request payload in string format.</p>
+
+<pre><code>WITH
+'https://api.twitter.com/1.1/statuses/show.json?id=' as url,
+{token} as token // set in our :param token:'...' query
+MATCH (t:Tweet)
+WHERE NOT (t)&lt;-[:TWEETED]-()
+CALL apoc.load.jsonParams(url + t.id_str, {Authorization:&quot;Bearer &quot;+token},null) yield value
+RETURN value
+</code></pre>
+
+<table>
+<tr>
+<th>
+            &#8220;value&#8221;
+</th>
+</tr>
+
+<tr>
+<td>
+            {&#8220;coordinates&#8221;:null,&#8221;retweeted&#8221;:false,,&#8221;entities&#8221;:{&#8220;hashtags&#8221;:[{&#8220;text&#8221;:&#8221;graphconnect&#8221;,&#8221;indices&#8221;:[68,81]}],&#8230;}
+</td>
+</tr>
+</table>
+
+<p>Straight away, I was able to pull an output and API it into the value property.  From then it was just a case of taking the JSON output line by line and start to map the query.  I found that <a href="http://www.markhneedham.com/blog/2017/02/28/neo4j-graphing-name-work-twitter-meme/">Mark Needham&#8217;s Graphing the &#8216;My name is&#8230;&#8217; Twitter Meme</a> provided a good starting point but was falling over when I tried to import tweets that were not replies.  Instead I broke the query down into sections to create the single query.  In order to populate any replies I could just run the query again.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">WITH t, value AS status, value.user AS user, value.entities AS entities
+
+// Update Tweet Properties
+SET t.text = status.text, t.created_at = status.created_at, t.retweet_count = status.retweet_count, t.favorite_count = status.favorite_count</code></pre></div>
+<p>
+        After using the <code>WITH</code> statement to pull out the information that I need from the response, I first go ahead and update the tweet node with the properties returned by the API.
+</p>
+
+<p>
+        The next step was to create a relationship with the authoring user.  Firstly I needed to create the User within the database.  By using <code>MERGE</code> I was able to create a new <code>:User</code> node where none exists or simply update the node&#8217;s properties if the node already exists before relating the User to the Tweet.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">// Create Author
+MERGE (u:User {screen_name:user.screen_name})
+SET u.name = user.name, u.friends_count = user.friends_count, u.followers_count = user.followers_count, u.picture=user.profile_image_url
+MERGE (u)-[:TWEETED]-&gt;(t)</code></pre></div>
+<p>
+        The API result comes with an array of linked entities  including any Hashtags included in the tweet, any users mentioned in the tweet and any links along with their position in the text. Having this information in an array makes it easy to create in the graph. The array can be piped into a sub-statement using the <code>FOREACH</code> operation.  This approach can be used for Hashtags, Mentions and URLs.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">// Create Hashtags
+FOREACH (h in entities.hashtags |
+        MERGE (ht:Hashtag {name:h.text}) MERGE (t)-[:MENTIONS_HASHTAG]-&gt;(ht)
+)
+
+// Mentions
+FOREACH (m in entities.user_mentions |
+        MERGE (mu:User {screen_name:m.screen_name}) MERGE (t)-[:MENTIONS_USER]-&gt;(mu)
+)
+
+// URLs
+FOREACH (m in entities.urls |
+        MERGE (mu:URL {url:m.url}) MERGE (t)-[:MENTIONS_URL]-&gt;(mu)
+)</code></pre></div>
+<p>
+        Creating relationships to quoted tweets and replied to tweets in a single query caused a few headaches. As the information is not always present, attempting to run a merge query on a null value meant that early queries would fall over.  Luckily, with a little hack I was able to create a statement would iterate through an array when these values existed, or where the information had not been provided Cypher would iterate through an empty array and the inner query would not be executed.
+</p>
+
+<p>
+        This approach was used for both Quoted Statuses and Replies.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">// Quoted Status?
+FOREACH (s in
+        CASE WHEN status.quoted_status_id IS NOT NULL
+        THEN [status.quoted_status] ELSE [] END |
+
+        MERGE (qt:Tweet {id_str:s.id_str}) MERGE (t)-[:QUOTES_TWEET]-&gt;(qt)
+)
+
+// Reply to
+FOREACH (s_id_str in
+        CASE WHEN status.in_reply_to_status_id_str IS NOT NULL
+        THEN [status.in_reply_to_status_id_str]
+        ELSE [] END |
+        MERGE (qt:Tweet {id_str:s_id_str}) MERGE (t)-[:IN_REPLY_TO]-&gt;(qt) )</code></pre></div>
+<h2>
+        Growing the Graph
+</h2>
+
+<p>
+        The query is designed to pick up any Tweet node without a relationship to an author and pull the information in. By design, any tweets that the API response mentions are created with only an <code>id_str</code> so they will be picked up the next time the query is run.
+</p>
+
+<p>
+        The same approach can be taken to pulling in user information. Finding a newly created user, for example searching for any nodes without an <code>updated_at</code> property or where the record is out of date and pulling that information in from the Twitter API can be done in the same manner. Queries can also be written that call the API to find the User&#8217;s timeline and create those Tweet nodes. Regular calls to find who a user follows and is followed by will also help to organically grow the graph.
+</p>
+
+<p>
+        The flexibility of Cypher coupled with APOC&#8217;s ability for you to talk to API&#8217;s means that creating a graph based on third party data is extremely easy.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

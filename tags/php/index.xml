@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>php on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/php/</link>
+    <description>Recent content in php on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Tue, 07 Mar 2017 13:48:47 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/php/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>WordPress Recommendations with Neo4j – Part 1: Data Modelling</title>
+      <link>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/</link>
+      <pubDate>Tue, 07 Mar 2017 13:48:47 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/</guid>
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
+ Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Neo4j Recommendations for WordPress WordPress is arguably the world&amp;#8217;s most popular CMS with reportedly almost a quarter of the internet running on a WordPress install.</description>
+    </item>
+    
+  </channel>
+</rss>

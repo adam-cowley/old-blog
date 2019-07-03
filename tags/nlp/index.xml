@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NLP on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/nlp/</link>
+    <description>Recent content in NLP on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Sat, 06 Apr 2019 11:11:40 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/nlp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Calculating TF-IDF scores in Neo4j with Cypher</title>
+      <link>http://www.adamcowley.co.uk/neo4j/calculating-tf-idf-score-cypher/</link>
+      <pubDate>Sat, 06 Apr 2019 11:11:40 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/calculating-tf-idf-score-cypher/</guid>
+      <description>When extracting information from documents using NLP, attempting to separate important terms from noise can be tricky. By Calculating a TF-IDF (Term Frequency-Inverse Document Frequency) score, you can elevate important terms in a document compared to the document set overall. This is a nice addition to the Bag of Words approach to Natural Language Processing because it dampens the score of commonly mentioned terms that do not contain as much informational content.</description>
+    </item>
+    
+  </channel>
+</rss>

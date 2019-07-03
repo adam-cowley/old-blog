@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Using the Neo4j Driver in Spring Boot - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Using the Neo4j Driver in Spring Boot" />
+<meta property="og:description" content="By choice, I&#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I&#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp; Procedures in Neo4j.
+However, since being introduced to Spring, I&#8217;ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/" />
+<meta property="article:published_time" content="2018-02-13T15:18:29&#43;00:00"/>
+<meta property="article:modified_time" content="2018-02-13T15:18:29&#43;00:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using the Neo4j Driver in Spring Boot"/>
+<meta name="twitter:description" content="By choice, I&#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I&#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp; Procedures in Neo4j.
+However, since being introduced to Spring, I&#8217;ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/about-me/">about</a>
+					</li>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Using the Neo4j Driver in Spring Boot</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2018-02-13 15:18">
+						13/02/2018 15:18
+					</time>
+				</p>
+
+				
+
+<p>By choice, I&#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining <a href="http://www.neo4j.com" target="_blank" rel="noopener">Neo4j</a> last summer, I&#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp; Procedures in Neo4j.</p>
+
+<p>However, since being introduced to <a href="https://spring.io/" target="_blank" rel="noopener">Spring</a>, I&#8217;ve been impressed by how quickly you can get a REST API up and running.  Starting with <a href="http://start.spring.io/" target="_blank" rel="noopener">Spring Intializr</a>, and after a few @Annotations, you can have a production grade application with security up in minutes.  Spring also has an ecosystem of projects around it including Spring Data, a consistent approach to CRUD operations.</p>
+
+<h2 id="dependency-injection">Dependency Injection</h2>
+
+<p>One of the features of the Spring Framework that I find most useful is Dependency Injection, the ability to inject decoupled implementations of an Interface without the application worrying about the specifics.  In Spring terms, these are called <code>Bean</code>s.  Any Plain-Old-Java-Object can be used as a Spring Bean and <em>&#8220;wired&#8221;</em> into a class or service.</p>
+
+<p>This is the simplest way that we can interact with Neo4j in a Spring application.</p>
+
+<h3 id="creating-a-neo4j-driver-bean">Creating a Neo4j Driver <code>@Bean</code></h3>
+
+<p>To create a Spring Boot application with Neo4j, first we&#8217;ll need to add the neo4j-java-driver and spring boot dependencies.</p>
+
+<div class="file">
+<span>build.gradle</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy">dependencies <span style="color:#f92672">{</span>
+  compile<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;org.neo4j.driver:neo4j-java-driver:1.5.1&#39;</span><span style="color:#f92672">)</span>
+  compile<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;org.springframework.boot:spring-boot-starter-web&#39;</span><span style="color:#f92672">)</span>
+  testCompile<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;org.springframework.boot:spring-boot-starter-test&#39;</span><span style="color:#f92672">)</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>Once the dependencies are there, all we need to do is create a method that returns an instance of <code>org.neo4j.driver.v1.Driver</code> in the main application class and annotate it with the <code>@Bean</code> annotation.</p>
+
+<div class="file">
+<span>NeobeansApplication.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NeobeansApplication</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>Application<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> Driver <span style="color:#a6e22e">neo4jDriver</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> GraphDatabase<span style="color:#f92672">.</span><span style="color:#a6e22e">driver</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bolt://localhost:7687&#34;</span><span style="color:#f92672">,</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">basic</span><span style="color:#f92672">(</span> <span style="color:#e6db74">&#34;neo4j&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;p455w0rd&#34;</span> <span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>In this example, I am using a Basic auth token but Neo4j also supports Kerberos tokens and custom authentication schemes.</p>
+
+<p>Once the bean has been defined, we can “wire” this into any class, controller or component using the <code>@Autowired</code> annotation.</p>
+
+<div class="file">
+<span>PersonController.js</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonController</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Autowired</span>
+    Driver driver<span style="color:#f92672">;</span>
+
+    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span>
+            <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> page<span style="color:#f92672">,</span>
+            <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> limit
+    <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span> Session session <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span><span style="color:#a6e22e">session</span><span style="color:#f92672">()</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            Number skip <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>page <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> limit<span style="color:#f92672">;</span>
+
+            String query <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person) RETURN p ORDER BY p.name SKIP {skip} LIMIT {limit}&#34;</span><span style="color:#f92672">;</span>
+
+            Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> params <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{{</span>
+                put<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">,</span> limit<span style="color:#f92672">);</span>
+                put<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;skip&#34;</span><span style="color:#f92672">,</span> skip<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}};-&gt;</span>
+
+            <span style="color:#66d9ef">return</span> session<span style="color:#f92672">.</span><span style="color:#a6e22e">readTransaction</span><span style="color:#f92672">(</span>tx <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+               <span style="color:#66d9ef">return</span> tx<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>query<span style="color:#f92672">,</span> params<span style="color:#f92672">)</span>
+                       <span style="color:#f92672">.</span><span style="color:#a6e22e">list</span><span style="color:#f92672">(</span> row <span style="color:#f92672">-&gt;</span> row<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;p&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">asMap</span><span style="color:#f92672">()</span> <span style="color:#f92672">);</span>
+            <span style="color:#f92672">});</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>The <code>@RestController</code> annotation will identify this class as a REST controller.</p>
+
+<p>
+    As you can see, I have used the <code>@Autowired</code> annotation to inject an instance of the driver into the class. This is then used to create a session, run a read query and return a paginated list of results.
+</p>
+ ```
+
+## Adding Dynamic Configuration
+
+
+<p>
+    In the example above, the Neo4j credentials are hardcoded into the application. This would never be a good idea for production grade code.
+</p>
+
+<p>We can use a <code>@Configuration</code> annotated class to pull properties from a configuration file. First off, we&#8217;ll need to configure gradle to read the values from <code>src/main/resources/application.properties</code>.</p>
+
+<div class="file">
+<span>build.gradle</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">processResources <span style="color:#f92672">{</span>
+    expand<span style="color:#f92672">(</span>project<span style="color:#f92672">.</span><span style="color:#a6e22e">properties</span><span style="color:#f92672">)</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p></p></p>
+
+<p>
+        We can then add the properties that we would like to load into the application to the <code>application.properties</code> file.
+</p>
+
+<div class="file">
+<span>application.properties</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-conf" data-lang="conf">neo4j.scheme=bolt
+neo4j.host=localhost
+neo4j.port=7687
+neo4j.auth.type=basic
+neo4j.auth.username=neo4j
+neo4j.auth.password=p455w0rd</code></pre></div>
+<p>
+        To avoid clashes, I have prefixed each setting with <code>neo4j.</code>. For forward compatibility, I have also split out the auth details &#8211; this way we can build support for custom schemes and kerberos authentication into the application.
+</p>
+
+<p>
+        Next, we can create a <code>@Configuration</code> annotated class.
+</p>
+
+<div class="file">
+<span>Neo4jConfiguration.java</span>
+</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Neo4jConfiguration</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+<p>
+        In order to pull the properties into the application, we can annotate properties with <code>@Value</code>. The annotation will take the full key of the property, prefixed with a <code>$</code> and wrapped in braces.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${neo4j.scheme:bolt}&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">private</span> String scheme<span style="color:#f92672">;</span></code></pre></div>
+<p>
+        In this example, I&#8217;ve provided a default value of <code>bolt</code>. If you do not provide a default value and the setting, an exception will be thrown on start up.
+</p>
+
+<p>
+        Next, we can use the value in <code>neo4j.auth.type</code> to create the appropriate token.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Use the neo4j.auth.type property to create an appropriate Auth Token
+</span><span style="color:#75715e"> *
+</span><span style="color:#75715e"> * @return AuthToken
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> AuthToken <span style="color:#a6e22e">getAuthToken</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">switch</span> <span style="color:#f92672">(</span> authType <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;basic&#34;</span><span style="color:#f92672">:</span>
+            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">basic</span><span style="color:#f92672">(</span>username<span style="color:#f92672">,</span> password<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;kerberos&#34;</span><span style="color:#f92672">:</span>
+            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">kerberos</span><span style="color:#f92672">(</span>ticket<span style="color:#f92672">);</span>
+        default:
+            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">none</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>
+        Then combine the scheme, host, port and routing policy to create a valid URI.
+</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Get the URI for the Neo4j Server
+</span><span style="color:#75715e"> * @return String
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUri</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// Get the base URI (ie bolt://localhost:7474)
+</span><span style="color:#75715e"></span>    String uri <span style="color:#f92672">=</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%s://%s:%s&#34;</span><span style="color:#f92672">,</span> scheme<span style="color:#f92672">,</span> host<span style="color:#f92672">,</span> port<span style="color:#f92672">);</span>
+    <span style="color:#75715e">// If there is a CC routing policy, append it to the end of the string
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> scheme <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;bolt+routing&#34;</span> <span style="color:#f92672">&amp;&amp;</span> routingPolicy <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        uri <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;?policy=&#34;</span><span style="color:#f92672">+</span> routingPolicy<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> uri<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span></code></pre></div>
+<p>
+        Finally, we can move our driver <code>@Bean</code> into the configuration file and use the methods to create a URI and Auth Token.
+</p>
+
+<pre><code>/**
+ * Create a new Driver instance
+ *
+ * @return Driver
+ */
+@Bean
+public Driver neo4jDriver() {
+    String uri = getUri();
+    AuthToken token = getAuthToken();
+    return GraphDatabase.driver(uri, token);
+}
+</code></pre>
+
+<p>
+        Although the Bean definition has been moved, Spring is smart enough to pick up this change so we don&#8217;t have to modify the rest controller.
+</p>
+
+<h2>
+        Conclusion
+</h2>
+
+<p>
+        Hopefully this post has given you an introduction to interacting with Neo4j inside a Spring application. Spring has a vast ecosystem and this post only scratches the surface. For more information on Spring or the frameworks, head over to <a href="http://spring.io" target="_blank">spring.io</a>. <a target=_blank href="http://projects.spring.io/spring-data/">Spring Data</a> is an interesting project that is well worth reading up on, and even features an extension that allows you to map plain old Java objects to Nodes in the graph using <a target=_blank href="http://projects.spring.io/spring-data/">Spring Data Neo4j</a>.
+</p>
+
+<p>
+        The code to go with this blog post is <a href="https://github.com/adam-cowley/neobeans" target=_blank>available on Github</a>, feel free to clone, fork or create a pull request if you spot anything untoward.
+</p>
+
+
+				
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+		</footer>
+	</div>
+
+
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,3194 @@
+id,Title,Content,Categories,Tags,Slug,Permalink
+6,"ES6 Promises - 5 Things I Wish I'd Known","Over the past couple of months I've started shifting my development focus away from PHP to Node.  Node is a huge departure from PHP development and I've uncovered quite a few gotcha's along the way.
+
+One of the major differences is the Asynchronous nature of JavaScript.  If you've ever wondered why people say the MEAN stack is quick, this is why.  Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.
+
+Although this makes end requests a lot faster, it can lead to <em>callback hell </em>.  If you've spent any time writing JavaScript then you've probably come across the terms <a href=""https://medium.com/@wavded/managing-node-js-callback-hell-1fe03ba8baf"" target=""_blank""><em>callback hell</em></a> or <a href=""http://tritarget.org/blog/2012/11/28/the-pyramid-of-doom-a-javascript-style-trap/"" target=""_blank""><em>the pyramid of doom</em></a>, a phenomenon  which can lead to some pretty unwieldy code.
+
+[code lang=""javascript""]
+originalFunction(
+    firstCallback(
+        secondCallback(
+            thirdCallback(
+                fourthCallback(
+                    fifthCallback(
+                    )
+                )
+            )
+        )
+    )
+)
+[/code]
+
+Promises are the ES6's answer to this problem, allowing you to chain your functions and make your code much easier to follow.  
+
+[code lang=""javascript""]
+originalFunction()
+.then(function(output) {
+    return firstPromise(output);
+})
+.then(function(output2) {
+    return secondPromise(output2);
+})
+.then(function(output3) {
+    return thirdOutput(output3);
+})
+.then(function(final_output) {
+    // Finally, do something
+});
+[/code]
+
+I've spent a lot of my time writing wrappers to existing <code>npm</code> modules to work with a promise based approach.  It's been an emotional journey full of pain and joy.  Here are a few things I wish I'd known before I'd started.
+
+<h2>Tip 1 - <b>Forget <code>.defer()</code>.</b></h2>
+
+Coming at Promises from Angular, I'd developed the bad habit of using the <code>$q.defer()</code> approach.  The official implementation takes a much simpler approach.  Using <code>new Promise</code> to create a Promise will pass two functions into your callback which will allow you to resolve or reject the promise.
+
+[code lang=""javascript""]
+return new Promise(function(resolve, reject) {
+    GetSomething(function(err, res) {
+        if (err) {
+            // Catch this using .catch()
+            return reject(err);
+        }
+
+        // Will pass through value to .then()
+        resolve(res);
+    });
+});
+[/code]
+
+<h2>Tip 2 -<b>You can resolve a Promise straight away.</b></h2>
+
+If you have a Promise with no possibility of failing, you can resolve it straight away using <code>Promise.resolve()</code>
+
+
+[code lang=""javascript""]
+Promise.resolve(100)
+.then(function(output) {
+    console.log(output) // 100
+});
+[/code]
+
+<h2>Tip 3 - <b>You can return another promise.</b></h2>
+
+This is probably the most important thing to remember and one that has caused me a few headaches.  When I first started, I found myself slipping back into my own variation of callback hell, ending up with something like the following.
+
+[code lang=""javascript""]
+// Welcome to Promise Hell...
+return new Promise((resolve, reject) => {
+    promise1()
+    .then((output) => {
+        promise2(output)
+        .then((output2) => {
+            promise3(output3)
+            .then((final) => {
+                console.log(final)
+            });
+        });
+
+    });
+});
+[/code]
+
+This is terrible.  Not only does it make things just as complicated, you'll need to remember to apply <code>.catch()</code> to every nested promise, otherwise debugging can become a nightmare.
+
+As well as manipulating a value within <code>then()</code>, you can also return another Promise.  Not only is this a lot more readable, but an error at any point during the chain will be caught by the final <code>.catch()</code> call.
+
+
+[code lang=""javascript""]
+// Instead do this
+function promise1(prev) {
+	return new Promise((resolve, reject) => {
+		output.push('Promise 1');
+		setTimeout(() => {
+			resolve(output)
+		}, 500);
+	});
+}
+
+function promise2(prev) {
+	return new Promise((resolve, reject) => {
+		output.push('Promise 2');
+		setTimeout(() => {
+			resolve(output)
+		}, 500);
+	});
+}
+
+function promise3(prev) {
+	return new Promise((resolve, reject) => {
+		output.push('Promise 3');
+		setTimeout(() => {
+			resolve(output)
+		}, 500);
+	});
+}
+
+let output = [];
+
+promise1(output)
+.then((output) => {
+    return promise2(output);
+})
+.then((output) => {
+    return promise3(output);
+})
+.then((output) => {
+    console.log(output); // ['Promise 1', 'Promise 2', 'Promise 3']
+})
+.catch((error) => {
+    // Something went wrong
+});
+[/code]
+
+<b>Note:</b>  Make sure you're using <code>return</code> if you need to use the data, or the promise needs to be resolved before continuing.
+
+<h2>Tip 4 - <b>You can wait for multiple promises to complete</b></h2>
+
+By using <code>Promise.all()</code>, your Promise will wait until all promises have been resolved before continuing.  <code>Promise.all</code> will return an array of values based on the promises passed into <code>Promise.all()</code>.
+
+[code lang=""javascript""]
+Promise.all([
+    getUser(),
+    getPost(),
+    'CREATED' // You can also pass through regular variables
+])
+.then(function(output) {
+    var user = output[0];
+    var post = output[1];
+    var relationship = output[2];
+
+    user.relateTo(post, relationship);
+});
+[/code]
+
+It's also important to note that if you are dealing with an array of records that need an action performed on them before continuing, you should be using <code>Promise.all()</code> instead.  
+
+[code lang=""javascript""]
+db.getPostsByUser('adam')
+.then(function(posts) {
+    return Promise.all(posts.map(function(post) {
+        db.delete(post.id);
+    }));
+})
+.then(function() {
+    // Now it is safe to delete the User
+});
+[/code]
+
+Using a simple <code>forEach</code> on the posts array in this example will delete each post, but could cause issues if the action does not succeed before the next stage is processed.  Using <code>Promise.all()</code> ensures that all actions are completed before the next stage begins.
+
+
+<h2>Tip 5 - <b><code>.catch()</code> is shorthand</b></h2>
+
+The <code>catch()</code> function is a shorthand for <code>then(null, ...)</code>.  However, there are two important gotcha's here.  Firstly, consider the two following snippets of code.  Although they look familiar, they are not equivalent. 
+
+[code lang=""javascript""]
+db.delete(record)
+.then(function success() {
+    // Record has been deleted
+}, function error() {
+    // There has been an error previously
+});
+[/code]
+
+[code lang=""javascript""]
+db.delete(record)
+.then(function success() {
+    // Record has been deleted
+).catch(function error() {
+    // There has been an error at some point
+});
+[/code]
+
+The main issue when using the <code>then(resolveHandler, rejectHandler)</code> format, is that the <code>rejectHandler</code> will not catch an error if it is thrown within the <code>resolveHandler</code>, meaning you would need to add an extra level below to catch this error.
+
+[code lang=""javascript""]
+db.delete(record)
+.then(function success() {
+    throw new Error('Something has gone wrong')
+}, function error() {
+    // 'Something has gone wrong' will not be caught here
+})
+.catch(function(error) {
+    // ...instead it will be caught here
+});
+[/code]
+
+The second gotcha here is that using the <code>then(resolveHandler, rejectHandler)</code> format will not halt the chain.  
+
+[code lang=""javascript""]
+db.delete(record)
+.then(function success() {
+    throw new Error('Something has gone wrong')
+}, function error() {
+    // 'Something has gone wrong' will not be caught here
+})
+.then(function(res) {
+    console.log(res); // Error: 'Something has gone wrong'
+});
+[/code]
+
+For this reason I always tend to omit the second argument for <code>then()</code> and instead use a final <code>catch()</code> at the end of the chain.
+<h2>Conclusion</h2>
+
+Promises are a great feature of Node JS, but getting your head around them can be a nightmare. If I had known these things before I'd began it would have saved me a few headaches. Hopefully this will save someone else's sanity.",JavaScript,javascript|node|promises|reference,es6-promises-tips-and-tricks,http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/
+18,"Quick TDD setup with Node, ES6, Gulp and Mocha","Having practised Test Driven Development for the last couple of years, I've found testing one of the most frustrating things about Node compared to other programming languages.
+
+Laravel, a framework I have used for the past few years, has come with a gulp extension called <a href=""https://laravel.com/docs/master/elixir"">Elixir</a> since version 5.0 which is a massive timesaver. Simply type <code>gulp tdd</code>  into the command line and your tests will run automatically.  Luckily, this effect isn't hard to replicate.
+
+Of course, there are a number of testing frameworks out there for testing NodeJS applications which go beyond the scope of this post. Suffice to say, I've tried a few and combining the Mocha testing framework with Chai's assertion library has been the one that stuck with me.
+<h2>Setting up</h2>
+Getting up and running is easy with Gulp, simply load in the <code>gulp-mocha</code> package using <code>npm</code>. This will load the dependencies and add to the devDependencies options to your <code>package.json</code> file and make sure they are available.
+
+[code lang=""shell""]npm install --save-dev gulp gulp-mocha babel-register babel-preset-es2015 chai[/code]
+
+Inside <code>package.json</code> you should now see your dependencies. By requiring babel-register, we are able to test ES6 features straight away.
+
+At this point, we also need to register the es2015 default. This can be done by <a href=""https://babeljs.io/docs/usage/babelrc/"">creating a <code>.babelrc</code> file</a> in the root directory of the project or by adding our settings to the <code>package.json</code> file</a>.   For berevity, let's add the es2015 preset into our <code>package.json</code> file.  Once finished, your <code>package.json</code> file should resembling the contents below.
+
+[code language=""json"" file=""package.json""]{
+  ""devDependencies"": {
+    ""babel-preset-es2015"": ""^6.9.0"",
+    ""babel-register"": ""^6.9.0"",
+    ""chai"": ""^3.5.0"",
+    ""gulp"": ""^3.9.1"",
+    ""gulp-mocha"": ""^2.2.0""
+  },
+  ""babel"": {
+    ""presets"": [""es2015""]
+  }
+}[/code]
+<h2>Some Code to Test</h2>
+Now, let's create something to test. As a simple example, let's create a function that will sum the list of arguments. This is a good demonstration of the spread operator that exists within ES6.
+[code language=""json"" file=""src/sum.js""]export default function sum(...figures) {
+  return figures.reduce((total, current) =&gt; {
+    return total + current;
+  });
+}
+[/code]
+<h2>Running Tests</h2>
+Now we have some code, let's write out first test. Mocha can be run directly via command line by installing the <code>mocha</code> package globally in <code>npm</code>.
+
+[code lang=""shell""]npm install -g mocha[/code]
+
+Because we're using ES6 features, we will need to use the <code>--compilers</code> option when running our tests otherwise node will throw an <code>Unexpected token ""import""</code> error. Here we are telling mocha to use babel core when it encounters any <code>js</code> files.
+
+[code lang=""shell""]mocha --compilers js:babel-core/register[/code]
+
+Running this now, we should receive an error telling us that mocha cannot resolve the path or pattern.
+<h2>Writing a Test</h2>
+By default, mocha looks for tests in the <code>test/</code> directory. You can change this by adding a specific path or pattern to your mocha call but for now let's stick with the defaults. Let's create a simple test.
+
+[code lang=""js"" file=""test/sum.spec.js""]import {expect} from 'chai';
+import sum from '../src/sum.js';
+
+describe('src/sum.js', _ => {
+  it('should add 1 + 1 to make two', () => {
+    let result = sum(1,1);
+    expect(result).to.equal(2);
+  })
+})[/code]
+
+If we have done everything right, we should be able to run our test via the command line and get a successful response.
+[code lang=shell]mocha --compilers js:babel-core/register
+  src/sum.js
+    ✓ should add 1 + 1 to make two[/code]
+
+<h2>Automating with Gulp</h2>
+Now we've got our test suite, we can use gulp to automatically run the suite.
+
+To access gulp via the command line, we will need to install it globally using npm.
+[code lang=""shell""]npm install -g gulp[/code]
+Once installed, we can run any task we have defined in the <code>gulpfile.js</code> file via the command line.  For example, to run the <code>taskname</code> task we would type the following.
+[code lang=""shell""]gulp taskname[/code]
+If no task name is supplied, gulp will attempt to run a task named <code>default</code>.
+
+Let's create a task within our gulpfile to allow us to run our test suite with mocha. 
+
+[code lang=""js"" file=""gulpfile.js""]var gulp = require('gulp'),
+  mocha = require('gulp-mocha'),
+  babel = require('babel-register');
+
+gulp.task('test', function() {
+  return gulp.src(['test/*.js'])
+    .pipe(mocha({
+      compilers:babel
+  }));
+});[/code]
+
+Firstly, we're importing the gulp, mocha and babel dependencies in to our gulp file for use.  Next, we've created a task called <code>test</code> which will use the <code>gulp.src</code> function to find all files matching the supplied pattern and then pipe the contents into our mocha testing framework.  By passing the babel dependency through will ensure that mocha will interpret our ES6 code correctly.
+
+If we run this gulp task, we should receive a message telling us our tests are passing.
+
+[code lang=""shell""][09:00:00] Using gulpfile ~/_/gulpfile.js
+[09:00:00] Starting 'test'...
+
+  src/sum.js
+    ✓ should add 1 + 1 to make two
+
+  1 passing (6ms)
+[09:00:00] Finished 'test' after 245 ms[/code]
+
+Great, but right now we're no further forward than when we were running mocha manually.  By utilising <code>gulp.watch()</code>, we can listen for changes in our file and subsequently run our gulp tasks.  Let's take advantage of this by creating a new task which will watch for changes in our files and run our test suite.
+
+[code lang=""js""]gulp.task('tdd', function() {
+  return gulp.watch(['src/*.js','test/*.js'], ['test']);
+})[/code]
+
+When changes are made to any of the <code>.js</code> files in the <code>src/</code> or <code>test/</code> directories our entire test suite will re-run and instantly identify any problems with our changes.
+
+<h2>Extra Credit - Single Tests</h2>
+This approach is great for smaller test suites but as your TDD project grows, running hundreds to thousands of tests for each change can grind your productivity to a halt. <code>gulp.watch</code> also emits a <code>change</code> event that passes through information on the file that has been changed.  We can use this to listen for changes to our test suites and only run the suite that has been changed.  For this I will create a <code>tdd-single</code> task.
+
+[code lang=""js""]gulp.task('tdd-single', function() {
+  return gulp.watch('test/*.js')
+    .on('change', function(file) {
+      gulp.src(file.path)
+        .pipe(mocha({
+          compilers: babel
+        }))
+    });
+});
+[/code]
+
+This is perfect for unit testing scenarios where you are individual units of source code.
+
+<h2>Conclusion</h2>
+TDD is becoming a more and more important part of the development process for ensuring quality.  Gulp and Mocha work hand in hand to allow you to quickly create a solid testing environment and will save you headaches in the long run when trying to debug your code.
+
+The source for this blog post is <a href=""https://github.com/adam-cowley/quick-tdd-node"" target=""_blank"">available on github</a>.
+
+Happy testing!",JavaScript,gulp|javascript|mocha|node|tdd,quick-test-driven-development-setup-with-node-es6-and-gulp,http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/
+50,"ES6 Import & Export - A beginners guide","Importing and exporting modules is a big part of Javascript. Before ES6, importing modules could be included into a script by using the  <code>require()</code> function.  ES6 introduced the import and export keywords which brings Javascript more in line with programming languages like Java and Ruby.
+<h2>Basic Import</h2>
+To import a module into a script, you can use the <code>import</code> keyword.  Anyone who has looked at a React tutorial will recognise the following syntax:
+
+[code lang=js]import React from 'react';[/code]
+
+This will import the default package exported by the <code>react</code> npm package.
+
+<h2>Basic Export</h2>
+Similar to <code>module.exports</code>, you can export any class
+
+[code lang=js file=Relationship.js]class Relationship {
+    constructor(from, to, type, direction) {
+        this.from = from;
+        this.to = to;
+        this.type = type;
+        this.direction = direction;
+    }
+}
+
+export default Relationship;[/code]
+
+<h2>Export or Export Default?</h2>
+You may have noticed that I used the <code>export default</code> statement when exporting my module.  This is something that tripped me up a few times in the early stages.
+When using <code>export default</code>, you are telling the Javascript engine that the function or variable should be included as default.
+
+Like in the example above, we can import in the Relationship class with the following code.
+[code]import Relationship from './Relationship';[/code]
+At this point, it is worth pointing out that a default module can be imported to any variable name.  For example, if we wanted to import the class as <code>SomeRelationshipClass</code> we could also do so.
+[code]import SomeRelationshipClass from './Relationship';[/code]
+
+Exporting without the default keyword means we will have to use braces to import the file.  Say we want to export a constant for an outgoing relationship, we could add another export statement to the file.
+
+[code lang=js file=Relationship.js]export default class Relationship {
+     // ...
+}
+
+export const DIRECTION_IN = 'DIRECTION_IN';
+export const DIRECTION_OUT = 'DIRECTION_OUT';
+[/code]
+<b>Note:</b> I have changed the first line of the file to export the Relationship class directly.
+
+Now, we can import both the Relationship at the same time by encapsulating the <code>DIRECTION_OUT</code> variable in braces.
+
+[code]import Relationship, {DIRECTION_OUT} from './Relationship'[/code]
+
+We can also use the <code>as</code> keyword to rename the variable.
+
+[code]import Relationship, {DIRECTION_OUT as RELATIONSHIP_DIRECTION_OUT} from './Relationship'[/code]
+
+<h2>Object destructuring</h2>
+Destructuring is also something you see a lot in React examples and it can look confusing. You may have seen something similar to the following:
+
+[code]import ReactNative from 'react-native';
+const {
+  AppRegistry,
+  NavigatorIOS,
+  StyleSheet,
+} = ReactNative;[/code]
+
+In short, it is a quick way of extracting variables from a class.  The equivalent would be:
+
+[code]const AppRegistry = ReactNative.AppRegistry;
+const NavigatorIOS = ReactNative.NavigatorIOS;
+const StyleSheet = ReactNative.StyleSheet;[/code]
+
+Destructuring is a big topic, you can <a target=""_blank"" href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment"">read more on Destructuring & Assignment on MDN</a>.
+
+<h2>Conclusion</h2>
+Imports and Exports in ES6 are a lot clearer to deal with than the previous <code>module.exports</code>.  Once you've mastered the export/export default subtleties you should have no problems.
+",JavaScript,es2015|export|import|javascript|reference,es6-import-export-a-beginners-guide,http://www.adamcowley.co.uk/javascript/es6-import-export-a-beginners-guide/
+74,"Wordpress Recommendations with Neo4j - Part 1: Data Modelling","Wordpress is arguably the world's most popular CMS with reportedly almost a quarter of the internet running  on a Wordpress install.  When done correctly, Wordpress can be a great tool to build a website quickly and in a cost effective manner.
+
+Part of the attraction is arguably the wealth of themes and plugins built around Wordpress' easy-to-use API.  The function you are looking for can be as easy as <code>the_title()</code> to print the posts title to <code>get_the_content()</code> to return the content of the post.
+
+The Wordpress API also comes with a <a href=""https://codex.wordpress.org/Plugin_API/Action_Reference"" target=""_blank"">huge list of Actions</a> out of the box which allow you to quickly extend functionality.  In this post, I will be using Wordpress hooks to sync information with Neo4j in order to provide real time recommendations.
+
+<h2>TL;DR:</h2> The accompanying code for this blog post is available on github at <a href=""https://github.com/adam-cowley/neo4j-wordpress"" target=""_blank"">github.com/adam-cowley/neo4j-wordpress</a>.
+
+
+<h2>Installing Neo4j</h2>
+Graph's are everywhere.  They're also great for <a href=""https://neo4j.com/blog/bootstrapping-recommendation-engine-neo4j/"" target=""_blank"">real time recommendations</a>.    The Neo4j is the world's leading Graph Database with a great community and <a href=""https://neo4j.com/graphgists/"" target=""_blank"">many use cases online </a>that are beyond the scope of this post.  If you haven't yet, <a href=""https://neo4j.com/download/"" target=""_blank"">head over to neo4j.com</a> and follow the installation instructions.
+<h2>Our Model</h2>
+The key to setting up our Recommendation Engine is to only adding the information that we need to provide useful recommendations.  Out of the box, Wordpress comes Posts, Pages and Taxonomies.   This will give us enough information to start providing Content based recommendations.  Along with this, we can also track User and Session behaviour which will allow us to start providing Collaborative Filtering, combining both to create what is known as a Hybrid Recommendation Engine.
+
+To start with, we should be looking at the graph model below.
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/wordpress-recommendation-model.png""><img class=""alignnone size-medium wp-image-79"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/wordpress-recommendation-model.png"" alt=""wordpress-recommendation-model"" /></a>
+
+A <code>User</code> will <code>author</code> a <code>Post</code>, which will be categorised with at least one Wordpress <code>Taxonomy</code>. This will be a good start to provide Content Based Recommendations. We can also use Neo4j to store the User's behaviour and use that information to build better recommendations using Collaborative Filtering.
+
+In the first instance, we should look to bring in a Post with it's related taxonomies and it's related author.  Later on we will look at how we can use Wordpress to track user behaviour to build better recommendations.
+
+As Neo4j is a schemaless database, the key is to get the information into a database as quickly as possible.  Once the information is in there, we can use Cypher to update the model and create more relationships as necessary.
+<h2>Installing Dependencies</h2>
+Neo4j comes with officially supported drivers for all major languages, from Java and Python to Node and C#. As we're using Wordpress, we can use the <a href=""https://github.com/graphaware/neo4j-php-client"">GraphAware PHP Client</a> to connect to Neo4j.  The quickest route is to install Neo4j using composer.  Let's set up a new directory inside our <code>wp-content/plugins</code> folder and run <code>composer init</code>.
+
+[code]
+cd wp-content/plugins
+mkdir neopress
+cd neopress
+composer init
+[/code]
+
+This should run the Composer config generator.  After following the steps you should now have a <code>composer.json</code> file.  Install the Client by running the following command:
+
+[code]composer require graphaware/neo4j-php-client:^4.0[/code]
+<h2>Plugin Configuration</h2>
+By default, Neo4j comes with authorisation enabled. We will need a page in the admin panel that will allow us to provide this configuration as a Wordpress page. I'm going to rush through this bit, but there are many great posts out there on how to set create a Wordpress plugin. First, let's create our plugin file.
+
+[code file='index.php' lang=php]&lt;?php
+/**
+Plugin Name: Neopress
+Description: Neo4j Recommendation Engine for Wordpress
+Version: 1.0
+Author: Adam Cowley
+Author URI: http://wecommit.co
+License: GPLv2 or later
+Text Domain: neopress
+*/
+
+namespace Neopress;
+
+// No Hackers
+defined( 'ABSPATH' ) or die( 'No dice.' );
+
+class Neopress {
+    // Our code will go here...
+}
+[/code]
+
+If all has gone well, we should now see a Neopress plugin ready to activate in the plugin section of our WP admin. Head over and click Activate. All good? Cool. Let's create our admin page.
+
+To connect to Neo4j with the PHP driver, we will need to configure a Host, Port, Username and Password. For brevity, I have excluded the legwork for generating this form but you can view it [here].  <a href=""https://codex.wordpress.org/Creating_Options_Pages"" target=""_blank"">Click here to see full instructions on how to set up an Options page in Wordpress</a>. Once set up, we should see a form below. Filling out the fields will save the configuration to the <code>wp_options</code> table.
+
+You can <a href=""https://github.com/adam-cowley/neo4j-wordpress/blob/master/Admin.php#L24"" target=""_blank"">see the full code to create the settings page</a> in the repository.
+
+<img class=""alignnone size-medium wp-image-88"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/Screen-Shot-2017-03-06-at-17.30.36-250x314.png"" alt=""Screen Shot 2017-03-06 at 17.30.36"" />
+
+&nbsp;
+
+Now, we need to set up a connection to Neo4j.  As my plugin functions are all statically called, I have chosen to set a static property in a singleton pattern.  Open up index.php and add the following code to return a singleton instance.
+
+[code file=index.php lang=php]/**
+ * Get Neo4j Client Instance
+ *
+ * @return GraphAware\Neo4j\Client\Client
+ */
+public static function client() {
+    if ( !static::$_client ) {
+        // Create Neo Client
+        $connection_string = sprintf('://%s:%s@%s:',
+            get_option('neopress_username', 'neo4j'),
+            get_option('neopress_password', 'neo'),
+            get_option('neopress_host', 'localhost'),
+            get_option('neopress_port', '')
+    );
+
+    static::$_client = ClientBuilder::create()
+        -&gt;addConnection('default', 'http'. $connection_string .get_option('neopress_port', 7474))
+        -&gt;addConnection('bolt', 'bolt'. $connection_string .get_option('neopress_bolt_port', 7876))
+        -&gt;build();
+    }
+
+    return static::$_client;
+}[/code]
+
+Now this method is available, you should be able to use the static  <code>client()</code> method to run a Cypher query.
+
+[code lang=php]Neopress::client()-&gt;run('MATCH (n) RETURN COUNT(n)');[/code]
+
+Now we're ready to get our hands dirty with Wordpress hooks.
+
+<h2>Hooks</h2>
+
+As I mentioned earlier on, there are hundreds of Wordpress hooks.  Each of these make Wordpress really easy to extend.  Actions within the Wordpress core are called by the <code>do_action()</code> and <code>do_action_ref_array()</code> functions at various stages and span a wide range of action types from framework initiation and admin actions to printing footer scripts and shutdown.
+
+The hooks that we're particularly interested in are the ones that either create, update or delete a post or category. A quick CMD+F on the <a href=""https://codex.wordpress.org/Plugin_API/Action_Reference"" target=""_blank"">Action Reference page</a> shows us that we could listen for the following actions to keep our graph up to date.
+
+<ul>
+	<li>save_post - Run when a post or page is created or updated.</li>
+	<li>updated_postmeta - Run when meta data has been updated.</li>
+	<li>trashed_post - Run when a post has been trashed</li>
+	<li>untrash_post - Run when a post has been removed from the trash.</li>
+	<li>deleted_post - Run when a post has been deleted from the database.</li>
+	<li>create_category - Run after a category has been created.</li>
+	<li>edit_category - Run when a category is updated.</li>
+	<li>delete_category - Run when a category is deleted</li>
+</ul>
+
+<h3>save_post</h3>
+
+When the <code>save_post</code> action is called, we will be passed the <code>$post_ID</code> as a single argument.  At this point, we will not know whether this is a newly created post or an update to an existing post. Lucky, Neo4j's <code>MERGE</code> keyword allows us to run an upsert query, matching on existing properties and setting properties on <code>CREATE</code> or <code>MATCH</code>ing existing records.  Once we have checked that the post isn't a revision, we should run a query to make sure our post is up to date in Neo4j.
+
+Our unique identifier for a Post will be it's ID, so let's go ahead and make this property a unique constraint.
+
+[code lang=cypher]CREATE CONSTRAINT ON (p:Post) ASSERT p.ID IS UNIQUE[/code]
+
+Now that we have our function ready, we can use the <code>add_action</code> function to hook in our code.  Firstly, let's create a new Post.php file in our project folder to hold the hook logic.
+
+[code file=Post.php]&lt;?php
+namespace Neopress;
+
+class Post {
+    public static function merge($post_id) {
+        // Our code will go here...
+    }
+}[/code]
+
+Now we've got our code.  In index.php, add the following code to register the hook. 
+
+[code file=""index.php""]add_action('save_post',  Post::class.'::merge');[/code]
+
+This will make sure that when the <code>save_post</code> hook is called, the static merge method in our Post class will be called.
+
+In our hook, we need to do two things.  Firstly, we need to make sure our categories exist in the database, then make sure that our post has the right properties set against it, before finally make sure that the post has the correct categories attributed to it.
+
+To create the Cypher query to persist our Categories and Tags. As both are considered <i>taxonomy terms</i>, we should store these with a common label.  Neo4j allows us to hold several labels against a node.  This way we can run queries against both, or use the specific labels to differentiate between them.  First, let's create a constraint on the Taxonomy label.
+
+[code lang=cypher]CREATE CONSTRAINT ON (t:Taxonomy) ASSERT c.term_id IS UNIQUE[/code]
+
+Now, let's create a new class with a method that will add a merge query to our transaction.
+
+[code file=Category.php]&lt;?php
+namespace Neopress;
+
+use GraphAware\Common\Transaction\TransactionInterface;
+use WP_Term;
+
+class Category {
+    /**
+     * Create a Cypher Query for a Category
+     *
+     * @param  Int $post_id
+     * @return void
+     */
+    public static function merge(TransactionInterface $tx, WP_Term $category) {
+        $cypher = sprintf('
+            MERGE (t:Taxonomy:Category {term_id: {term_id}})
+            SET t += {category}
+        ');
+
+        $tx->push($cypher, ['term_id' => $category->term_id, 'category' => (array) $category]);
+    }
+}
+[/code]
+
+Here we've got a simple query that will merge a Category on it's term_id and then bulk set the properties based on what we provide in the category parameter. We can also do the same for Tags, I've omitted this for brevity but you can <a href=""https://github.com/adam-cowley/neo4j-wordpress/blob/master/Tag.php"" target=""_blank"">view this file in the repository</a>.  Now we have these queries, let's add the logic to our merge method.  
+
+As Neo4j is a transactional database, we can use the PHP SDK's <code>transaction()</code> method to create a transaction and run these queries in the same batch.  Combining our queries into a single transaction will allow us to rollback our changes should anything go wrong.
+
+
+[code lang=php]// Create a new Transaction
+$tx = Neopress::client()->transaction();
+
+// Store an array of Term ID's to merge later
+$terms = [];
+
+// For each category, add a MERGE query to our Batch
+$categories = get_the_category($post_id);
+foreach ($categories as $category) {
+    array_push($terms, $category->term_id);
+    Category::merge($tx, $category);
+}
+
+// ...and the same for tags
+$tags = get_the_tags($post_id);
+foreach ($tags as $tag) {
+    array_push($terms, $tag->term_id);
+    Tag::merge($tx, $tag);
+}[/code]
+
+The next step is to update the post details.  At this stage we don't need to go overboard with meta data for the post.  Let's just add the permalink, title and status to the post.
+
+[code lang=php file=Post.php]// Write Cypher MERGE query
+$cypher = sprintf('
+    MERGE (Post {ID: {post_id}})
+    ON CREATE SET p.created_at = timestamp()
+    ON MATCH SET p.updated_at = timestamp()
+    SET p.permalink = {permalink},
+        p.title = {title},
+        p.status = {status}
+');
+
+// Set Parameters
+$params = [
+    'post_id' => $post_id,
+    'permalink' => get_permalink( $post_id ),
+    'title' => get_the_title( $post_id ),
+    'status' => get_post_status( $post_id ),
+];
+
+// Add to Transaction
+$tx->push($cypher, $params);
+[/code]
+
+The last step is then to create the relationships between our posts and the categories.  
+
+[code lang=php file=Post.php]// Detach Taxonomies
+$cypher = 'MATCH (p:Post {ID: {post_id}})-[r]->(:Taxonomy) DELETE r';
+$params = ['post_id' => $post_id];
+
+$tx->push($cypher, $params);
+
+
+// Relate to new Taxonomies
+$cypher = '
+    MATCH (p:Post {ID: {post_id}})
+    WITH p, {terms} as terms
+    UNWIND terms AS term_id
+    MATCH (t:Taxonomy) where t.term_id = term_id
+    MERGE (p)-[:HAS_TAXONOMY]->(t)
+';
+
+$params = [
+    'post_id' => $post_id,
+    'terms' => $terms
+];
+
+$tx->push($cypher, $params);[/code]
+
+
+Then we just need to make sure that we commit the transaction to save our node and relationships.
+
+[code lang=php]
+// Run it
+$tx->commit();
+[/code]
+
+Once everything has been set up, log into the Wordpress control panel and create a new post.  If all has gone well, you should see your graph starting to populate as you save and update your posts.
+
+<img src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/wordpress-recommendations-taxonomies.png"" alt="""" class=""alignnone size-full wp-image-111"" />
+
+
+<h2>Conclusion</h2>
+
+We've used Wordpress actions to create the functionality to synchronise our Wordpress database with Neo4j.  In Part 2, we will look at how we can use the information in this database to create a Content based Recommendation Engine.
+
+<a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-with-neo4j-part-2-content-based/"">Click here to read  Wordpress Recommendations with Neo4j Part 2: Content Based Recommendations</a>.","Neo4j|Recommendation Engine",neo4j|php|tutorials|wordpress,wordpress-recommendations-neo4j-part-1-data-modelling,http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/
+117,"WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations","<div style=""display:none"">
+This post is part of a series on building a recommendation engine with Wordpress. If you haven't already done so, check out the posts below:
+<ol>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1/"">Part 1: Hooks</a></li>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/"">Part 2: Content Based Recommendations</a></li>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/"">Part 3: Collaborative Filtering</a></li>
+</ol>
+</div>
+
+
+<h2>Content Based Recommendations</h2>
+
+Now that we have some data in our Database, we can use the information to create recommendations for the user.  The simplest recommendation we can provide is recommending posts in the same category.  
+
+[code]MATCH (p:Post)-[:HAS_TAXONOMY]-&gt;(:Taxonomy)&lt;-[:HAS_TAXONOMY]-(recommended:Post)
+WHERE p.ID = 1234
+RETURN recommended[/code]
+
+However, Wordpress does this already.  We can do <em>a lot</em> better.  As we also have the post's author, we can use this information as an additional recommendation criteria.  If a  site has multiple authors, this could be a good indicator of post quality and therefore our recommendations should treat it as such.  
+
+<h2>Relating the Author</h2>
+Firstly, let's create a function to merge the User into our Graph by their ID.
+
+[code]CREATE CONSTRAINT ON (u:User) ASSERT u.user_id IS UNIQUE[/code]
+
+[code lang=php file=User.php]&lt;?php
+namespace Neopress;
+
+use GraphAware\Neo4j\Client\Transaction\Transaction;
+
+class User {
+
+    /**
+     * Create a Cypher Query for a Category
+     *
+     * @param  Int $post_id
+     * @return void
+     */
+    public static function merge(Transaction $tx, $user_id) {
+        $cypher = 'MERGE (u:User {user_id: {user_id}})';
+
+        $tx->push($cypher, ['user_id' => $user_id]);
+    }
+
+}
+[/code]
+
+Now, we can add the extra queries to our transaction that will run this merge query and attach the User to their post via an <code>:AUTHORED</code> relationship.
+
+[code lang=php file=Post.php] // Create Author
+User::merge($tx, $author);
+
+// Relate Author to Post
+$cypher = '
+    MATCH (p:Post {ID: {post_id}})
+    MATCH (u:User {user_id: {user_id}})
+    MERGE (u)-[:AUTHORED]->(p)
+';
+
+$tx->push($cypher, ['post_id' => $post_id, 'user_id' => $user_id]);[/code]
+
+If you hit Update on your post, you will now see that the User has been related to the post.  
+
+It's worth noting at this stage that the our <code>:AUTHORED</code> relationships are directed towards our Post where the <code>:HAS_TAXONOMY</code> relationship is an outward relationship to our Taxonomy nodes. Luckily, Neo4j allows us to traverse in both directions by omitting a direction and traverse multiple types by separating them by a pipe (|).  As we'd like to give our <code>:AUTHORED</code> relationship more weight than a categorisation, I have added in a quick <code>CASE</code> statement to give the recommendation a score based on the type of connection.
+
+[code lang=cypher]MATCH (p:Post {ID: 110})-[:HAS_TAXONOMY|AUTHORED]-(target)-[:HAS_TAXONOMY|AUTHORED]-(recommendation:Post)
+WITH  labels(target) as labels, recommendation.title as recommendation, case when 'User' in labels(target) then 10 else 5 end as weight
+RETURN recommendation, collect(DISTINCT labels) as labels, sum(weight) as weighting
+ORDER BY weighting DESC LIMIT 5[/code]
+
+<table>
+<thead>
+<tr>
+<th>recommendation</th>
+<th>labels</th>
+<th>weighting</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>WordPress Recommendations with Neo4j</td><td>[[User],[Taxonomy,Category]]</td><td>15</td></tr>
+<tr><td>Quick TDD setup with Node, ES6, Gulp and Mocha</td><td>[[User],[Taxonomy,Category]]</td><td>15</td></tr>
+<tr><td>ES6 Import & Export – A beginners guide</td><td>[[User],[Taxonomy,Category]]</td><td>15</td></tr>
+<tr><td>ES6 Promises – 5 Things I Wish I’d Known</td><td>[[User],[Taxonomy,Category]]</td><td>15</td></tr>
+<tr><td>2,100 startups in 1 building?</td><td>[[Taxonomy,Category]]</td><td>5</td></tr>
+</tbody>
+</table>
+
+Although the last post is in the same category, as the post is written by another User it receives a lower score than the rest.  Now that we've got  a working query, let's create a new <code>Recommendation</code> class that we can use in our Themes.
+
+[code lang=php file=Recommend.php]&lt;?php
+namespace Neopress;
+
+use WP_Query;
+
+class Recommend {
+
+    /**
+     * Provide a simple list of recommendations by Taxonomy
+     *
+     * @param  int $post_id [description]
+     * @return WP_Query
+     */
+    public static function byTaxonomy($post_id) {
+        $cypher = '
+            MATCH (p:Post)-[:HAS_TAXONOMY]-&gt;(:Taxonomy)&lt;-[:HAS_TAXONOMY]-(recommended:Post)
+            WHERE p.ID = {post_id}
+            AND recommended.status = ""publish""
+            RETURN id(recommended) as ID, recommended.created_at
+            ORDER BY recommended.created_at DESC
+            LIMIT 5
+        ';
+
+        $params = ['post_id' => $post_id];
+
+        $results = Neopress::client()->run($cypher, $params);
+
+        // Get Post IDs from Query
+        $ids = [];
+
+        foreach ($results->getRecords() as $row) {
+            array_push($ids, $row->get('ID'));
+        }
+
+        // Query
+        return new WP_Query([
+            'post__in' => $ids
+        ]);
+    }
+
+}[/code]
+
+In this file I have created a static method that will run a Cypher query to get our recommendations, take the ID's and then use these to run a WP_Query to get the posts from the Wordpress with the matching IDs.  We can use this in our Themes by calling the method statically.
+
+[code lang=php]$posts = Neopress\Recommend::byWeighting(get_the_id());
+foreach ($posts as $post) {
+    // Echo Something
+}
+[/code]
+
+<h2>Conclusion</h2>
+
+Now we've done the heavy lifting, we can see that providing contextual recommendations is relatively simple.  To improve the recommendations we could look at supplementing the graph with extra information from our posts, or using the <code>updated_post_meta</code> action to add extra meta data and relationships into to the graph. Ultimately, the recommendation engine is only as good as the information.
+
+Next we will look at using Collaborative Filtering to provide a more personalised recommendation.","Neo4j|Recommendation Engine",Cypher|neo4j|Recommendations|wordpress,wordpress-recommendations-with-neo4j-part-2-content-based,http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-with-neo4j-part-2-content-based/
+148,"WordPress Recommendations with Neo4j – Part 3: Collaborative Filtering","This post is part of a series on building a recommendation engine with Wordpress. If you haven't already done so, check out the posts below:
+<ol>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/"">Part 1: Data Modelling</a></li>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-with-neo4j-part-2-content-based/"">Part 2: Content Based Recommendations</a></li>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/"">Part 3: Collaborative Filtering</a></li>
+ 	<li><a href=""https://github.com/adam-cowley/neo4j-wordpress"" target=""_blank"">TL;DR - View The Repository</a></li>
+</ol>
+<h2>Collaborative Filtering</h2>
+In it's simplest terms, Collaborative Filtering is a method of making automated predictions for a user based on the behaviour and preferences of other users. By tracking the behaviour of users through the website, we can provide new users with a contextual recommendation.
+
+In order to provide these recommendations, firstly we will need to start tracking the User's path through the website. The easiest way to do this would be to create a cookie with a unique identifier for the user. By setting this cookie to expire in 30 days, we can make sure when the user returns we are able to identify the user. Using PHP's <code>session_id()</code> will allow us to track what the User does within a session and give us further insights.
+
+First we need to create a function that will start the session and identify the user.
+
+[code file=index.php lang=php]/** @var string User ID */
+private static $_user;
+
+/**
+* Make sure a session has been started so we have a unique Session ID
+* @return void
+*/
+public static function session() {
+    // Start Session
+    session_start();
+
+    // Identify User
+    static::identify();
+}
+
+/**
+* Identify the current User or create a new ID
+*
+* @return void
+*/
+private static function identify() {
+    if ( array_key_exists('neopress', $_COOKIE) ) {
+        static::$_user = $_COOKIE['neopress'];
+    }
+    else {
+        static::$_user = uniqid();
+    }
+
+    $expires = time()+60*60*24*30;
+    $path = '/';
+
+    setcookie('neopress', static::$_user, $expires, $path);
+}[/code]
+
+Then add this function to the init action so it will run as Wordpress loads.
+
+[code file=index.php lang=php]add_action('init', Neopress::class .'::session');[/code]
+
+Now we know who the User is, we need to track their path through the site. Let's create a Session class to hold our logic. On each page load, we want to make sure the User and Session records exist, create a new Pageview node linked to the post that they are visiting. At this stage, we can also create a <code>:NEXT</code> relationship between each Pageview so we can see in which order the content of the site is consumed.
+
+[code file=Session.php lang=php]&lt;?php
+namespace Neopress;
+
+class Session {
+
+    /**
+     * Create a Cypher Query for a Category
+     *
+     * @return void
+     */
+    public static function log() {
+        // Merge Page
+        $cypher = 'MERGE (p:Post {ID: {page_id}})';
+        $params = ['page_id' =&gt; get_the_ID()];
+
+        // Attribute the Pageview to a Session
+        if ( $session_id = session_id() ) {
+            // Set User's Wordpress ID if logged in
+            if ($user_id = get_current_user_id()) {
+                $cypher .= ' MERGE (u:User {user_id:{user_id}})';
+                $cypher .= ' SET u.id = {id}';
+
+                $params['user_id'] = $user_id;
+            }
+            else {
+                $cypher .= ' MERGE (u:User {id: {id}})';
+            }
+
+            // Create Session
+            $cypher .= ' MERGE (s:Session {session_id: {session_id}})';
+
+            // Attribute Session to User
+            $cypher .= ' MERGE (u)-[:HAS_SESSION]-&gt;(s)';
+
+            // Create new Pageview
+            $cypher .= ' CREATE (s)-[:HAS_PAGEVIEW]-&gt;(v:Pageview {created_at:timestamp()})';
+
+            // Relate Pageview to Page
+            $cypher .= ' CREATE (v)-[:VISITED]-&gt;(p)';
+
+            $params['id'] = Neopress::user();
+            $params['session_id'] = $session_id;
+        }
+
+        // Create :NEXT relationship from last pageview
+        if (array_key_exists('neopress_last_pageview', $_SESSION)) {
+            $cypher .= ' WITH v';
+            $cypher .= ' MATCH (last:Pageview) WHERE id(last) = {last_pageview}';
+            $cypher .= ' CREATE (last)-[:NEXT]-&gt;(v)';
+
+            $params['last_pageview'] = $_SESSION['neopress_last_pageview'];
+        }
+
+        // Return Pageview ID
+        $cypher .= 'RETURN id(v) as id';
+
+        // Run Query
+        $result = Neopress::client()-&gt;run($cypher, $params);
+
+        // Store Last Pageview in Session
+        $_SESSION['neopress_last_pageview'] = $result-&gt;getRecord()-&gt;get('id');
+    }
+
+}[/code]
+
+Now, we can use the <code>shutdown</code> listener to run our code once a page has finished loading.
+
+[code file=index.php lang=php]class Neopress {
+    // ...
+
+    /**
+     * Register Shutdown Hook
+     *
+     * @return void
+     */
+    public static function shutdown() {
+        if (is_single()) {
+            Session::log();
+        }
+    }
+}
+
+add_action('shutdown', Neopress::class .'::shutdown');[/code]
+
+After a few clicks around the site, we can see a rich graph of information developing.
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/wordpress-recommendations-filtering.png""><img class=""alignnone size-full wp-image-156"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/03/wordpress-recommendations-filtering.png"" alt="""" /></a>
+<h2>Recommend Unread Posts</h2>
+Now that we have some information in the database, we can start to build up some more intelligent recommendations. Using our Cypher before, we can utilise the session information we have collected to filter out posts that this user has visited during their session or during previous visits to the site.
+
+[code lang=cypher]MATCH (s:Session) WHERE s.session_id = '3ch9ng6amor3m9a9rao91ikn51'
+MATCH (p:Post)-[:HAS_TAXONOMY|AUTHORED]-(target)-[:HAS_TAXONOMY|AUTHORED]-(recommended:Post)
+WHERE p.ID = 110
+AND recommended.status = ""publish""
+AND NOT ((s)-[:HAS_PAGEVIEW|VIEWED*2]-&gt;(p))
+WITH labels(target) as labels, recommended, case when ""User"" in labels(target) then 10 else 5 end as weight
+RETURN id(recommended) as ID, sum(weight) as weighting
+ORDER BY weighting DESC LIMIT 5[/code]
+
+We can even take it a step further and find all posts that the current user has not read during previous visits by adding a single line of cypher.
+
+[code lang=cypher]AND NOT ((s)&lt;-[:HAS_SESSION]-(:User)-[:HAS_SESSION|HAS_PAGEVIEW|VIEWED]-&gt;(p))[/code]
+<h2>Social Recommendations</h2>
+Social proof is a powerful tool. By creating the connection between users by using information either collected from the website or using third party - for example Facebook friends - we can provide valuable context about why the post has been recommended. In the following query, we use the connections between people to recommend posts that their connections have read. By using Cypher's <code>COLLECT</code> function, we can return a list of the friends to display to the user.
+
+[code lang=cypher]MATCH (u:User) WHERE id(u) = 169
+OPTIONAL MATCH (u)-[:CONNECTED_TO]-(friend:User)-[:HAS_SESSION|HAS_PAGEVIEW|VISITED*3]-&gt;(p:Post)
+WHERE NOT( (u)-[:HAS_SESSION|HAS_PAGEVIEW|VISITED*3]-&gt;(p) )
+WITH id(p) AS post_id, COLLECT(friend.name) AS friends
+RETURN post_id, friends, SIZE(friends) AS count
+ORDER BY count DESC LIMIT 5[/code]
+<table>
+<thead>
+<tr>
+<th>post_id</th>
+<th>friends</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>110</td>
+<td>[Adam, Joe, Jon]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>108</td>
+<td>[Adam, Jon]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>113</td>
+<td>[Joe, Jon]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>120</td>
+<td>[Matt]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>135</td>
+<td>[Adam]</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h2>Unearthing Hidden Gems</h2>
+Sometimes, it may be appropriate to provide the user with something completely different. As humans, we first look to belong and then to differentiate ourselves from the group. Nothing brings more value than a recommendation out of left field. Take music for example, you may like rock music but you've shown no interest in Blink 182 - that doesn't necessarily mean that deserves a recommendation. I hate Blink 182. At this point, there is more value in recommending things that your friends aren't listening to, the hidden gems in the database. The power of cypher means that with a simple tweak of the query, you can identify a completely different subgraph.
+
+If we take our <code>:CONNECTED_TO</code> relationship, we can filter out recommendations that our connections have the same taxonomy ratings but do not have an association with any connected Users. As we want to look at two connections regardless of who initiated the friendship, I have ommited the direction of the relationship in the query.
+
+[code lang=cypher]AND NOT ((s)&lt;-[:HAS_SESSION]-(:User)-[:CONNECTED_TO]-(friend:User)-[:HAS_SESSION|HAS_PAGEVIEW|VIEWED]-&gt;(p))[/code]
+<h2>Conclusion</h2>
+Throughout this series, we've learnt how to use Neo4j to provide better recommendations; from creating Wordpress hooks to synchronise our data with Neo4j to running cypher queries to pull out recommendations. These recommendations should provide users with a better experience and allow you to promote your quality content.
+
+Are you trying this? Is there anything you would do differently? Leave a comment below and let me know how you get on.","Neo4j|Recommendation Engine",,wordpress-recommendations-neo4j-part-3-collaborative-filtering,http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/
+189,"WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures","Since the 3.0 release of Neo4j, the system has supported <a href=""https://neo4j.com/docs/developer-manual/current/extending-neo4j/procedures/"">Procedures</a>.  Unlike <a href=""https://neo4j.com/docs/java-reference/current/"">Unmanaged Extensions</a> which are called via the REST API, Procedures can be invoked directly through a cypher statement.  The yielded values of the procedure, whether they be nodes, relationships or other arbitrary values can then be used within the cypher statement.
+
+[code lang=cypher]CALL my.procedure() YIELD node, score
+SET node.score = score[/code]
+
+Unfortunately for me, like Unmanaged Extensions, Procedures are written in Java.  However, luckily for me and the Neo4j community as a whole, Neo have already done a lot of the heavy lifting for us already and combined a huge number of utilities and algorithms into a single, easy to install package.  Introducing, <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/"">APOC Procedures</a>.
+<h2>APOC Procedures</h2>
+APOC - the technician of the Nebuchadnezzar in the Matrix, ""Awesome Package of Components"" or ""Awesome Procedures on Cypher""  depending on who you ask - comes with over 200 procedures out of the box and thanks to the awesome Neo4j community that number is constantly growing.  APOC procedures range from anything as simple as loading JSON from a URL and date and time utilities all the way to complex graph algorithms including betwenness, centrality and <a href=""https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm"">Dijkstra's shortest path</a> algorithm.
+<h3>Installing APOC</h3>
+Installing APOC is surprisingly easy.  All you need to do is head over to the Github repository, find the appropriate release for your version of Neo4j (3.1.x, 3.2.x), download the <code>apoc-3.x.jar</code> file and place it the <code>plugins</code> directory of your Neo4j install and restart the server.
+
+Once installed open up the explorer at :7474 and run the following query to get a list of all procedures with a name and description.
+
+[code lang=cypher]CALL apoc.help(""apoc"") YIELD name, text
+RETURN *[/code]
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42.png""><img class=""alignnone size-full wp-image-200"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/04/Screen-Shot-2017-04-03-at-12.22.42.png"" alt="""" /></a>
+
+The full documentation can be found at <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/"">https://neo4j-contrib.github.io/neo4j-apoc-procedures/</a>
+<h2>PageRank</h2>
+<a href=""https://en.wikipedia.org/wiki/PageRank"">PageRank</a>, named after Google cofounder Larry Page, is the algorithm used by Google to rank their search engine results.  The algorithm will use the number and quality of links to a node within our graph to provide a centrality score.  The higher the better.  PageRank uses a variant of what is known as Eigenvector Centrality, where the rank of nodes are affected by the ranking of adjacent nodes.  Relationships to higher scoring nodes will contribute more to the score of a node than the connections to any lower scoring nodes.
+
+In our recommendation graph,  the algorithm will count the connection to categories, and most importantly the links between Users and Posts to rank nodes by importance.
+
+One gotcha of this procedure in APOC, is that although we can specify the nodes we would like to calculate a score on, when calculating a PageRank for a set of nodes the procedure will compute scores for the entire graph at once.  In reality this is a good thing as the eigenvector centrality will mean, but this can be very memory intensive on larger graphs.
+
+We can view a list of PageRank queries by running the following query.
+
+[code lang=cypher]CALL apoc.help(""apoc.algo.pagerank"") YIELD name, text
+RETURN *[/code]
+<table class=""table data"">
+<thead>
+<tr>
+<th>name</th>
+<th>text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apoc.algo.pageRank</td>
+<td>CALL apoc.algo.pageRank(nodes) YIELD node, score - calculates page rank for given nodes</td>
+</tr>
+<tr>
+<td>apoc.algo.pageRankStats</td>
+<td>CALL apoc.algo.pageRankStats({iterations:_,types:_,write:true,...}) YIELD nodeCount - calculates page rank on graph for given nodes and potentially writes back</td>
+</tr>
+<tr>
+<td>apoc.algo.pageRankWithConfig</td>
+<td>CALL apoc.algo.pageRankWithConfig(nodes,{iterations:_,types:_}) YIELD node, score, info - calculates page rank for given nodes</td>
+</tr>
+<tr>
+<td>apoc.algo.pageRankWithCypher</td>
+<td>CALL apoc.algo.pageRankWithCypher({iterations, node_cypher, rel_cypher, write, property, numCpu}) - calculates page rank based on cypher input</td>
+</tr>
+</tbody>
+</table>
+&nbsp;
+
+To run PageRank, we need to provide a collection of nodes to the <code>apoc.algo.pageRank</code> procedure.
+
+[code]MATCH (p:Post) WITH COLLECT(p) as posts
+CALL apoc.algo.pageRank(posts) YIELD node, score
+RETURN node.title, score
+ORDER BY score DESC LIMIT 5[/code]
+
+This query will provide us with similar results to below.
+<table>
+<thead>
+<tr>
+<th>node.title</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WordPress Recommendations with Neo4j</td>
+<td>0.8957</td>
+</tr>
+<tr>
+<td>Quick TDD setup with Node, ES6, Gulp and Mocha</td>
+<td>0.6485</td>
+</tr>
+<tr>
+<td>ES6 Import &amp; Export – A beginners guide</td>
+<td>0.5532</td>
+</tr>
+<tr>
+<td>ES6 Promises – 5 Things I Wish I’d Known</td>
+<td>0.2284</td>
+</tr>
+<tr>
+<td>2,100 startups in 1 building?</td>
+<td>0.2124</td>
+</tr>
+</tbody>
+</table>
+We can also return scores for pages in a particular Category by tweaking the query above before passing the collection of nodes to the procedure.
+
+[code]MATCH (c:Category {slug:""neo4j""})&lt;-[:HAS_TAXONOMY]-(p:Post) WITH COLLECT(p) as posts
+CALL apoc.algo.pageRank(posts) YIELD node, score
+RETURN node.title, score
+ORDER BY score DESC LIMIT 5[/code]
+<h3>Configuring PageRank</h3>
+By default the <code>apoc.algo.pageRank</code> procedure will use all relationships in order to calculate a ranking.  From our dataset, you can see that we have taxonomy tags that at this stage may not be useful for ranking our nodes.
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/04/graph.png""><img class=""alignnone size-full wp-image-209"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/04/graph.png"" alt="""" /></a>
+
+The <code>apoc.algo.pageRankWithConfig</code> procedure will allow us to define types.  This procedure accepts two arguments, firstly the nodes to calculate scores from and a configuration object.  To specify the relationships that we would like to include, we can provide them in a pipe delimited string.  At this point, we can also set the number of iterations we would like to run while computing the graph.
+
+[code lang=cypher]MATCH (p:Post) WITH COLLECT(p) AS posts
+CALL apoc.algo.pageRankWithConfig(posts, {iterations:3, types:""VISITED""}) YIELD node, score
+RETURN node, score
+ORDER BY score DESC[/code]
+
+You can view the full documentation for the PageRank algorithm procedure at <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_pagerank_algorithm"">https://neo4j-contrib.github.io/neo4j-apoc-procedures/#_pagerank_algorithm</a>
+<h2>Other Useful Procedures</h2>
+PageRank is the tip of the iceberg when it comes to APOC procedures.  We could also look at using the following procedures to get some interesting insight into our Graph.
+<ul>
+ 	<li><code>apoc.algo.closeness</code> and <code>apoc.algo.betweeness</code> - calculate the connectivity and centrality and of users and articles.</li>
+ 	<li><code>apoc.spatial.*</code> - Use the User's location to provide location based recommendations or weight results by distance.</li>
+ 	<li><code>apoc.es.*</code> - Integrate results with Elasticsearch for better search based capabilities.</li>
+</ul>
+Check out the <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/"">Official User Guide</a> and <a href=""https://github.com/neo4j-contrib/neo4j-apoc-procedures"">Repository</a> for more inspiration.","Neo4j|Recommendation Engine",apoc|neo4j|pagerank|Recommendations,wordpress-recommendations-neo4j-part-4-pagerank-with-apoc,http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-4-pagerank-with-apoc/
+214,"Loading Twitter Data into Neo4j with APOC","For the Graph Hack at this years <a href=""http://graphconnect.com"">Graph Connect</a>, myself and the Dead Pony Club aimed to combine candidate datasets with donation data,  Twitter and fake news sources to attempt to find out which politicians, if any, were directly influenced by fake news.
+
+My task for the evening was to pull Twitter information into our Graph.  Being relatively new to the <a href=""https://github.com/neo4j-contrib/neo4j-apoc-procedures/"">APOC library</a>, I was genuinely surprised as to how easy this could be done with a couple of queries.  APOC comes with <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/index31.html#_load_json"">apoc.load.json</a> and <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/index31.html#_load_json_from_twitter_with_additional_parameters""> apoc.load.jsonParams</a> functions that make it really easy to ingest third party APIs with Cypher and load them directly into the graph without writing an application.
+<h2>Getting a valid Access Token</h2>
+The first step was to get a valid access token that would be used to identify the user and grant access to the API.   You can create your own application by logging into <a href=""https://apps.twitter.com/"">Twitter Application Management</a>.  Once you have an application, head to the Keys and Access Tokens tab and take the Consumer Key and Consumer Secret.  These should be Base64 encoded in <code>{key}:{secret}</code> format and then posted to Twitter's API as a Basic authorization header.
+
+[code]<span class=""s1"">curl -X POST ""https://api.twitter.com/oauth2/token""
+-H ""Authorization: Basic &lt;Base64EncodedValue&gt;"" -d ""grant_type=client_credentials""[/code]</span>
+
+The API will return a bearer token that can then be used in all of our queries.
+
+[code]<span class=""s1"">{""token_type"":""bearer"",""access_token"":""AAAAAAAAAAAAAAAAAAAAAIivBQ...""}[/code]</span>
+
+There are more elegant ways of setting this up for use in a Cypher query but for brevity I ended up setting a parameter in the Neo4j Browser.  This also closely mimics the way you would run a cypher query from an application using parameters.
+
+[code]:param token: &lt;access_token property&gt;[/code]
+<h2>Retrieving a Tweet</h2>
+I wanted to write a cypher query that could be as close to a real world implementation as possible.  I also wanted the dataset to grow organically.  With that in mind,  the best approach was to create a query that would find any tweets in the database with an ID but no inward <code>:TWEETED</code> relationship, pull the information from the graph.
+
+I picked <a href=""https://twitter.com/adamcowley/status/847738850990411776"">a tweet</a> that I knew had a lot of information against it; a retweet of another tweet, with retweets of it's own, mentions and hashtags and created that node in the database.
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57.png""><img class=""alignnone size-full wp-image-224"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/05/Screen-Shot-2017-05-16-at-14.30.57.png"" alt="""" /></a>
+
+[code lang=cypher]CREATE (t:Tweet {id_str:""847738850990411776""})[/code]
+
+The next step was to use APOC to get the information from the Twitter API.    As I mentioned earlier, the APOC library comes with two functions for pulling JSON.  <code>apoc.load.json </code> can be used in scenarios where only a simple HTTP GET request is required but as I needed to provide a bearer token this required using <code>apoc.load.jsonParams</code>.  <code>jsonParams</code> accepts three arguments; the URL, a map of configuration options and the request payload in string format.
+
+[code lang=cypher]WITH
+'https://api.twitter.com/1.1/statuses/show.json?id=' as url,
+{token} as token // set in our :param token:'...' query
+MATCH (t:Tweet)
+WHERE NOT (t)&lt;-[:TWEETED]-()
+CALL apoc.load.jsonParams(url + t.id_str, {Authorization:""Bearer ""+token},null) yield value
+RETURN value[/code]
+<table>
+<thead>
+<tr>
+<th>""value""</th>
+</tr>
+</thead>
+<thead>
+<tr>
+<td>{""coordinates"":null,""retweeted"":false,,""entities"":{""hashtags"":[{""text"":""graphconnect"",""indices"":[68,81]}],...}</td>
+</tr>
+</thead>
+</table>
+Straight away, I was able to pull an output and API it into the value property.  From then it was just a case of taking the JSON output line by line and start to map the query.  I found that <a href=""http://www.markhneedham.com/blog/2017/02/28/neo4j-graphing-name-work-twitter-meme/"">Mark Needham's Graphing the 'My name is...' Twitter Meme</a> provided a good starting point but was falling over when I tried to import tweets that were not replies.  Instead I broke the query down into sections to create the single query.  In order to populate any replies I could just run the query again.
+
+[code lang=cypher]WITH t, value AS status, value.user AS user, value.entities AS entities
+
+// Update Tweet Properties
+SET t.text = status.text, t.created_at = status.created_at, t.retweet_count = status.retweet_count, t.favorite_count = status.favorite_count[/code]
+
+After using the <code>WITH</code> statement to pull out the information that I need from the response, I first go ahead and update the tweet node with the properties returned by the API.
+
+The next step was to create a relationship with the authoring user.  Firstly I needed to create the User within the database.  By using <code>MERGE</code> I was able to create a new <code>:User</code> node where none exists or simply update the node's properties if the node already exists before relating the User to the Tweet.
+
+[code lang=cypher]// Create Author
+MERGE (u:User {screen_name:user.screen_name})
+SET u.name = user.name, u.friends_count = user.friends_count, u.followers_count = user.followers_count, u.picture=user.profile_image_url
+MERGE (u)-[:TWEETED]-&gt;(t)[/code]
+
+The API result comes with an array of linked entities  including any Hashtags included in the tweet, any users mentioned in the tweet and any links along with their position in the text. Having this information in an array makes it easy to create in the graph. The array can be piped into a sub-statement using the <code>FOREACH</code> operation.  This approach can be used for Hashtags, Mentions and URLs.
+
+[code lang=cypher]// Create Hashtags
+FOREACH (h in entities.hashtags
+| MERGE (ht:Hashtag {name:h.text}) MERGE (t)-[:MENTIONS_HASHTAG]-&gt;(ht))
+
+// Mentions
+FOREACH (m in entities.user_mentions
+| MERGE (mu:User {screen_name:m.screen_name}) MERGE (t)-[:MENTIONS_USER]-&gt;(mu))
+
+// URLs
+FOREACH (m in entities.urls
+| MERGE (mu:URL {url:m.url}) MERGE (t)-[:MENTIONS_URL]-&gt;(mu))[/code]
+
+Creating relationships to quoted tweets and replied to tweets in a single query caused a few headaches. As the information is not always present, attempting to run a merge query on a null value meant that early queries would fall over.  Luckily, with a little hack I was able to create a statement would iterate through an array when these values existed, or where the information had not been provided Cypher would iterate through an empty array and the inner query would not be executed.
+
+This approach was used for both Quoted Statuses and Replies.
+
+[code lang=cypher]// Quoted Status?
+FOREACH (s in CASE WHEN status.quoted_status_id IS NOT NULL THEN [status.quoted_status] ELSE [] END | MERGE (qt:Tweet {id_str:s.id_str}) MERGE (t)-[:QUOTES_TWEET]-&gt;(qt) )
+
+// Reply to
+FOREACH (s_id_str in
+CASE WHEN status.in_reply_to_status_id_str IS NOT NULL
+THEN [status.in_reply_to_status_id_str]
+ELSE [] END
+| MERGE (qt:Tweet {id_str:s_id_str}) MERGE (t)-[:IN_REPLY_TO]-&gt;(qt) )[/code]
+<h2>Growing the Graph</h2>
+The query is designed to pick up any Tweet node without a relationship to an author and pull the information in. By design, any tweets that the API response mentions are created with only an <code>id_str</code> so they will be picked up the next time the query is run.
+
+The same approach can be taken to pulling in user information. Finding a newly created user, for example searching for any nodes without an <code>updated_at</code> property or where the record is out of date and pulling that information in from the Twitter API can be done in the same manner. Queries can also be written that call the API to find the User's timeline and create those Tweet nodes. Regular calls to find who a user follows and is followed by will also help to organically grow the graph.
+
+The flexibility of Cypher coupled with APOC's ability for you to talk to API's means that creating a graph based on third party data is extremely easy.",Neo4j,apoc|Cypher|neo4j|reference|twitter,loading-tweets-into-neo4j-with-apoc,http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/
+258,"Mastering Ouril with Neo4j","On a recent holiday to Cape Verde, I became obsessed with the local game <a href=""http://en.wikipedia.org/wiki/Oware"">Ouril</a>.
+<blockquote class=""instagram-media"" style=""margin: 1px; background: #FFF; border: 0; border-radius: 3px; box-shadow: 0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); max-width: 658px; padding: 0; width: calc(100% - 2px);"" data-instgrm-captioned="""" data-instgrm-version=""7"">
+<div style=""padding: 8px;"">
+<div style=""background: #F8F8F8; line-height: 0; margin-top: 40px; padding: 50.0% 0; text-align: center; width: 100%;""></div>
+<p style=""margin: 8px 0 0 0; padding: 0 4px;""><a style=""color: #000; font-family: Arial,sans-serif; font-size: 14px; font-style: normal; font-weight: normal; line-height: 17px; text-decoration: none; word-wrap: break-word;"" href=""https://www.instagram.com/p/BXx1vJ-gi0o/"" target=""_blank"" rel=""noopener"">Showing the locals how #Ouril can be improved with an install of Neo4j Enterprise edition. #alwaysbeclosing 🇨🇻</a></p>
+<p style=""color: #c9c8cd; font-family: Arial,sans-serif; font-size: 14px; line-height: 17px; margin-bottom: 0; margin-top: 8px; overflow: hidden; padding: 8px 0 7px; text-align: center; text-overflow: ellipsis; white-space: nowrap;"">A post shared by Adam Cowley (@adamcowley) on <time style=""font-family: Arial,sans-serif; font-size: 14px; line-height: 17px;"" datetime=""2017-08-14T15:10:39+00:00"">Aug 14, 2017 at 8:10am PDT</time></p>
+
+</div></blockquote>
+<script async defer src=""//platform.instagram.com/en_US/embeds.js""></script>
+
+Ouril is a strategy game originating in Africa (also known as Oware, Wari, Ayò amongst others) where the goal is to <i>sew</i> seeds counter-clockwise around a board of twelve holes 6 of each belonging to one of the two players. At the end of each move, if the last whole and any adjacent holes on the opposing players half of the board affected during a move have two or three seeds, these are then captured by that player. The aim of the game is to capture more seeds than your opponent.
+
+One thing that struck me about the game is how easy it would be to replicate the gameplay in Neo4j.
+
+&nbsp;
+<h2>Setting up the board</h2>
+<img style=""display: block; max-width: 420px; margin: auto;"" src=""https://scontent.flhr4-2.fna.fbcdn.net/v/t31.0-8/20776493_10155360970665923_6154710080411570953_o.jpg?oh=4106a4d6f59dc1d3c3920172a45c9f2d&amp;oe=5A2470DE"" alt=""The Board"" />
+At the start of the game, each of the 12 holes contain 4 seeds.  As the seeds inside each of these holes are sewn counter-clockwise, I have linked each hole in ascending order with the final bucket linking back to the hole at <code>position: 1</code>.
+
+[code file=""// 1. Create the board""]CREATE
+(b1:Bucket:P1Bucket {position: 1})-[:SEWS_TO]-&gt;
+(b2:Bucket:P1Bucket {position: 2})-[:SEWS_TO]-&gt;
+(b3:Bucket:P1Bucket {position: 3})-[:SEWS_TO]-&gt;
+(b4:Bucket:P1Bucket {position: 4})-[:SEWS_TO]-&gt;
+(b5:Bucket:P1Bucket {position: 5})-[:SEWS_TO]-&gt;
+(b6:Bucket:P1Bucket {position: 6})-[:SEWS_TO]-&gt;
+(b7:Bucket:P2Bucket {position: 7})-[:SEWS_TO]-&gt;
+(b8:Bucket:P2Bucket {position: 8})-[:SEWS_TO]-&gt;
+(b9:Bucket:P2Bucket {position: 9})-[:SEWS_TO]-&gt;
+(b10:Bucket:P2Bucket {position: 10})-[:SEWS_TO]-&gt;
+(b11:Bucket:P2Bucket {position: 11})-[:SEWS_TO]-&gt;
+(b12:Bucket:P2Bucket {position: 12})-[:SEWS_TO]-&gt;(b1)
+RETURN *[/code]
+
+Each hole starts with 4 seeds.  We should also create two players at this stage, give them a name and reset the number of seeds.
+
+[code file=""// 2. Reset the board""]MATCH (h:Hole) set h.seeds = 4
+
+MERGE (p1:Player {number: 1}) SET p1:NextPlayer, p1.name = 'Adam', p1.seeds = 0
+MERGE (p2:Player {number: 2}) SET p2.name = 'Lauren', p2.seeds = 0[/code]
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2017/08/ouril-1.png""><img class=""alignnone size-full wp-image-270"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2017/08/ouril-1.png"" alt="""" /></a>
+
+Now we have our board set up, it is time to play the first move.
+<h2>Playing the First Move</h2>
+When playing a move, a player will take all of the seeds from one of their holes and sew them into the adjacent holes.  Due to the <code>SEWS_TO</code> relationship, we can do this with a single Cypher query.
+
+As we will end up to reusing this query, we can parameterise it so we only have to reset the parameter before making the same move.
+
+[code]:param position:2[/code]
+
+Then we can make a move.
+
+[code file=""// 4. Play a move""]MATCH (target:Hole {position: {position} })
+with target.seeds as seeds, target
+SET target.seeds = 0
+with target, seeds
+MATCH path = (target)-[:SEWS_TO*12]-&gt;(:Hole)
+
+WITH seeds, nodes(path) as holes
+
+UNWIND range(1, seeds) as index
+WITH index, holes[index] as hole
+SET hole.seeds = hole.seeds + 1
+
+WITH head(collect(hole)) AS last
+SET last:LastHole[/code]
+
+When the move is played, the target Hole should first be emptied.  Then the query uses the <code>RANGE</code> function to create an array of numbers between 1 and the number of <code>seeds</code> currently inside the target hole.  These are then unwound using the <code>UNWIND</code> function to identify and increment each of the nodes within the path.  Finally, we take the last Hole node to be updated and give it a <code>:LastHole</code> label to use during the next step.
+<h2>Capturing Seeds</h2>
+Once a move has been played, all that is left is to collect up the captured seeds.  If the last hole or any adjacent holes clockwise to the last hole have two or three seeds, these are captured and added to the player's score.  At the end of the game, the player with the most seeds wins.  This query is slightly more complicated, but luckily Cypher can handle all of this for us.
+
+First we need to find the last hole added to, and then find a path backwards using a variable length path.  By setting the lower bound to 0, this will include the starting node inside the path.  As there can only be a maximum of 6 holes, I have capped the path to 6 traversals.  Once we have the path, we need to ensure that the holes belong to the opponent and that there are two or three seeds in each.  We can do this using the all list predicate.
+
+[code]MATCH (first:LastHole)
+WITH first, filter( label in labels(first) where label &lt;&gt; “LastHole”) as labels
+MATCH path = (first)&lt;-[:SEWS_TO*0..6]-(last:Hole)
+WHERE all( node in nodes(path) WHERE (node = first OR labels(node) = labels) AND node.seeds &gt;= 2 AND node.seeds &lt;= 3 )[/code]
+
+Once we've found all paths, we need to take the path with single path the highest number of nodes.  To find the total number of seeds captured in this round, we can use the <code>REDUCE</code> function to sum the number of seeds.
+
+[code]WITH labels, nodes(path) as holes, length(nodes(path)) as length, reduce(total = 0, n in nodes(path) | total + n.seeds) as captured
+ORDER BY length DESC LIMIT 1[/code]
+
+The captured seeds should then be added to the current players total.
+
+[code]MATCH (player:NextPlayer)
+SET player.seeds = player.seeds + captured
+REMOVE player:NextPlayer[/code]
+
+The :NextPlayer label should then be removed from the current player and added to the other player ready for their turn.
+
+[code]WITH player, holes
+MATCH (other:Player) WHERE other &lt;&gt; player
+SET other:NextPlayer[/code]
+
+Then we just need to remove the captured seeds from the holes.
+
+[code]WITH holes
+UNWIND holes as hole
+SET hole.seeds = 0[/code]
+
+Here is the query in full:
+
+[code file=""// 5. Capture the seeds""]//  Get the last hole
+MATCH (first:LastHole)
+// Get a list of the labels without the last hole
+WITH first, filter( label in labels(first) where label &lt;&gt; “LastHole”) as labels
+
+// Get the last 6 adjacent holes
+MATCH path = (first)&lt;-[:SEWS_TO*0..6]-(last:Hole)
+
+// Check that they have the same labels and have
+WHERE all( node in nodes(path) WHERE (node = first OR labels(node) = labels) AND node.seeds &gt;= 2 AND node.seeds &lt;= 3 )
+
+// Get the nodes within the path, number of nodes in the path and total captured seeds
+WITH labels, nodes(path) as holes, length(nodes(path)) as length, reduce(total = 0, n in nodes(path) | total + n.seeds) as captured
+
+// Only take the longest path
+ORDER BY length DESC LIMIT 1
+
+// Increment Captured and remove the NextPlayer label
+MATCH (player:NextPlayer)
+SET player.seeds = player.seeds + captured
+REMOVE player:NextPlayer
+
+// Set NextPlayer label on other player
+WITH player, holes
+MATCH (other:Player) WHERE other &lt;&gt; player
+SET other:NextPlayer
+
+// Remove the seeds from the Holes
+WITH holes
+UNWIND holes as hole
+SET hole.seeds = 0[/code]
+<h2>Transactions</h2>
+As Neo4j is an <a href=""https://en.wikipedia.org/wiki/ACID"" target=""_blank"">ACID compliant database</a>, we could batch these queries all up into a single transaction with any of the <a href=""https://neo4j.com/developer/"" target=""_blank"">official drivers</a>.  This would allow more advanced error checking and where applicable, the transaction could be rolled back if any player tried to break the rules.",Neo4j,Cypher|neo4j,mastering-ouril-with-neo4j,http://www.adamcowley.co.uk/neo4j/mastering-ouril-with-neo4j/
+284,"Using the Neo4j Driver in Spring Boot","By choice,  I'd normally steer clear of Java if I wanted to write a lightweight application, preferring to write something with express.  But since joining <a href=""http://www.neo4j.com"" target=""_blank"" rel=""noopener"">Neo4j</a> last summer, I've become exposed to Java on a daily basis, writing User Defined Functions &amp; Procedures in Neo4j.
+
+
+
+However, since being introduced to <a href=""https://spring.io/"" target=""_blank"" rel=""noopener"">Spring</a>, I've been impressed by how quickly you can get a REST API up and running.  Starting with <a href=""http://start.spring.io/"" target=""_blank"" rel=""noopener"">Spring Intializr</a>, and after a few @Annotations, you can have a production grade application with security up in minutes.  Spring also has an ecosystem of projects around it including Spring Data, a consistent approach to CRUD operations.
+
+<h2>Dependency Injection</h2>
+One of the features of the Spring Framework that I find most useful is Dependency Injection, the ability to inject decoupled implementations of an Interface without the application worrying about the specifics.  In Spring terms, these are called <code>Bean</code>s.  Any Plain-Old-Java-Object can be used as a Spring Bean and <em>""wired""</em> into a class or service.
+
+This is the simplest way that we can interact with Neo4j in a Spring application.
+<h3>Creating a Neo4j Driver <code>@Bean</code></h3>
+To create a Spring Boot application with Neo4j, first we'll need to add the neo4j-java-driver and spring boot dependencies.
+
+[code file=""build.gradle""]dependencies {
+  compile('org.neo4j.driver:neo4j-java-driver:1.5.1')
+
+  compile('org.springframework.boot:spring-boot-starter-web')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+}[/code]
+
+Once the dependencies are there, all we need to do is create a method that returns an instance of <code>org.neo4j.driver.v1.Driver</code> in the main application class and annotate it with the <code>@Bean</code> annotation.
+
+[code lang=""java"" file=""NeobeansApplication.java""]@SpringBootApplication
+public class NeobeansApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public Driver neo4jDriver() {
+        return GraphDatabase.driver(""bolt://localhost:7687"", AuthTokens.basic( ""neo4j"", ""p455w0rd"" ));
+    }
+
+}[/code]
+
+In this example, I am using a Basic auth token but Neo4j also supports Kerberos tokens and custom authentication schemes.
+
+Once the bean has been defined, we can <em>""wire""</em> this into any class, controller or component using the <code>@Autowired</code> annotation.
+
+[code lang=""java"" file=""PersonController.js""]@RestController
+public class PersonController {
+
+    @Autowired
+    Driver driver;
+
+    @RequestMapping(""/people"")
+    public List&lt;Map&lt;String, Object&gt;&gt; getIndex(
+            @RequestParam(defaultValue = ""1"") int page, 
+            @RequestParam(defaultValue = ""10"") int limit
+    ) {
+        try ( Session session = driver.session() ) {
+            Number skip = (page - 1) * limit;
+
+            String query = ""MATCH (p:Person) RETURN p ORDER BY p.name SKIP {skip} LIMIT {limit}"";
+            Map&lt;String, Object&gt; params = new HashMap&lt;String, Object&gt;() {{
+                put(""limit"", limit);
+                put(""skip"", skip);
+            }};
+
+            return session.readTransaction(tx -&gt; {
+               return tx.run(query, params)
+                       .list( row -&gt; row.get(""p"").asMap() );
+            });
+        }
+    }
+}
+[/code]
+
+The <code>@RestController</code> annotation will identify this class as a REST controller.
+
+As you can see, I have used the <code>@Autowired</code> annotation to inject an instance of the driver into the class.  This is then used to create a session, run a read query and return a paginated list of results.
+
+That's all there is to it...
+
+<h2>Adding Dynamic Configuration</h2>
+
+In the example above, the Neo4j credentials are hardcoded into the application.  This would never be a good idea for production grade code.
+
+We can use a <code>@Configuration</code> annotated class to pull properties from a configuration file.  First off, we'll need to configure gradle to read the values from <code>src/main/resources/application.properties</code>.
+[code file=""build.gradle""]processResources {
+    expand(project.properties)
+}[/code]
+
+We can then add the properties that we would like to load into the application to the <code>application.properties</code> file.
+
+[code file=""application.properties""]neo4j.scheme=bolt
+neo4j.host=localhost
+neo4j.port=7687
+
+neo4j.auth.type=basic
+neo4j.auth.username=neo4j
+neo4j.auth.password=p455w0rd[/code]
+
+To avoid clashes, I have prefixed each setting with <code>neo4j.</code>.  For forward compatibility, I have also split out the auth details - this way we can build support for custom schemes and kerberos authentication into the application.
+
+Next, we can create a <code>@Configuration</code> annotated class.  
+
+[code lang=""java"" file=""Neo4jConfiguration.java""]@Configuration
+public class Neo4jConfiguration {
+    // ...
+}[/code]
+
+In order to pull the properties into the application, we can annotate properties with <code>@Value</code>.  The annotation will take the full key of the property, prefixed with a <code>$</code> and wrapped in braces.
+
+[code]@Value(""${neo4j.scheme:bolt}"")
+private String scheme;[/code]
+
+In this example, I've provided a default value of <code>bolt</code>.  If you do not provide a default value and the setting, an exception will be thrown on start up.
+
+Next, we can use the value in <code>neo4j.auth.type</code> to create the appropriate token.
+
+[code lang=""java""]/**
+ * Use the neo4j.auth.type property to create an appropriate Auth Token
+ *
+ * @return AuthToken
+ */
+public AuthToken getAuthToken() {
+    switch ( authType ) {
+        case ""basic"":
+            return AuthTokens.basic(username, password);
+        case ""kerberos"":
+            return AuthTokens.kerberos(ticket);
+        default:
+            return AuthTokens.none();
+    }
+}[/code]
+
+Then combine the scheme, host, port and routing policy to create a valid URI.
+
+[code lang=""java""]
+/**
+ * Get the URI for the Neo4j Server
+ * @return String
+ */
+public String getUri() {
+    // Get the base URI (ie bolt://localhost:7474)
+    String uri = String.format(""%s://%s:%s"", scheme, host, port);
+
+    // If there is a CC routing policy, append it to the end of the string
+    if ( scheme == ""bolt+routing"" && routingPolicy != null ) {
+        uri += ""?policy=""+ routingPolicy;
+    }
+
+    return uri;
+}	
+[/code]
+
+Finally, we can move our driver <code>@Bean</code> into the configuration file and use the methods to create a URI and Auth Token.
+
+[code]/**
+ * Create a new Driver instance
+ *
+ * @return Driver
+ */
+@Bean
+public Driver neo4jDriver() {
+    String uri = getUri();
+    AuthToken token = getAuthToken();
+
+    return GraphDatabase.driver(uri, token);
+}[/code]
+
+Although the Bean definition has been moved, Spring is smart enough to pick up this change so we don't have to modify the rest controller.
+
+<h2>Conclusion</h2>
+
+Hopefully this post has given you an introduction to interacting with Neo4j inside a Spring application. Spring has a vast ecosystem and this post only scratches the surface.  For more information on Spring or the frameworks, head over to <a href=""http://spring.io"" target=""_blank"">spring.io</a>.  <a target=_blank href=""http://projects.spring.io/spring-data/"">Spring Data</a> is an interesting project that is well worth reading up on, and even features an extension that allows you to map plain old Java objects to Nodes in the graph using <a target=_blank href=""http://projects.spring.io/spring-data/"">Spring Data Neo4j</a>.
+
+<strong>You'll hear more on Spring Data Neo4j from me when Spring 2.0 is released.</strong>
+
+For now, the code to go with this blog post is <a href=""https://github.com/adam-cowley/neobeans"" target=_blank>available on Github</a>, feel free to clone, fork or create a pull request if you spot anything untoward.
+",Neo4j,"java|neo4j|spring|spring boot",using-the-neo4j-driver-in-spring-boot,http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/
+301,"Using Neo4j-OGM with Spring Boot","<a href=""http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/"">In my last post</a>, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the <a href=""https://github.com/neo4j/neo4j-ogm"" target=""_blank"" rel=""noopener"">Neo4j-OGM</a> to encapsulate your business logic into java objects that can be mapped directly to the graph.
+
+&nbsp;
+
+Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.  While calling Cypher queries through the official drivers can work well for smaller projects or complex queries, this can become hard work when working with larger applications.
+
+A set of simple annotations can turn any class into a Domain Entity that can be manipulated with Java and persisted through an OGM session.  The OGM uses Cypher under the hood to interact with Neo4j through either Bolt or HTTP(s) protocols or in embedded mode.
+
+The main benefit to this approach is that all domain knowledge can be encapsulated into code.  As a fan of Domain Driven Design, the patterns of repositories and services fit nicely into this pattern.
+<h2>Dependencies</h2>
+To get started with Neo4j-OGM, you'll need to include the Neo4j OGM Core and the appropriate driver dependency. In this case, I will be using the bolt driver.
+
+[code file=""build.gradle""]dependencies {
+    // ...
+    compile('org.neo4j:neo4j-ogm-core:3.0.1')
+    compile('org.neo4j:neo4j-ogm-api:3.0.1')
+    compile('org.neo4j:neo4j-ogm-bolt-driver:3.0.1')
+}[/code]
+
+Once you have the dependencies, you can start to create domain entities.
+<h2>Creating Entities</h2>
+In this post, we'll look at creating a simple social graph.  The graph will consist of <strong>:Person</strong> nodes related to each other with <strong>:KNOWS</strong> relationships.  Each person will have a first name, last name.  Each <strong>:KNOWS</strong> relationship will have a <em>createdAt</em> property.
+<h3>Identifiers</h3>
+The OGM uses an ID property to identify nodes and relationships.  Because we will use this on all entities and relationships, we can create a base class that all other entities extend.
+
+First, we create a new class annotated with the <code>@NodeEntity</code> annotation.
+
+[code file=""Entity.java""]@NodeEntity
+public class Entity {
+    // ...
+}[/code]
+
+Next, we define a property to hold the ID.  This takes two annotations, the <code>@Id</code> annotation identifies the field as the identifier and the <code>@GeneratedValue</code> is used with the <code>@Id</code> annotation to define a generation strategy.
+
+[code file=""Entity.java""]@Id
+@GeneratedValue
+private Long id;
+
+public Long getId() {
+    return id;
+}[/code]
+
+There are two strategies for ID generation, a UUID strategy or Internal ID strategy which is uses by default.
+<h3>Person <code>NodeEntity</code></h3>
+We can extend the Entity class to create a new Person class, again annotated as a @NodeEntity.
+
+[code file=""Person.java""]@NodeEntity
+public class Person extends Entity {
+    private String firstName;
+
+    private String lastName;
+
+    @Relationship( type = ""KNOWS"" )
+    Set&lt;Knows&gt; knows;
+}[/code]
+
+Inside this class I have defined two properties; firstName and lastName and defined a set of relationships using the <code>@Relationship </code>annotation.
+
+In order to interact with these objects using Java, we can define getters and setters which manipulate these properties.
+
+[code file=""Person.java""]public void setLastName(String lastName) {
+    this.lastName = lastName;
+}
+
+public String getLastName() {
+    return lastName;
+}[/code]
+<h3>Knows <code>RelationshipEntity</code></h3>
+In the <code>Person</code> class, I have defined the <code>knows</code> property as a <code>Set</code> of objects with a type of <code>Knows</code>.  This class will be annotated as a <code>@RelationshipEntity</code>.  This annotation takes a type property which will be used when the data is saved or read.
+
+[code file=""Knows.java""]@RelationshipEntity( type = ""KNOWS"" )
+public class Knows extends Entity {
+    // ...
+}[/code]
+
+As with the Person entity, we assign properties directly to the relationship.  <code>RelationshipEntity</code> classes take a couple of extra annotations.  The <code>@StartNode</code> and <code>@EndNode</code> annotations identify the entities that are used as the start and end nodes of the relationships.  In this case, the start and end nodes for the relationship will be instances of the <code>Person</code> class that we defined above.
+
+[code file=""Knows.java""]@StartNode
+Person source;
+
+@EndNode
+Person target;[/code]
+
+At the time of writing, Neo4j doesn't support dates as a <a href=""https://neo4j.com/docs/developer-manual/current/drivers/cypher-values/"" target=""_blank"" rel=""noopener"">valid data type</a>.  Instead, we can choose to store the date as a string or the seconds since epoch as a Long.  In order to use dates in our application, we can use a <strong>Converter </strong>to handle the conversion when storing the data and again when retrieving the information from the database.  The OGM comes with the following converters:
+<ul>
+ 	<li><code>@DateLong</code> - Converts <code>java.util.Date</code> or <code>java.time.Instant</code> to <code>Long</code>.</li>
+ 	<li><code>@DateString</code> - Converts <code>java.util.Date</code> or <code>java.time.Instant</code> to<i> a </i>String.  By default, this will be converted to ISO 8601 format (yyyy-MM-dd'T'HH:mm:ss.SSSXXX) but a date format string can also be provided with the annotation.</li>
+ 	<li><code>@EnumString</code> - Converts an enum to String.</li>
+ 	<li><code>@NumberString</code> - Converts any object that extends <code>java.lang.Number</code> to a <code>String</code>.  This method can be used to handle BigInteger or BigDecimal data types.</li>
+</ul>
+My personal preference is to store dates in Long format, so I'll use the <code>@DateLong</code> annotation.
+
+[code file=""Knows.java""]@DateLong
+Date since; [/code]
+
+Now we can use native java dates, while the OGM takes care of the conversion when hydrating the object or persisting it back to the graph.
+
+[code file=""Knows.java""]public void setSince(Date since) {
+    this.since = since;
+}
+
+public Date getSince() {
+    return since;
+}[/code]
+<h2>Accessing Data with Sessions</h2>
+We interact with the model using Sessions.  The OGM comes with a Session Factory that we can use to open a new session within a request.  In order to use this inside a service, we can expose it as a <code>@Bean</code>.  The configuration of the session is slightly different to the configuration of the official driver, but we can use the same configuration from <code>application.properties</code>.
+
+[code file=""Neo4jConfiguration.java""]@Bean
+public org.neo4j.ogm.config.Configuration getConfiguration() {
+    return new org.neo4j.ogm.config.Configuration.Builder()
+        .uri( getUri() )
+        .credentials( username, password )
+        .build();
+}
+[/code]
+
+In this snippet, we're using the OGM's Configuration Builder to create a configuration object and exposing this as a bean.  Then, we can create a method that will take this configuration and use it to create an instance of the <code>SessionFactory</code>.  We can pass through an optional set of package names which the session factory will scan for domain objects.
+
+[code file=""Neo4jConfiguration.java""]@Bean
+public SessionFactory getSessionFactory(Neo4jConfiguration config) {
+    return new SessionFactory( config.getConfiguration(), ""co.adamcowley.neobeans"" );
+}[/code]
+
+By default the SessionFactory will be treated as a <a href=""https://en.wikipedia.org/wiki/Singleton_pattern"" target=""_blank"" rel=""noopener"">singleton</a> and instantiated only once across the application.
+<h2>Injecting into Services</h2>
+Ideally, when modifying data held within the graph, we will do in a single responsibility class.  In Domain Driven Design terms, these are known as Services and are defined as objects that perform standalone changes to the model while retaining no encapsulated state.   Spring comes with a <code>@Service</code> stereotype annotation which can be applied to these classes.  This will indicate to Spring that this should be treated as a component that can be autowired into the application.
+
+At the moment, we don't have any data in the graph.  So let's create a service that will create a new Person and give it a <code>@Service</code> annotation.  As this has been declared as a Spring component, we can annotate the constructor function.  This will ensure that on instantiation, each parameter will be instantiated and injected into the class.  As we will be interacting with the graph, we can autowire the <code>SessionFactory</code>.
+
+[code file=""CreatePerson.java""]@Service
+public class CreatePerson {
+    private final SessionFactory sessionFactory;
+
+    @Autowired
+    public CreatePerson(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+}
+[/code]
+<h2>Persisting Data</h2>
+We can use sessions to encapsulate business logic, in this case we can ensure that a person is created with both a first name and last name.  Once our business logic has been satisfied, we need to persist the changes in the database.  Inside a session, we have the ability to either save or delete information.  By calling the save method on a session, the OGM will take care of saving the data, either creating or updating each record as appropriate.  Where we are interacting with multiple users and relationships in sequence, we can also set an arbitrary depth to save to with each relationship in chain counting as one step.
+
+[code file=""CreatePerson.java""]public Person create(String firstName, String lastName) {
+    Person output = new Person();
+
+    output.setFirstName( firstName );
+    output.setLastName( lastName );
+
+    Session session = sessionFactory.openSession();
+
+    session.save( output );
+
+    return output;
+}[/code]
+
+Here, I have instantiated a new Person object, used the setter functions to set their first and last names.  Then, after opening a new session, the object is created.
+
+Similar to the SessionFactory, we can use the <code>@Autowired</code> annotation to inject an instance of this service into any component.  In this case, I am using a POST request within a REST Controller to accept a firstName and lastName in the post body and passed these through to the function before returning the newly created node.
+
+[code file=""PersonController.java""]@RestController
+public class PersonController {
+    private final CreatePerson service;
+
+    @Autowired
+    public PersonController(CreatePerson service) {
+        this.service = service;
+    }
+
+    @RequestMapping(value = ""/people"", method = RequestMethod.POST)
+    public Person postIndex( @RequestBody Map&lt;String, Object&gt; body ) {
+        String firstName = (String) body.get(""firstName"");
+        String lastName = (String) body.get(""lastName"");
+
+        Person output = service.create(firstName, lastName);
+
+        return output;
+    }
+}[/code]
+<h2>Reading Data</h2>
+<a href=""https://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/"" target=""_blank"" rel=""noopener"">In the previous post</a> I used the driver to execute a cypher query to return a paginated list of results.  The Session interface offers a number of ways to load data, either using a collection of ID's or using Filter before sorting and limiting the results.
+
+<h3>Loading a Collection</h3>
+
+The <code>.loadAll()</code> method will allow you to load a paginated <code>Collection</code> of results.  To filter results, the method will accept one or more <code title=""org.neo4j.ogm.cypher.Filter"">Filter</code> instances.  To paginate the results, you can provide a <code title=""org.neo4j.ogm.cypher.query.Pagination"">Pagination</code> instance with the page number (zero based) and a limit.
+
+[code file=""PersonController.java""]@RequestMapping(""/people"")
+public Collection&lt;Person&gt; getIndex(
+    @RequestParam(defaultValue = ""1"") int page,
+    @RequestParam(defaultValue = ""10"") int limit)
+{
+    Session session = factory.openSession();
+
+    Pagination pagination = new Pagination( page-1, limit );
+
+    Collection&lt;Person&gt; people = session.loadAll(Person.class, pagination);
+
+    return people;
+}[/code]
+
+Here I have created a <code>Pagination</code> instance using the page and limit parameters retrieved from the request.  This is then passed to the <code>session.loadAll</code> method along with the class that the results should be bound to.
+
+To find a single node in the graph, you can use the<em> </em><em>load</em> method.
+
+[code file=""PersonController.java""]@RequestMapping(value = ""/people/{id}"", method = RequestMethod.GET)
+public Person getIndex( @PathVariable(""id"") Long id ) {
+    Session session = factory.openSession();
+
+    return session.load( Person.class, id );
+}[/code]
+
+<h2>Conclusion</h2>
+
+Using an O(R/G)M can be a great approach to software development.  Not least because they allow you to enforce business rules within your code base but also promote good coding standards and improve maintainability.  From a Graph point of view, this could also lower the barrier to entry for developers starting out with graph databases.  Any Java developer can interact with the Graph using plain Java rather than learning yet another query language.
+
+If you are using the OGM with Spring, it is well worth taking a look at the <a href=""https://projects.spring.io/spring-data-neo4j/"" target=""_blank"">Spring Data Neo4j</a> project which uses the same annotation-styled approach while also providing repository patterns for retrieving and persisting data.
+
+
+<!--
+<code title=""""></code>
+-->",Neo4j,"neo4j|sdn|spring|spring boot|spring data neo4j",using-neo4j-ogm-spring-boot,http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/
+324,"Getting Started with Spring Data Neo4j","If you've been following my recent posts, you'll know that I've been getting familiar with the Spring Framework, and Java more generally. I will be following on with the theme in this post.  If you haven't already done so, take a look:
+<ul>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/"" target=""_blank"" rel=""noopener"">Using the Neo4j Driver in Spring Boot Applications</a></li>
+ 	<li><a href=""http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/"" target=""_blank"" rel=""noopener"">Using Neo4j-OGM in Spring Boot Applications</a></li>
+</ul>
+The Spring Framework associates itself with a number of projects which make life easier for developers, from Spring Batch which simplifies the processing of high-volume batches, to Spring Cloud which provides a set of tools and patterns for developing distributed systems.
+
+As a developer interested in data, the <a href=""https://projects.spring.io/spring-data/"" target=""_blank"" rel=""noopener"">Spring Data</a> project really stands out.  Spring Data provides a consistent approach to data access for both relational and non-relational data stores.  Spring Data comes with a number of sub-modules which provide support for of databases including MongoDB and Redis.  Along with these, community drivers have been developed for an array of databases including ArangoDB, Couchbase and Neo4j.
+
+In this post, I will take you through the basics of the Neo4j module, known as <a href=""http://neo4j.com/developer/spring-data-neo4j"" target=""_blank"" rel=""noopener"">Spring Data Neo4j</a> or SDN.
+<h2>It's all OGM</h2>
+The annotated <em>NodesEntities</em> and <em>RelationshipEntities</em> created with Neo4j-OGM can be used directly with Spring Data Neo4j.  By installing SDN with it's dependencies, it will also include the OGM Core, API and Bolt Driver.
+<h3>Dependencies</h3>
+In the <em>build.gradle</em> file, we can remove the OGM dependencies and instead include a the latest version of <em>org.springframework.data:spring-data-neo4j</em>.
+
+[code file=""build.gradle""]dependencies {
+// ...
+compile('org.springframework.data:spring-data-neo4j:5.0.4.RELEASE')
+}[/code]
+<h3>Configuration</h3>
+As we still require beans for the <em>SessionFactory</em> and <em>Configuration</em>, we can use the same <em>Neo4jConfiguration</em> class.  The only difference is a new annotation and @Bean to aid with Transaction handling.
+<h4>Transactions</h4>
+The <em>Neo4jTransactionManager</em> is a Neo4j specific implementation of Spring's transaction management functionality, binding an OGM session to each thread and in turn managing the initiation and rollback of a transaction.
+
+In essence, all calls to methods inside a method annotated with <em>@Transactional</em> will belong to the same transaction.  The entire transaction will be succeeded as a whole and saved, or rolled back should any method on the chain throw an exception.
+
+To enable transaction management within the application, we annotate the application class with the <em>@EnableTransactionManagement</em> annotation.  Then, a new method is required to provide an instance of the <em>Neo4jTransactionManager</em>.  The <em>Neo4jTransactionManager</em> constructor accepts a single argument, an instance of <em>SessionManager</em>, which has already been made available as a @Bean.
+
+[code file=""Neo4jConfiguration.java""]@Bean
+public Neo4jTransactionManager transactionManager() throws Exception {
+SessionFactory sessionFactory = getSessionFactory( getConfiguration() );
+
+return new Neo4jTransactionManager( sessionFactory );
+}[/code]
+<h2>Creating a Repository</h2>
+&nbsp;
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+[code file=""Knows.java""]
+[/code]
+
+&nbsp;
+<h2>Conclusion</h2>
+Having a standardised approach to data access can provide clarity to a project.  Creating proxy repositories are a powerful feature that
+
+For more information, you can head to the <a href=""https://docs.spring.io/spring-data/neo4j/docs/current/reference/html/"" target=""_blank"" rel=""noopener"">SDN Reference</a>.
+
+If you get stuck, the <a href=""https://neo4j.com/slack"" target=""_blank"" rel=""noopener"">Neo4j Slack channel</a> is a great place to head to if you get stuck - at the time of writing <strong>#neo4j-ogm-sdn</strong> has over 245 members.
+<h3></h3>",Neo4j,"neo4j|sdn|spring|spring boot|spring data neo4j",,http://www.adamcowley.co.uk/?p=324
+327,"Setting up a Causal Cluster: Part 1 - Core Servers","<ul>
+ 	<li>Part 1 - Core Servers</li>
+ 	<li>Part 2 - Read Replicas</li>
+ 	<li>Part 3 - Multi Data Centre - Server Groups and Routing Policies</li>
+</ul>
+&nbsp;
+
+&nbsp;
+<h3>Database Mode</h3>
+[code file=""neo4j.conf""]# Database mode
+# Allowed values:
+# CORE - Core member of the cluster, part of the consensus quorum.
+# READ_REPLICA - Read replica in the cluster, an eventually-consistent read-only instance of the database.
+# To operate this Neo4j instance in Causal Clustering mode as a core member, uncomment this line:
+dbms.mode=CORE[/code]
+
+&nbsp;
+<h3>Expected Core Cluster Size</h3>
+[code file=""neo4j.conf""]# Expected number of Core machines in the cluster.
+causal_clustering.expected_core_cluster_size=3[/code]
+
+&nbsp;
+<h3>Initial Discovery Members</h3>
+[code file=""neo4j.conf""]# A comma-separated list of the address and port for which to reach all other members of the cluster. It must be in the
+# host:port format. For each machine in the cluster, the address will usually be the public ip address of that machine.
+# The port will be the value used in the setting ""causal_clustering.discovery_listen_address"".
+causal_clustering.initial_discovery_members=localhost:15000,localhost:25001,localhost:35002[/code]
+
+&nbsp;
+<h3>Discovery Listen Address</h3>
+[code file=""neo4j.conf""]# Host and port to bind the cluster member discovery management communication.
+# This is the setting to add to the collection of address in causal_clustering.initial_core_cluster_members.
+# Use 0.0.0.0 to bind to any network interface on the machine. If you want to only use a specific interface
+# (such as a private ip address on AWS, for example) then use that ip address instead.
+# If you don't know what value to use here, use this machines ip address.
+causal_clustering.discovery_listen_address=:15000 [/code]
+
+&nbsp;
+<h3>Transactional Listen Address</h3>
+[code file=""neo4j.conf""]# Network interface and port for the transaction shipping server to listen on. If you want to allow for
+# messages to be read from
+# any network on this machine, us 0.0.0.0. If you want to constrain communication to a specific network address
+# (such as a private ip on AWS, for example) then use that ip address instead.
+# If you don't know what value to use here, use this machines ip address.
+causal_clustering.transaction_listen_address=:16000[/code]
+
+&nbsp;
+<h3>Raft Listen Address</h3>
+[code file=""neo4j.conf""]# Network interface and port for the RAFT server to listen on. If you want to allow for messages to be read from
+# any network on this machine, us 0.0.0.0. If you want to constrain communication to a specific network address
+# (such as a private ip on AWS, for example) then use that ip address instead.
+# If you don't know what value to use here, use this machines ip address.
+causal_clustering.raft_listen_address=:17000[/code]
+
+&nbsp;
+
+&nbsp;
+<h3>Server Groups</h3>
+[code file=""neo4j.conf""]# List a set of names for groups to which this server should belong. This
+# is a comma-separated list and names should only use alphanumericals
+# and underscore. This can be used to identify groups of servers in the
+# configuration for load balancing and replication policies.
+#
+# The main intention for this is to group servers, but it is possible to specify
+# a unique identifier here as well which might be useful for troubleshooting
+# or other special purposes.
+#causal_clustering.server_groups=[/code]
+
+&nbsp;
+
+Server groups are used to define routing policies.  More about that in Part 2.
+
+&nbsp;
+<h3>Discovery Listen Address</h3>
+[code file=""neo4j.conf""][/code]
+
+&nbsp;
+
+&nbsp;
+<h3>Discovery Listen Address</h3>
+[code file=""neo4j.conf""][/code]
+
+&nbsp;
+
+&nbsp;
+<h3>Discovery Listen Address</h3>
+[code file=""neo4j.conf""][/code]
+
+&nbsp;
+
+&nbsp;
+<h3>Discovery Listen Address</h3>
+[code file=""neo4j.conf""][/code]
+
+&nbsp;",Neo4j,"causal clustering|cc|devops|neo4j",causal-cluster-core-servers,http://www.adamcowley.co.uk/?p=327
+353,"Using the Neo4j Driver with NodeJS","After writing all about how to <a href=""http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/"">use the official Neo4j Drivers in a Spring application</a>, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS.  Over the past few years I've written many applications in NodeJS that talk to Neo4j applications, to the point where I built <a href=""https://github.com/adam-cowley/neode"" target=""_blank"" rel=""noopener"">an OGM to take care of the frustrating CRUD boilerplate</a> when setting up a Neo4j project in node.  More about that later...
+
+<ul>
+<li><a href=""#tldr"">TL;DR - View the full Code example</a></li>
+</ul>
+
+<h2>Dependencies</h2>
+To get started, you'll need to <a href=""https://nodejs.org/en/download/"" target=""_blank"" rel=""noopener"">download and install nodejs and npm</a> (or yarn if you prefer).  Once you've<a href=""https://docs.npmjs.com/cli/init"" target=""_blank"" rel=""noopener""> initiated your project</a>, you can install the driver via npm.
+
+[code]npm install --save neo4j-driver[/code]
+<h2>Creating a Driver instance</h2>
+Now the driver can be included in the project.  The official drivers for all languages are namespaced by version, so we need to keep that in mind when creating a driver.
+
+[code lang=""javascript"" file=""CommonJS""]const neo4j = require('neo4j').v1;
+const driver = new neo4j.driver(""bolt://localhost:7687"", neo4j.auth.driver(""neo4j"", ""p455word""));[/code]
+
+Or using ES6 import:
+[code lang=""javascript"" file=""ES6""]import { v1 as neo4j } from 'neo4j-driver';
+const driver = new neo4j.driver(""bolt://localhost:7687"", neo4j.auth.driver(""neo4j"", ""p455word""));
+[/code]
+
+In both of these examples, I'm creating a new instance of the driver and connecting to <code>bolt://localhost:7687</code>. I've used a basic auth token, but as with Java Neo4j also supports <a href=""https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L39"" target=""_blank"" rel=""noopener"">Kerberos tokens</a> and <a href=""https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L42"" target=""_blank"" rel=""noopener"">custom authentication schemes</a>.
+
+Providing the <code>bolt+routing</code> scheme to the connection string will ensure a Routing Driver is instantiated.  This will balance read and write queries across a Causal Cluster.  Where you are using a multi-datacenter setup or advanced routing policies, you can append a routing context to the end of the connection string.
+
+[code]bolt+routing://localhost:7687?policy=uk[/code]
+<h2>Running a Query</h2>
+To run one or more queries, you'll first need to create a Session.  These sessions act as a container for a logical sequence of transactions (queries) and will borrow connections from the driver's connection pool as necessary.  These sessions should be considered lightweight and disposable.
+
+[code lang=""javascript""]const session = driver.session();[/code]
+
+Inside a session you can run three types of transactions.  Running queries inside atomic transactions allow you to you to complete an entire unit of work and committing once all statements have succeeded.  Should anything go wrong, the database can be rolled back to it’s original state.
+<h3>Read or Write?</h3>
+When creating a session, you can declare a mode as either read or write.  This can ensure that the driver routes the queries to the right place.  Constants for read and write sessions can be taken from <code>v1.session.READ</code> or <code>v1.session.WRITE</code>.
+
+[code lang=""javascript""]const session = driver.session(neo4j.session.READ);[/code]
+<h3>Auto-commit Transactions</h3>
+<p class=""p1""><span class=""s1"">Auto-commit transactions are sent to the server and acknowledged immediately.  We can do by calling the <code>run</code> method on the session.  This method accepts two parameters, a parameterised Cypher query string and an optional object containing parameters in key, value format.</span></p>
+<p class=""p1""><span class=""s1"">[code lang=""javascript""]const cypher = ""MATCH (p:Person {name: {name} }) RETURN count(p) AS count"";
+const params = { name: ""Adam"" };
+session.run(cypher, params);[/code] </span></p>
+<p class=""p1""><span class=""s1"">It is recommended that these transactions are only used for one-off statements and not used in production. </span></p>
+
+<h3>Read &amp; Write Transactions</h3>
+We can run a transaction in one of two ways, either by calling <code>session.beginTransaction()</code> which returns a transaction object, or calling <code>session.readTransaction()</code> or <code>session.writeTransaction()</code> with a function containing the work for that transaction.  The first argument for this function will be a transaction.  We can use this to <code>run</code> queries.
+
+[code lang=""javascript""]driver.writeTransaction(tx =&gt; {
+  tx.run(""CREATE (p:Person { name: {name} });"", { name: ""Adam"" });
+});[/code]
+<h3>Declarative Syntax</h3>
+The more declarative approach uses <code>session.beginTransaction()</code>.  This returns a transaction which can be used similarly to above
+
+[code lang=""javascript""]const tx = session.beginTransaction();
+
+tx.run(""CREATE (p:Person { name: {name} });"", { name: ""Adam"" })
+    .then(res =&gt; {
+        // Run another query with the tx variable...
+    })
+    .then(() =&gt; {
+        // Everything is OK, the transaction will be committed
+    })
+    .catch(e =&gt; {
+        // The transaction will be rolled back, now handle the error.
+    });[/code]
+
+Transactions will be automatically committed once the function succeeds, or rolled back if an error is thrown during the chain.
+<h2>Consuming Results</h2>
+There are two ways of a consuming results.
+<h3>Using Promises</h3>
+The previous example uses the method.  When the entire query is completed, the results will be collected and can be acted on at once.  This method will return an instance of a  Statement <a href=""https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/result.js~Result.html"" target=""_blank"" rel=""noopener"">Result</a>.  This contains information about the query and an array of records which can be accessed through the <i>records</i> property. The values returned in a <a href=""https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/record.js~Record.html"" target=""_blank"" rel=""noopener"">Record</a> can be accessed using the <code>get</code> method.
+
+[code lang=""javascript""]session.run(""MATCH (p:Person) RETURN p.name AS name"")
+    .then(result =&gt; {
+        console.log(result.records.length); // Number of records returned
+
+        return result.records.map(record =&gt; { // Iterate through records
+            console.log( record.get(""name"") ); // Access the name property from the RETURN statement
+        });
+    })
+    .then(() =&gt; session.close()); // Always remember to close the session[/code]
+<h3>Subscribing to Streams</h3>
+You may have noticed that when a query is executed in the browser, you see two numbers; when the database starts to stream results and when the query is executed.  If you would like to consume the results as they are streamed, you can use the <code>subscribe</code> method.   The subscribe function accepts an object with callbacks for when a record is received (<code>onNext</code>), when the stream is completed (<code>onCompleted</code>) and on error (<code>onError</code>).
+
+[code lang=""javascript""]session.run(""MATCH (p:Person) RETURN p.name AS name"")
+    .subscribe({
+        onNext: (record) =&gt; {
+            console.log(record.get('name')); // Consume the same Record object as above
+        },
+        onCompleted: function () {
+            session.close();
+        },
+        onError: function (error) {
+            console.log(error);
+        }
+    });[/code]
+<h3>Gotcha: Integers</h3>
+While the Neo4j type system supports 64-bit integers, JavaScript is unable to handle these correctly.  In order to support Cypher's type system, the driver will convert integer values into an instance of a neo4j <a href=""https://neo4j.com/docs/api/javascript-driver/current/class/src/v1/integer.js~Integer.html"" target=""_blank"" rel=""noopener"">Integer</a>.  In order to work with these
+
+<a href=""https://github.com/neo4j/neo4j-javascript-driver#a-note-on-numbers-and-the-integer-type"" target=""_blank"" rel=""noopener"">Read more on Integers.</a>
+<h2>What about CRUD operations?</h2>
+Generic CRUD operations can be a pain to implement.  Writing the boilerplate to run write operations can take time, and for this reason I wrote <a href=""https://github.com/adam-cowley/neode"" target=""_blank"" rel=""noopener"">Neode</a>.  The aim of Neode is to make working with Neo4j as easy as possible - it uses <code>dotenv</code> to take variables from a <code>.env</code> file and supports schema generation, validation and UUID's out of the box.
+For more information, head to <a href=""https://github.com/adam-cowley/neode"" target=""_blank"" rel=""noopener"">github.com/adam-cowley/neode</a> or <a href=""https://github.com/adam-cowley/neode-example"">check out the example project</a> based on the Movies sandbox.
+
+If you don't like the look of that, there is also <a href=""https://github.com/LucianoPAlmeida/OGMNeo"" target=""_blank"" rel=""noopener"">OGMNeo</a> which takes a slightly different approach but also contains a comprehensive API.
+
+<h2 id=""tldr"">TL;DR - Code Example</h2>
+
+[code lang=""javascript""]// Require Neo4j
+const neo4j = require('neo4j-driver').v1;
+
+// Create Driver
+const driver = new neo4j.driver(""bolt://localhost:7687"", neo4j.auth.basic(""neo4j"", ""neo""));
+
+// Create Driver session
+const session = req.driver.session();
+
+// Run Cypher query
+const cypher = 'MATCH (n) RETURN count(n) as count';
+
+session.run(cypher)
+    .then(result =&gt; {
+        // On result, get count from first record
+        const count = result.records[0].get('count');
+
+        // Log response
+        console.log( count.toNumber() );
+    })
+    .catch(e =&gt; {
+        // Output the error
+        console.log(e);
+    })
+    .then(() =&gt; {
+        // Close the Session
+        return session.close();
+    })
+    .then(() =&gt; {
+        // Close the Driver
+        return driver.close();
+    });[/code]
+
+<h2>Further Reading</h2>
+The <a href=""https://neo4j.com/developer/javascript/"">Neo4j Developer Page</a> provides a comprehensive guide to all options available to you and example projects. <a href=""https://gist.github.com/adam-cowley/0e86d581d3e416045bd407291d53ac73"" target=""_blank"" rel=""noopener"">This gist</a> provides a basic example of how to use <a href=""https://gist.github.com/adam-cowley/0e86d581d3e416045bd407291d53ac73"" target=""_blank"" rel=""noopener"">Neo4j in an Express middleware</a>.
+
+These drivers can also be used in front end developments, albeit with the caveat that you'll need to connect directly to the Bolt server.  This is the way that the Neo4j Browser works.
+
+If you're a fan of VueJS, I have also created <a href=""https://github.com/adam-cowley/vue-neo4j"" target=""_blank"" rel=""noopener"">vue-neo4j</a> to provide a simple interface for executing Cypher queries Vue components.
+
+Happy coding!",JavaScript|Neo4j,javascript|neo4j|node|promises,using-the-neo4j-driver-with-nodejs,http://www.adamcowley.co.uk/javascript/using-the-neo4j-driver-with-nodejs/
+379,"An introduction to Temporal Date Types in Neo4j 3.4","<style>.make-it-readable {margin-top: 4em}</style>
+<p>With Neo4j 3.4 GA now out in the wild, a few people have asked me about the new Temporal data types that have been introduced.  In this post I will go over the a few of the new additions and provide a working example.</p>
+</div>
+<div class=""code-block secondary""><div class=""container"">
+<p><strong>TL;DR: Jump to...</strong></p>
+<ol>
+<li><a href=""#clocks"">Clocks</a></li>
+<li><a href=""#dates"">Dates</a></li>
+<li><a href=""#time"">Times</a></li>
+<li><a href=""#local-dates-and-times"">Local Dates and Times</a></li>
+<li><a href=""#durations"">Durations</a></li>
+<li><a href=""#truncating-values"">Truncating Values</a></li>
+<li><a href=""#config-changes"">Config Changes</a></li>
+<li><a href=""#converting-dates"">Converting Dates</a></li>
+<li><a href=""#a-working-example-route-planning"">Working Example</a></li>
+</ol>
+</div></div>
+<div class=""container"">
+
+<p class=""make-it-readable"">When I first started using Neo4j back in 2014, I can remember one thing was missing - support for native date datatype.  The holy grail.  This lead to some pretty <del>complex</del> clever approaches to dates including <a href=""https://graphaware.com/neo4j/2014/08/20/graphaware-neo4j-timetree.html"" rel=""nofollow"">Time Trees</a> which represented the dates as a tree of nodes with labels <code>:Year</code>, <code>:Month</code> and <code>:Day</code> and even down to second level.</p>
+<p>As the performance of index-backed range seeks improved, the need to maintain these trees of nodes reduced but you were still left with a dilemma.  Do you store the properties as a human readable date?  Maybe seconds since epoch?  Do I need to use <a href=""https://neo4j-contrib.github.io/neo4j-apoc-procedures/"" rel=""nofollow"">APOC</a> to convert the dates.</p>
+<p>Luckily, from version 3.4, we no longer need to worry about it.</p>
+<p>Neo4j now supports five temporal types, all a combination of date, time and timezone.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Supports Date?</th>
+<th>Supports Time?</th>
+<th>Supports Timezone?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Date</td>
+<td>A tuple of Year, Month and Day</td>
+<td>Y</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Time</td>
+<td>An instance of a point in time</td>
+<td></td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>LocalTime</td>
+<td>A time that is considered ""local"" in it's context</td>
+<td></td>
+<td>Y</td>
+<td></td>
+</tr>
+<tr>
+<td>DateTime</td>
+<td>A combination of Date and Time</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>LocalDateTime</td>
+<td>A combination of Date and Time that can be considered ""local"" in it's context</td>
+<td>Y</td>
+<td>Y</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id=""clocks"" class=""make-it-readable"">Clocks</h2>
+<p>Before I go into the new types, I first need to mention <em>clocks</em>.  When creating a new date or time value, you have the option of chosing one of three <em>clocks</em>.</p>
+<ol>
+<li>
+<strong>The Transaction clock</strong> - Uses the date and time at the start of the current transaction - this is the same as cypher's <code>timestamp()</code> function which does not update during the transaction.</li>
+<li>
+<strong>The Statement clock</strong> - Transactions can contain more than one statement.  To use the date and time of the current statement, use the static <code>.statement()</code> function.</li>
+<li>
+<strong>The Realtime Clock</strong> - This returns the real time date regardless of the transaction and statement start dates.  This is the equivalent of <code>apoc.date.currentTimestamp()</code>
+</li>
+</ol>
+<p>Each of these functions also accepts a single parameter, allowing you to specify the timezone of the returned instance. For example <code>datetime.statement('Europe/London')</code>.   If you don't specify a timezone, the server's default timezone will be used.</p>
+<h2 id=""dates"" class=""make-it-readable"">Dates</h2>
+<h3 id=""getting-the-current-date"">Getting the Current Date</h3>
+<p>The <code>date()</code> function can be used to create in instance of a <code>Date</code>. As mentioned earlier, you can call the static method on dates to return a time based on the start of the transaction, statement or realtime.</p>
+[code lang=""cypher""]RETURN date(), date.transaction(), date.statement(), date.realtime()
+[/code]
+<table>
+<thead>
+<tr>
+<th>date</th>
+<th>date.transaction</th>
+<th>date.statement</th>
+<th>date.realtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""2018-05-16""</code></td>
+<td><code>""2018-05-16""</code></td>
+<td><code>""2018-05-16""</code></td>
+<td><code>""2018-05-16""</code></td>
+</tr>
+</tbody>
+</table>
+<p>The date function will also take two optional arguments, a Map of options and/or a timezone in String format.</p>
+<h3 id=""specifying-a-date"" class=""make-it-readable"">Specifying a date</h3>
+<p>A date can be specified in one of two ways, either by passing through <a href=""https://neo4j.com/docs/developer-manual/preview/cypher/syntax/temporal/#cypher-temporal-specify-date"" rel=""nofollow"">a valid ISO 8601 data type</a> as a String, or by providing a map containing the year, month and day.</p>
+[code lang=""cypher""]UNWIND [
+  date('2018-01-01'),
+  date({ year: 2018, month: 1, day: 2 })
+] AS date
+RETURN date
+[/code]
+<table>
+<thead>
+<tr>
+<th>date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""2018-01-01""</code></td>
+</tr>
+<tr>
+<td><code>""2018-01-02""</code></td>
+</tr>
+</tbody>
+</table>
+<p class=""make-it-readable"">The individual units of the date value can be accessed via year, month and day accessors.</p>
+[code lang=""cypher""]WITH date('2018-05-16') AS date
+RETURN date.year, date.month, date.day
+[/code]
+<table>
+<thead>
+<tr>
+<th>date.year</th>
+<th>date.month</th>
+<th>date.day</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2018</code></td>
+<td><code>5</code></td>
+<td><code>16</code></td>
+</tr>
+</tbody>
+</table>
+<p>Another nice feature of the <a href=""https://en.wikipedia.org/wiki/ISO_8601"" rel=""nofollow"">ISO 8601</a> support is the ability to create dates by the week number (<code>2018-W51</code>), quarter (<code>2018-Q2</code>) or ordinal dates (<code>2018-364</code>).</p>
+<h2 id=""time"">Time</h2>
+<p>Time values are created using the  <code>time()</code> function.  Like a Date, a time instant can be created with either an ISO 8601 string or a map containing hour, minute, second, millisecond and/or nanosecond values.  As with the Date, there are accessors for each unit of time held in the</p>
+[code lang=""cypher""]UNWIND [
+  time('12:34:56.1234'),
+  time({ hour: 12, minute: 34, second: 45, millisecond: 123, nanosecond: 400000 })
+] AS time
+RETURN time.hour, time.minute, time.second,  time.millisecond, time.nanosecond, time.timezone
+[/code]
+<table>
+<thead>
+<tr>
+<th>time.hour</th>
+<th>time.minute</th>
+<th>time.second</th>
+<th>time.millisecond</th>
+<th>time.nanosecond</th>
+<th>time.timezone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>12</code></td>
+<td><code>34</code></td>
+<td><code>56</code></td>
+<td><code>123</code></td>
+<td><code>123400000</code></td>
+<td><code>""Z""</code></td>
+</tr>
+<tr>
+<td><code>12</code></td>
+<td><code>34</code></td>
+<td><code>45</code></td>
+<td><code>123</code></td>
+<td><code>123400000</code></td>
+<td><code>""Z""</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id=""datetime"" class=""make-it-readable""></span></a>DateTime</h2>
+<p>A <code>DateTime</code> is a combination of both date and time and can be constructed using a combination of the date and time constructs mentioned above.</p>
+[code lang=""cypher""]UNWIND [
+  datetime('2018-01-02T07:20:30[Europe/London]'),
+  datetime({ year: 2018, month: 1, day: 2, hour:07, minute: 20, second: 30, timezone: 'Europe/London' })
+] AS date
+RETURN datetime
+[/code]
+<table>
+<thead>
+<tr>
+<th>datetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""2018-01-02T07:20:30[Europe/London]""</code></td>
+</tr>
+<tr>
+<td><code>""2018-01-02T07:20:30[Europe/London]""</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id=""local-dates-and-times"">Local Dates and Times</h2>
+<p>Local Dates and Times are simply a way of storing data without the need for extraneous data. Instances of <code>LocalTime</code> and <code>LocalDateTime</code> can be considered ""local"" in their context, meaning a delivery shipped at 16:00 in London would be in in GMT or BST without needing to store the timezone.</p>
+
+ <p>It is worth noting that local dates and times are not comparable to date and time data that are stored in different timezones.  A package shipped from Berlin with a LocalTime of 16:00 could not be compared to the time of the package shipped from London.</p>
+[code lang=""cypher""]RETURN localtime(), localdatetime()
+[/code]
+<table>
+<thead>
+<tr>
+<th>localtime</th>
+<th>localdatetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""18:53:44.727000000""</code></td>
+<td><code>""2018-05-16T18:53:44.727000000""</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id=""durations"">Durations</h2>
+<p>Neo4j 3.4 also supports durations.  A duration is defined as the difference between two instances in time.  To create a duration, we can either pass through a string containing a valid duration string or <a href=""https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/#functions-duration-create-components"" rel=""nofollow"">a map containing one or more components</a></p>
+<p>The String version starts with a <code>P</code> and then contains one or more of the following</p>
+<ul>
+<li>
+<code>x</code>Y - Number of years</li>
+<li>
+<code>x</code>M - Number of months</li>
+<li>
+<code>x</code>D - Number of days</li>
+</ul>
+<p>And then one or more time units, prefixed with a <code>T</code></p>
+<ul>
+<li>
+<code>x</code>H - Number of hours</li>
+<li>
+<code>x</code>M - Number of minutes</li>
+<li>
+<code>x</code>S - Number of seconds with milliseconds after a decimal point.</li>
+</ul>
+<p>For example, <code>P2012Y4M2DT14H37M21.545S</code> denotes a duration of 2012 years, 4 months, 2 days; 14 hours, 37 minutes, 21 seconds and 545 milliseconds.</p>
+<p>Alternatively, the map can contain one or more of: years, quarters, months, weeks, days, hours, minutes, seconds, milliseconds, microseconds, nanoseconds.</p>
+<p>Let's take a look at a couple of examples in action...</p>
+[code lang=""cypher""]UNWIND [
+  duration('P30DT4980S'),
+  duration({ days: 30, hours: 1, minutes: 23 })
+] as duration
+RETURN duration
+[/code]
+<table>
+<thead>
+<tr>
+<th>duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""P0M30DT4980S""</code></td>
+</tr>
+<tr>
+<td><code>""P0M30DT4980S""</code></td>
+</tr>
+</tbody>
+</table>
+<p class=""make-it-readable"">We can sum both a date and a duration together to provide us with a date 90 days in the future.</p>
+[code lang=""cypher""]WITH date() as now, duration('P90D') AS duration
+RETURN now, now + duration AS then
+[/code]
+<table>
+<thead>
+<tr>
+<th>now</th>
+<th>then</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""2018-05-16""</code></td>
+<td><code>""2018-08-14""</code></td>
+</tr>
+</tbody>
+</table>
+<p>Three months until my birthday, I now expect a birthday present from you...</p>
+<h3 id=""durations-between-dates"" class=""make-it-readable"">Durations between dates</h3>
+<p>You can calculate the difference between dates by using the <code>duration.between(start, end)</code> function.  This function compares two points in time and returns an instance of a <code>Duration</code>.</p>
+[code lang=""cypher""]WITH datetime.transaction() AS start
+CALL apoc.util.sleep(2000)
+WITH start, datetime.realtime() AS end
+RETURN duration.between(start, end) as duration
+[/code]
+<table>
+<thead>
+<tr>
+<th>duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""P0M0DT2.003000000S""</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>There are also <code>duration.inSeconds</code>, <code>duration.inDays</code> <code>duration.inMonths</code> functions which discard any smaller components to provide a rounded figure.</p>
+
+<h2 id=""truncating-values"">Truncating Values</h2>
+<p>Any temporal value can be truncated using the <code>truncate()</code> function.  <a href=""https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/#functions-temporal-truncate-overview"" rel=""nofollow"">Truncating an instant</a> allows you to round a value to the nearest unit of time - for example, removing the seconds or milliseconds from a value.</p>
+[code lang=""cypher""]datetime.truncate('seconds', myDate)
+[/code]
+<h2 id=""config-changes"">Config Changes</h2>
+<p>There is one additional configuration setting included in <code>neo4j.conf</code>.  The <code>db.temporal.timezone</code> setting is used to configure the default timezone for the server.  By default this is set to UTC (<code>Z</code>).</p>
+[code lang=""cypher""]db.temporal.timezone=Europe/London
+[/code]
+
+<h2 id=""converting-dates"" class=""make-it-readable"">Converting Dates</h2>
+If you're currently using the <code>timestamp()</code> function or milliseconds since epoch, you can supply a map with <code>epochMillis</code> set to the timestamp property stored on the node.
+
+[code]MATCH (e:Event)
+SET e.startDate = datetime({ epochMillis: e.startsAt })[/code]
+
+If you are storing seconds rather than milliseconds, you can define a <code>epochSeconds</code> option instead.
+
+<h2 id=""a-working-example-route-planning"" class=""make-it-readable"">A Working Example: Route Planning</h2>
+<p>To demonstrate how these temperal data types work, I will revisit the Journey Planning project that featured in my talk at <a href=""http://graphconnect.com"" rel=""nofollow"">Graph Connect 2017 in London</a>.  For brevity, I will use the basic scheduling data rather than the extensive model.</p>
+<p>Let's run a quick cypher statement to set up some test data.  First I'll create a <code>:Service</code> node, each service will have one or more scheduled <code>:Leg</code> nodes.  Each leg will have two relationships to signify which <code>:Station</code> a traveller can board from or alight to.</p>
+[code lang=""cypher""]// An array of legs with their origin, destination and departure and arrival times
+WITH [
+  {origin:'PAD', destination:'REA', departsAt:'08:00', arrivesAt:'08:28'},
+  {origin:'REA', destination:'DPW', departsAt:'08:30', arrivesAt:'08:43'},
+  {origin:'DPW', destination:'SWI', departsAt:'08:45', arrivesAt:'08:58'},
+  {origin:'SWI', destination:'CHI', departsAt:'09:00', arrivesAt:'09:13'},
+  {origin:'CHI', destination:'BAT', departsAt:'09:15', arrivesAt:'09:28'},
+  {origin:'BAT', destination:'BRI', departsAt:'09:30', arrivesAt:'10:00'}
+] as legs
+
+// Create the Service Node
+MERGE (service:Service { reference: '0800-GWR-PAD-BRI' })
+WITH service, legs
+
+// Create (:Service)-[:HAS_SCHEDULED_LEG]-&gt;(:Leg)
+UNWIND legs AS leg
+
+MERGE (l:Leg {
+    reference: service.reference + '-'+ leg.origin + '-'+ leg.destination,
+    departsAt: leg.departsAt,
+    arrivesAt: leg.arrivesAt
+})
+MERGE (service)-[:HAS_SCHEDULED_LEG]-&gt;(l)
+
+// Create (:Station)-[:CAN_BOARD]-&gt;(:Leg)-[:CAN_ALIGHT]-&gt;(:Station)
+MERGE (origin:Station { reference: leg.origin })
+MERGE (destination:Station { reference: leg.destination })
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (l)-[:CAN_ALIGHT]-&gt;(destination)
+
+// Create (:Leg)-[:NEXT_LEG]-=&gt;(:Leg)
+WITH collect(l) as legs
+
+UNWIND range(0, size(legs)-2) as idx
+WITH legs[idx] as this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+[/code]
+<p>This should give us some data to play with.</p>
+<p><a href=""https://www.adamcowley.co.uk/wp-content/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png"" target=""_blank"" rel=""nofollow""><img src=""https://www.adamcowley.co.uk/wp-content/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png"" alt=""The Data Model"" data-canonical-src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/05/Screen-Shot-2018-05-16-at-10.33.56.png"" style=""max-width:100%;""></a>
+<em>Looking good...</em></p>
+<h3 id=""creating-a-schedule"" class=""make-it-readable"">Creating a Schedule</h3>
+<p>As standard, we want customers to be able to book a journey 90 days in advance.  Rather than creating the processes manually, it would be useful to create a script that can be run daily to create all services in batch.</p>
+<p>Each day, we would like to create the schedule for 90 days time.  We can do this by adding a 90 day duration to the current date:</p>
+[code lang=""cypher""]WITH date() + duration('P90D') AS scheduleDate
+[/code]
+<p>Then, let's match all of the services and their legs <em>(for the sake of argument, let's pretend we've also checked that the services are valid for the scheduledDate...)</em></p>
+[code lang=""cypher""]MATCH (service:Service)
+WITH scheduleDate, service, [ (service)-[:HAS_SCHEDULED_LEG]-&gt;(l) | l ] as legs
+[/code]
+<p>Then create a <code>:ServiceDay</code> node.  We can use the accessors from <code>scheduleDate</code> to create a unique reference for the Service for that particular day.  While we're at it, we can set the date property to our Date instance.</p>
+[code lang=""cypher""]MERGE (day:ServiceDay {
+  reference: service.reference +'-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET day.date = scheduleDate
+MERGE (service)-[:HAS_SERVICE_DAY]-&gt;(day)
+[/code]
+<p>Next, unwind the scheduled legs, get the origin and destination stations and create the legs for the service on that day.</p>
+[code lang=""cypher""]WITH scheduleDate, service, legs, day
+UNWIND legs AS leg
+
+MATCH (origin)-[:CAN_BOARD]-&gt;(leg)-[:CAN_ALIGHT]-&gt;(destination)
+
+MERGE (l:ServiceDayLeg {
+  reference: leg.reference + '-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET
+    l.departsAt = localtime(leg.departsAt),
+    l.arrivesAt = localtime(leg.arrivesAt),
+    l.duration = duration.between(l.departsAt, l.arrivesAt)
+
+MERGE (day)-[:HAS_LEG]-&gt;(l)
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (destination)&lt;-[:CAN_ALIGHT]-(l)
+[/code]
+<p>Why <code>LocalTime</code>?  We're only dealing with a single timezone so there is no need to store a timezone with the time.  If you're dealing with services in different countries then you can compare instants in different timezones using <code>Time</code>.</p>
+<p>Lastly, let's combine the legs together into a linked list so we can traverse through the journey.</p>
+[code lang=""cypher""]WITH service, l ORDER BY l.departsAt ASC
+WITH service, collect(l) AS legs
+
+UNWIND range(0, size(legs)-2) AS idx
+WITH legs[idx] AS this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+[/code]
+<h3 id=""full-cypher-statement"" class=""make-it-readable"">Full Cypher Statement</h3>
+[code lang=""cypher""]WITH date() + duration('P90D') AS scheduleDate
+
+MATCH (service:Service)
+WITH scheduleDate, service, [ (service)-[:HAS_SCHEDULED_LEG]-&gt;(l) | l ] as legs
+
+// Create Service Day
+MERGE (day:ServiceDay {
+    // We can use the .year, .month, .day accessors on a date type
+    reference: service.reference +'-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+// ... and set the date as a property
+SET day.date = scheduleDate
+MERGE (service)-[:HAS_SERVICE_DAY]-&gt;(day)
+
+WITH scheduleDate, service, legs, day
+
+// Unwind the legs
+UNWIND legs AS leg
+
+MATCH (origin)-[:CAN_BOARD]-&gt;(leg)-[:CAN_ALIGHT]-&gt;(destination)
+
+MERGE (l:ServiceDayLeg {
+    reference: leg.reference + '-'+ scheduleDate.year +'-'+ scheduleDate.month +'-'+ scheduleDate.day
+})
+SET
+    // The arrival and departure times can be converted to LocalTime
+    l.departsAt = localtime(leg.departsAt),
+    l.arrivesAt = localtime(leg.arrivesAt),
+    l.duration = duration.between(l.departsAt, l.arrivesAt)
+
+MERGE (day)-[:HAS_LEG]-&gt;(l)
+MERGE (origin)-[:CAN_BOARD]-&gt;(l)
+MERGE (destination)&lt;-[:CAN_ALIGHT]-(l)
+
+WITH service, l ORDER BY l.departsAt ASC
+WITH service, collect(l) AS legs
+
+// Create :NEXT_LEG relationships
+UNWIND range(0, size(legs)-2) AS idx
+WITH legs[idx] AS this, legs[idx+1] as next
+MERGE (this)-[:NEXT_LEG]-&gt;(next)
+[/code]
+<p class=""make-it-readable"">So...how long will it take me to get home this evening?</p>
+[code lang=""cypher""]MATCH (origin:Station {reference: 'PAD'})-[:CAN_BOARD]-&gt;(start:ServiceDayLeg),
+      (destination:Station {reference: 'SWI'})&lt;-[:CAN_ALIGHT]-(end:ServiceDayLeg)
+
+MATCH path = (start)-[:NEXT_LEG*0..10]-&gt;(end)
+
+WITH duration.between(start.departsAt, end.arrivesAt) as journeyDuration
+RETURN journeyDuration, journeyDuration.minutes as minutes
+[/code]
+<table>
+<thead>
+<tr>
+<th>journeyDuration</th>
+<th>minutes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""P0M0DT3480S""</code></td>
+<td>60</td>
+</tr>
+</tbody>
+</table>
+<h2 id=""indexing-temporal-types"" class=""make-it-readable"">Indexing Temporal Types</h2>
+<p>Equality and range lookups on temporal data types are backed by indexes, making queries extremely fast.  Indexes are created in the same manner as before.</p>
+[code lang=""cypher""]CREATE INDEX ON :ServiceDay(date)
+[/code]
+<p>The planner shows that a simple range query uses a <code>NodeIndexSeekByRange</code> stage.</p>
+[code lang=""cypher""]explain MATCH (s:ServiceDay)
+WHERE date('2018-08-12') &gt;= s.date &gt;= date('2018-08-15')
+RETURN s
+[/code]
+<p style=""text-align: center""><a href=""http://www.adamcowley.co.uk/wp-content/uploads/2018/05/plan-2.png"" target=""_blank"" rel=""nofollow""><img src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/05/plan-2.png"" alt=""The Query Plan shows that range queries are indexed backed"" data-canonical-src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/05/plan-2.png"" style=""max-width:100%;""></a></p>
+<h2 id=""further-reading"" class=""make-it-readable"">Further Reading</h2>
+<p>Neo4j 3.4 is still in it's early stages the moment so many of these features are still in development.  Still, you can try them out by <a href=""https://neo4j.com/download/other-releases/#releases"" rel=""nofollow"">downloading 3.4.0 from neo4j.com</a> or in Neo4j Desktop.  Community posts are scarse, but documentation for all of the new functionality can be found in the preview documentation.</p>
+<ul>
+<li><a href=""https://neo4j.com/docs/developer-manual/preview/cypher/functions/temporal/"" rel=""nofollow"">Temporal Functions</a></li>
+<li><a href=""https://neo4j.com/docs/developer-manual/preview/cypher/syntax/operators/#query-operators-temporal"" rel=""nofollow"">Temporal Operators</a></li>
+<li><a href=""https://neo4j.com/docs/developer-manual/preview/cypher/syntax/operators/#cypher-ordering"" rel=""nofollow"">Ordering and comparison of temporal values</a></li>
+</ul>",Neo4j,neo4j|temporal,temporal-native-dates,http://www.adamcowley.co.uk/neo4j/temporal-native-dates/
+392,"Using Neo4j Temporal types in JavaScript","In my last post I wrote an introduction to the five new <a href=""http://www.adamcowley.co.uk/neo4j/temporal-native-dates/"">Neo4j Temporal data types now supported in Neo4j 3.4</a>.   Although the functions themselves are laid out in the <a href=""https://neo4j.com/docs/api/javascript-driver/current/"">detailed documentation</a>,  information on how to use these data types in an application are still thin on the ground.  In this post, I will walk through a few code samples including how to save temporal data types to the graph and how to retrieve them.
+<h2>Project Setup</h2>
+Temporal data types have been supported in all official drivers since version 1.6.  You can install or update the neo4j-driver dependency through npm and yarn.
+
+[code]npm install neo4j-driver[/code]
+
+Once you have done that, creating a driver and session instances are identical.
+
+[code lang=js file=index.js]const neo4j = require('neo4j-driver').v1
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'neo'))
+
+const session = driver.session()[/code]
+<h2>Saving Temporal Data</h2>
+There are two options for saving temporal data in Neo4j.  The first option is to create an instance of the data type inside inside the application and pass it through to the cypher query as a parameter.  Alternatively, you can pass through a string or object and instantiate the type inside the query itself.
+<h3>Passing values as Parameters</h3>
+The temporal data types are <a href=""https://github.com/neo4j/neo4j-javascript-driver/blob/1.7/src/v1/index.js#L304"">exported via <code>v1</code> property of the neo4j package</a> (and also via the <code>v1.types</code> key) along with a set of helper functions which allow you to determine whether a variable is an instance of any of these types.
+
+[code lang=js]const {
+    // Type Constructors
+    Duration,
+    LocalTime,
+    Time,
+    Date,
+    LocalDateTime,
+    DateTime,
+
+    // Helper Functions
+    isDuration,
+    isLocalTime,
+    isTime,
+    isDate,
+    isLocalDateTime,
+    isDateTime,
+} = require('neo4j-driver').v1[/code]
+
+Here are the links to the individual constructors, but for argument sake I will go with one of the more complex data types, <code>DateTime</code>.
+<ul>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Duration.html"">Duration</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Date.html"">Date</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~DateTime.html"">DateTime</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Duration.html"">Duration</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~LocalDateTime.html"">LocalDateTime</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~LocalTime.html"">LocalTime</a></li>
+<li><a href=""https://neo4j.com/docs/api/javascript-driver/currentclass/src/v1/temporal-types.js~Time.html"">Time</a></li>
+</ul>
+
+The DateTime data type takes a harrowing nine arguments:
+
+[code]new DateTime(
+    year, 
+    month, 
+    day, 
+    hour, 
+    minute, 
+    second, 
+    nanosecond, 
+    timeZoneOffsetSeconds, 
+    timeZoneId
+)[/code]
+
+You can instantiate a DateTime and pass that inside an object of parameters in the second parameter in any <code>session.run</code> or <code>tx.run</code> call.  Bolt will handle the transportation of the data and Neo4j will handle the persistence.
+
+[code lang=js file=index.js]session.run(
+    'CREATE (e:Event { id: $id, title: $title, startsAt: $startsAt }) RETURN e', 
+    {
+        id: 1,
+        title: 'Test Event',
+        startsAt: new neo4j.types.DateTime(2018, 01, 02, 12, 34, 56, 123400000, 'Z') 
+    }
+)
+[/code]
+
+<em>NB: make sure your nanoseconds are in the hundreds of millions.</em>
+
+Creating instances of data types is solid way of doing things.  The benefit being that you will have no nasty surprises or data saved in inconsistent formats.  Equally, you may not want to go through the trouble of importing the types into your project.  Or you may just not like the look of the constructors. If this is the case, you can always use Cypher&hellip;
+
+&nbsp;
+<h3>Storing Temporal data Using Cypher</h3>
+
+<a href=""https://www.adamcowley.co.uk/neo4j/temporal-native-dates/"" target=""_blank"">As mentioned in my previous post</a>, Cypher offers a really convenient API for creating dates and times.  This way, you only have to pass through the parts that are required and not worry about smaller fractions of time. 
+
+You can either pass through the individual units as their own parameter.
+
+[code lang=js file=""Providing Individual Parameters""]
+:param startsAtYear => 2018
+:param startsAtMonth => 01
+:param startsAtDay => 02 
+
+RETURN datetime({ year: $startsAtYear, month: $startsAtMonth, day: $startsAtDay })
+[/code]
+
+However if for some reason you feel you need to miss a unit, your query will fail with a missing parameter query.  If you prefer, you could instead send a single object containing the required units.
+
+
+[code lang=js file=""Sending a single Object""]
+:param startsAt => { year: 2018, month: 01, day: 02 }
+
+RETURN datetime(startsAt)
+[/code]
+
+Just make sure you use the appropriate function to cast the property as a date.
+
+As temporal functions also accept strings, you could also send a valid string as a parameter.
+
+If you're currently working with native JavaScript Dates, the easiest thing to send the milliseconds since epoch as a parameter and then construct the date in cypher by providing a <code>epochMillis</code> value.
+[code lang=js file=""Construct Parameters""]const startsAt = new Date()
+const params = { startsAt: startsAt.getTime() }
+[/code]
+
+[code lang=cypher file=""Cypher Statement""]RETURN date({ epochMillis: $startsAt })[/code]
+
+&nbsp;
+<h2>Working with Temporal Data Types</h2>
+
+Instances of temporal data types provide the same accessors as Cypher.  Dates include <code>.year</code>, <code>month</code> and <code>.day</code> accessors, and time types include <code>hour</code>, <code>minute</code>, <code>second</code>, <code>nanosecond</code>.  Depending on the construction of the time, the object may also return a non-null <code>timeZoneOffsetSeconds</code> or <code>timeZoneId</code> property.
+
+<a href=""https://github.com/neo4j/neo4j-javascript-driver#read-integers"" target=""_blank"">Due to the issues with Integers in Javascript</a>. these accessors will return an instance of a neo4j <code>Integer</code>.  To convert this into a number, you can call to the <code>toNumber()</code> function.  If you would like to skip this option, you can <a href=""https://neo4j.com/docs/api/javascript-driver/current/function/index.html#configuration"">set the <code>disableLosslessIntegers</code> option to true</a> when instantiating the driver.  <a href=""https://github.com/neo4j/neo4j-javascript-driver/pull/323"" target=""_blank"">You can read more about this option here</a>.
+
+[code lang=js]session.run(cypher, params)
+.then(res => {
+    // Access the Property
+    const startsAt = res.records[0].get('e').properties.startsAt
+
+    // Use Accessors
+    console.log('year', startsAt.year.toNumber())  // 2018
+    console.log('month', startsAt.month.toNumber()) // 01
+    console.log('day', startsAt.day.toNumber()) // 02
+    console.log('hour', startsAt.hour.toNumber()) // 12
+    console.log('minute', startsAt.minute.toNumber()) // 34
+    console.log('second', startsAt.second.toNumber()) // 56
+    console.log('nanosecond', startsAt.nanosecond.toNumber()) // 123400000
+})[/code]
+
+
+The <code>.toString()</code> function returns an ISO8601 date string.  This can be used to create a native Neo
+
+[code lang=js]console.log('toString', startsAt.toString()) // 2018-01-02T12:34:56.1234Z
+const nativeDate = new Date( startsAt.toString() ) ) // Date(""2018-01-02T12:34:56.123Z"")[/code]
+
+
+<h2>Full Scripts</h2>
+
+I have created a <a href=""https://gist.github.com/adam-cowley/284eae06730b787359c4bd54349bdef9"" target=""_blank"">Gist</a> with full versions of the code above.  For more information on the drivers you can check the <a href=""https://github.com/neo4j/neo4j-javascript-driver"" target=""_blank"">driver documentation on github</a> or check out the <a href=""https://neo4j.com/docs/api/javascript-driver/current/"">detailed documentation</a>.
+
+Happy coding!",JavaScript|Neo4j,drivers|javascript|neo4j|nodejs|temporal,neo4j-temporal-dates-javascript,http://www.adamcowley.co.uk/javascript/neo4j-temporal-dates-javascript/
+435,"Importing Google Analytics to Neo4j via BigQuery using APOC &amp; JDBC","<p>Google Analytics has been the defacto analytics platform for years.  The major problem with this is that Google owns your data and the reporting platform can be difficult to work with.</p>
+<p>However, for those with deep pockets and a Google Analytics 360 account, you can link your account with BigQuery and receive automated periodic imports.  The BigQuery tables can then be used to import the data into Neo4j, giving you the ability to explore the data using Cypher.</p>
+<h2>
+<a id=""user-content-setting-up-your-google-project"" class=""anchor"" href=""#setting-up-your-google-project"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Setting up your Google Project</h2>
+<p>Firstly head over to the <a href=""https://console.cloud.google.com/"" rel=""nofollow"">Google APIs Console</a> and log in with your Google account.  Once you are there, either create a new project or select an existing one.  If you are creating a new project, give it a name and click <strong>Create</strong>.</p>
+<p><a href=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-create-account.png"" target=""_blank"" rel=""nofollow""><img src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-create-account.png"" alt=""Create an Account"" style=""max-width:400px; margin: auto; display: block""></a></p>
+<p>Next, you'll need some credentials to connect to BigQuery.  You can use OAuth to connect through a google account, but it is by far easier to create a <em>Service Account</em>.   On the left hand menu, go to <strong>IAM &amp; admin</strong>, then <strong>Service accounts</strong>.  At the top of the page you should see a link to <strong>Create Service Account</strong>.</p>
+<p><a href=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-create-service-account.png"" target=""_blank"" rel=""nofollow""><img src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-create-service-account.png"" alt=""Create a Service Account""  style=""max-width:400px; margin: auto; display: block""></a></p>
+<p>Give the account a name and modify the Service account ID if necessary.  The account requires a role of  <code>bigquery.jobs.create</code> to run queries, so if you don't feel comfortable assigning <em>Project &gt; Owner</em>, at the very least set the role to <em>Big Query Data &gt; Big Query Job User</em>.  Check the <em>Furnish a new Private Key</em> and select JSON.  Once you've created the account, make a note of the account ID  (<code>*@projectname.iam.gserviceaccount.com</code>) and the location of the downloaded key file (or move it to your $NEO4J_HOME).  We'll need this later on.</p>
+<p>Lastly, we'll be using <code>apoc.load.jdbc</code> to connect to BigQuery.  Make sure to add the <a href=""https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases"">latest version of APOC</a> and the <a href=""https://cloud.google.com/bigquery/partners/simba-drivers/"" rel=""nofollow"">SIMBA JDBC drivers for BigQuery</a> to your <code>$NEO4J_HOME/plugins</code> folder.</p>
+<h2>
+<a id=""user-content-linking-google-analytics-to-bigquery"" class=""anchor"" href=""#linking-google-analytics-to-bigquery"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Linking Google Analytics to BigQuery</h2>
+<p>If you are an <em>OWNER</em> of a property, this can be done with a single click.  Under Admin, select the Property that you would like to link to.  Then, in the <em>PROPERTY</em> column, click <strong>All Products</strong> and then <strong>Link BigQuery</strong>.</p>
+<p><a href=""https://support.google.com/analytics/answer/3416092"" rel=""nofollow"">The official guide to setting up Google Analytis to BigQuery Export</a></p>
+<h2>
+<a id=""user-content-exploring-the-data-set"" class=""anchor"" href=""#exploring-the-data-set"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Exploring the Data Set</h2>
+<p>So you can follow along, I will be using the <a href=""https://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801"" rel=""nofollow"">sample dataset</a> made available by Google.  You can easily switch out the <code>bigquery-public-data</code> project and <code>google_analytics_sample</code> dataset for your own.</p>
+<p>The tables are exported daily in the format of <code>ga_sessions_{YYYY}{MM}{DD}</code>.  A really nice feature of BigQuery is that you can run queries on multiple tables at once using a wildcard (<code>ga_sessons_201807*</code>) or a where clause (<code>_TABLE_SUFFIX &gt;= '20180701'</code>).  But <strong>beware</strong>, you're billed by the data that you process during the query.  So if you run a query for all tables in a particular year, you could end up with a hefty bill.</p>
+<p>If you head to the schema viewer at (<a href=""https://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801"" rel=""nofollow"">https://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801</a>), you'll see that there is a lot of information available.</p>
+<p>BigQuery uses it's own version of SQL to run queries.  Let's run a query in the console to explore the data.</p>
+[code lang=""sql""]SELECT
+  fullVisitorId,
+  visitorId,
+  visitNumber,
+  visitId,
+  visitStartTime,
+  date,
+  hits.time,
+  hits.page.pagePath,
+  hits.page.pageTitle,
+  hits.page.hostname,
+  trafficSource.campaign,
+  trafficSource.source,
+  trafficSource.medium,
+  trafficSource.keyword,
+  trafficSource.adwordsClickInfo.campaignId,
+  geoNetwork.continent,
+  geoNetwork.subcontinent,
+  geoNetwork.country,
+  geoNetwork.region,
+  geoNetwork.city,
+  geoNetwork.latitude,
+  geoNetwork.longitude
+FROM [bigquery-public-data:google_analytics_sample.ga_sessions_20170801] LIMIT 1000
+[/code]
+<a href=""https://docs.google.com/spreadsheets/d/1Ef6TxSs1d2lDAPgfdGitS6b9_KIbZqhHikxUSgZ-yXk/edit?usp=sharing"" rel=""nofollow"">View an export of the top 1000 rows on Google Sheets</a></p>
+<p><strong>A Note on Unnesting Data</strong>
+The <code>hits</code> and <code>customDimensions</code> columns inside each <code>ga_sessions_*</code> table are <em>REPEATED</em> fields.  Unfortunately, at the moment apoc.load.jdbc does not handle these correctly.  These can be <em>unnested</em> into individual rows using the <code>UNNEST</code> function.  It means that the cypher query has to do slightly more work but we can get around the issue of multiple duplicates by using <code>MERGE</code> statements instead of <code>CREATE</code>.</p>
+<h3>
+<a id=""user-content-as-a-graph"" class=""anchor"" href=""#as-a-graph"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>As a Graph</h3>
+<p><a href=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-whiteboard.jpg"" target=""_blank"" rel=""nofollow""><img src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-whiteboard.jpg"" alt=""The Graph Diagram on a whiteboard"" style=""max-width:400px; margin: auto; display: block""></a></p>
+<p>We could represent this in a graph as a set of <code>Visitor</code>s, each of which has multiple <code>:Visits</code> which contain one or more <code>:Hits</code>.  Each hit (either a pageview or an event) takes place on a <code>:Page</code> which belongs to a <code>:Domain</code>.  There is also information on the user's location, the app that they used.  Custom Dimensions and the Traffic Source (source, medium, keywords, adwords content) may also be useful for linking to existing customer records and tracking the success of campaigns.  I will stick to a more basic model for now.</p>
+<p><a href=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-model.png"" target=""_blank"" rel=""nofollow""><img src=""http://www.adamcowley.co.uk/wp-content/uploads/2018/06/neo4j-bigquery-model.png"" alt=""Extracted Graph Model""  style=""max-width:400px; margin: auto; display: block""></a></p>
+<h2>
+<a id=""user-content-importing-to-neo4j-using-apoc--jdbc"" class=""anchor"" href=""#importing-to-neo4j-using-apoc--jdbc"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Importing to Neo4j using APOC &amp; JDBC</h2>
+<p>In order to connect to a JDBC source, we need to build up a connection string.  APOC includes a <code>apoc.load.jdbc</code> function that yields a stream of <code>row</code>s, each property of which can be accessed through dot or square bracket notation.</p>
+[code lang=""cypher""]CALL apoc.load.jdbc(connectionString, queryOrTable)
+YIELD row
+RETURN row.property
+[/code]
+<h4>
+<a id=""user-content-the-connection-string"" class=""anchor"" href=""#the-connection-string"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>The Connection String</h4>
+<p>To build a connection string to connect to BigQuery, we'll need the <em>Service account id</em> and <em>Private key</em> generated above.  The JDBC Connection string take a combination of:</p>
+<ul>
+<li>
+<code>jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;</code> - The JDBC URL for the BigQuery API</li>
+<li>
+<code>ProjectId=neo4j-bigquery-test;</code> - The Name of the Project</li>
+<li>
+<code>OAuthType=0</code>- Instructs the driver to use service-based authentication.  You can also use user-based OAuth authentication by setting this to <code>1</code> but this involves popups and copy and pasting urls &amp; keys.</li>
+<li>
+<code>OAuthServiceAcctEmail=new-service-account@neo4j-bigquery-test2.iam.gserviceaccount.com</code> - The Service account ID set up earlier</li>
+<li>
+<code>OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json</code> - The path to the key file that downloaded when the credentials were created</li>
+</ul>
+<p>The full string should look something like this:
+[code]
+jdbc:bigquery://<a href=""https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json"" rel=""nofollow"">https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json</a>
+[/code]
+<p>This connection string is a bit unweildy.  When calling <code>apoc.load.jdbc</code>, the procedure will check <code>neo4j.conf</code> file for a corresponding alias under <code>apoc.jdbc.&lt;alias&gt;.url</code>.</p>
+[code file=""neo4j.conf""]# BigQuery Connection String
+apoc.jdbc.BigQuery.url=jdbc:bigquery://<a href=""https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json"" rel=""nofollow"">https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json</a>
+[/code]
+<p>This makes subsequent calls simpler and protects queries from changes to keys in the future.</p>
+[code lang=""cypher""]CALL apoc.load.jdbc('BigQuery', queryOrTable)
+YIELD row[/code]
+<p>Much nicer.</p>
+<h3>
+<a id=""user-content-the-query"" class=""anchor"" href=""#the-query"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>The Query</h3>
+<p>Let's take the query above and run it through Neo4j with our credentials. When running the query through JDBC, you'll need to change the format of the table names from <code>[project:dataset.table]</code> to <code>project.dataset.table</code> for example
+<code>bigquery-public-data.google_analytics_sample.ga_sessions_20170801</code>.</p>
+[code lang=""cypher""]
+CALL apoc.load.jdbc('BigQuery', 'SELECT
+  fullVisitorId,
+  visitorId,
+  visitNumber,
+  visitId,
+  visitStartTime,
+  date,
+  h.time,
+  h.hitNumber,
+  h.page.pagePath,
+  h.page.pageTitle,
+  h.page.hostname
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_20170801`, UNNEST(hits) AS h')
+YIELD row
+// ...
+[/code]
+<p>Now we can use the row to merge the <code>:Visitor</code>, <code>:Visit</code> and <code>:Hit</code> nodes before merging the relationships together.</p>
+<p>The start time of the visit is stored as seconds since epoch, so we can store this as a <a href=""https://www.adamcowley.co.uk/neo4j/temporal-native-dates/"" rel=""nofollow"">DateTime property introduced in Neo4j 3.4</a>, setting the <code>epochSeconds</code> value in the constructor.</p>
+<p>There is no natural key for the hit, so I have combined the visit's unique ID and the hit number to make a unique key.  Where the <code>isInteraction</code> property is free, I have used the foreach hack to set a conditional label to signify that this was an event rather than a pageview.</p>
+[code lang=""cypher""]
+// ...
+YIELD row</p>
+<p>MERGE (visitor:Visitor { fullVisitorId: row.fullVisitorId })
+SET visitor.visitorId = row.visitorId
+MERGE (visit:Visit { visitId: row.visitId })
+SET
+visit.number = toInteger(row.visitNumber),
+visit.startedAt = datetime({ epochSeconds: toInteger(row.visitStartTime) })</p>
+<p>MERGE (hit:Hit { hitId: row.visitId + '-'+ row.hitNumber })
+SET
+hit.number = toInteger(row.hitNumber),
+hit.timestamp = datetime({ epochSeconds: toInteger(row.time) })</p>
+<p>// Foreach Hack to set Interaction label
+FOREACH (run IN CASE WHEN hit.isInteraction = 'true' THEN [1] ELSE [] END |
+  SET hit:Interaction
+)</p>
+<p>MERGE (host:Host { hostname: row.hostname })</p>
+<p>MERGE (page:Page { url: row.hostname + row.pagePath })
+SET page.hostname = row.hostname, page.path = row.pagePath
+MERGE (host)-[:HAS_PAGE]-&gt;(page)</p>
+<p>MERGE (visitor)-[:HAS_VISIT]-&gt;(visit)
+MERGE (visit)-[:HAS_HIT]-&gt;(hit)
+MERGE (hit)-[:FOR_PAGE]-&gt;(page);
+[/code]
+<h3>
+<a id=""user-content-linked-lists"" class=""anchor"" href=""#linked-lists"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Linked Lists</h3>
+<p>Linked Lists of nodes are useful for a number of situations.  Because we have numbers on each hit and visit, we can query, collect and connect them together.  This will be useful when analysing user behaviour.</p>
+[code lang=""cypher""]
+MATCH (visitor:Visitor)-[:HAS_VISIT]-&gt;(visit)
+// Order visits in ascending order
+WITH visitor, visit ORDER BY visit.number ASC</p>
+<p>// Collect the visits
+WITH visitor, collect(visit) AS visits</p>
+<p>// Unwind the ordered collection
+UNWIND range(0, size(visits)-2) AS idx
+WITH visits[idx] AS this, visits[idx+1] AS next</p>
+<p>MERGE (this)-[:NEXT_VISIT]-&gt;(next)
+[/code]
+<p>I use this technique quite often to create linked lists.  First, match the nodes that you are interested in before putting them into the correct order.  Next, collect up the nodes - this allows you to calculate the size of the collection and unwind a range of indexes that can be used to create aliases between the two nodes.</p>
+<p>With larger datasets, you sometimes need to be a little more cute.  Using a <code>:LAST_HIT</code> relationship and identifying new nodes with a temporary label would cut down the number of nodes and relationships touched by the query on a larger dataset.</p>
+<p>We can do the same to link up the visits.</p>
+[code lang=""cypher""]
+MATCH (visit:Visit)-[:HAS_HIT]-&gt;(hit)
+// Order visits in ascending order
+WITH visit, hit ORDER BY hit.number ASC</p>
+<p>// Collect the visits
+WITH visit, collect(hit) AS hits</p>
+<p>// Unwind the ordered collection
+UNWIND range(0, size(hits)-2) AS idx
+WITH hits[idx] AS this, hits[idx+1] AS next</p>
+<p>MERGE (this)-[:NEXT_HIT]-&gt;(next)
+[/code]
+<h2>
+<a id=""user-content-analysis"" class=""anchor"" href=""#analysis"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Analysis</h2>
+<p>Now we can start to use the power of the graph to explore the data.</p>
+<h3>
+<a id=""user-content-what-pages-are-users-returning-to"" class=""anchor"" href=""#what-pages-are-users-returning-to"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>What pages are users visiting?</h3>
+[code lang=""cypher""]
+MATCH (v:Visitor)-[:HAS_VISIT]-&gt;()-[:HAS_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p:Page)
+WHERE v.fullVisitorId = {fullVisitorId}
+RETURN v.fullVisitorId, p.path, count(*) as visits
+ORDER BY visits DESC
+[/code]
+<table>
+<thead><tr>
+<th>v.fullVisitorId</th>
+<th>p.path</th>
+<th>visits</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/store.html""</td>
+<td>151</td>
+</tr>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/store.html/quickview""</td>
+<td>147</td>
+</tr>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/google+redesign/apparel/mens+tshirts/google+mens+bayside+graphic+tee.axd""</td>
+<td>1</td>
+</tr>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/basket.html""</td>
+<td>1</td>
+</tr>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/home""</td>
+<td>1</td>
+</tr>
+<tr>
+<td>""7342454030115611747""</td>
+<td>""/google+redesign/office/stickers/youtube+custom+decals.axd""</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h3>
+<a id=""user-content-next-pages"" class=""anchor"" href=""#next-pages"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Next Pages</h3>
+<p>The  <code>:NEXT_HIT</code> relationship allows us to see where a user goes next during their visit.</p>
+[code lang=""cypher""]
+MATCH (p1:Page)&lt;-[:FOR_PAGE]-()-[:NEXT_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p2)
+WHERE p1 &lt;&gt; p2
+RETURN p1.url, p2.url, count(*) as total
+ORDER BY total DESC
+LIMIT 5
+[/code]
+<table>
+<thead><tr>
+<th>p1.path</th>
+<th>p2.path</th>
+<th>total</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>""/basket.html""</td>
+<td>""/yourinfo.html""</td>
+<td>521</td>
+</tr>
+<tr>
+<td>""/basket.html""</td>
+<td>""/signin.html""</td>
+<td>470</td>
+</tr>
+<tr>
+<td>""/yourinfo.html""</td>
+<td>""/payment.html""</td>
+<td>451</td>
+</tr>
+<tr>
+<td>""/google+redesign/nest/nest-usa""</td>
+<td>""/google+redesign/nest/nest-usa/quickview""</td>
+<td>417</td>
+</tr>
+<tr>
+<td>""/google+redesign/nest/nest-usa/quickview""</td>
+<td>""/google+redesign/nest/nest-usa""</td>
+<td>380</td>
+</tr>
+</tbody>
+</table>
+<h3>
+<a id=""user-content-exit-pages"" class=""anchor"" href=""#exit-pages"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Exit Pages</h3>
+<p>Excluding sessions with a single pageview, where are users exiting the site?  By matching a hit where there is both an incoming <code>:NEXT_HIT</code> relationship and no outgoing <code>:NEXT_HIT</code> relationship, we can identify page a user has left the site from.</p>
+[code lang=""cypher""]
+MATCH (h:Hit)-[:FOR_PAGE]-&gt;(p:Page)
+WHERE ( ()-[:NEXT_HIT]-&gt;(h) ) AND NOT ( (h)-[:NEXT_HIT]-&gt;() )
+RETURN p.path, count(h) as exists
+ORDER BY exists DESC LIMIT 10
+[/code]
+<table>
+<thead><tr>
+<th>p.path</th>
+<th>exists</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>""/home""</td>
+<td>588</td>
+</tr>
+<tr>
+<td>""/google+redesign/shop+by+brand/youtube""</td>
+<td>195</td>
+</tr>
+<tr>
+<td>""/asearch.html""</td>
+<td>163</td>
+</tr>
+<tr>
+<td>""/google+redesign/apparel/mens/mens+t+shirts""</td>
+<td>133</td>
+</tr>
+<tr>
+<td>""/myaccount.html?mode=vieworderdetail""</td>
+<td>108</td>
+</tr>
+<tr>
+<td>""/google+redesign/nest/nest-usa""</td>
+<td>97</td>
+</tr>
+<tr>
+<td>""/basket.html""</td>
+<td>97</td>
+</tr>
+<tr>
+<td>""/google+redesign/electronics""</td>
+<td>73</td>
+</tr>
+<tr>
+<td>""/signin.html""</td>
+<td>58</td>
+</tr>
+<tr>
+<td>""/google+redesign/shop+by+brand/youtube/quickview""</td>
+<td>56</td>
+</tr>
+</tbody>
+</table>
+<h2>
+<a id=""user-content-conclusion"" class=""anchor"" href=""#conclusion"" aria-hidden=""true""><span aria-hidden=""true"" class=""octicon octicon-link""></span></a>Conclusion</h2>
+<p>We've just scratched the surface of what is possible when analysing web traffic in Neo4j.  With a small amount of extra effort, you can create a sophisticated import script that maps a wealth of information into the graph.  Combining this information with existing data sources, for example identifying customers from mailshots using custom dimensions, can lead to a deeper insight into a customer.</p>
+<p>Just remember, GDPR...</p>",Neo4j,,importing-google-analytics-to-neo4j-via-bigquery-using-apoc-jdbc,http://www.adamcowley.co.uk/neo4j/importing-google-analytics-to-neo4j-via-bigquery-using-apoc-jdbc/
+455,"Building a Neo4j Desktop graph app with VueJS","One of the lesser spoken about features of the <a href=""https://neo4j.com/developer/graph-platform/"" target=""_blank"" rel=""noopener"">Graph Platform</a> is the ability to create <strong>Graph Apps</strong> that are run through <a href=""https://neo4j.com/developer/neo4j-desktop/"" target=""_blank"" rel=""noopener"">Neo4j Desktop</a>.  Neo4j Desktop makes the developers life easy by providing an API to interact with a current active project and database.  You can set up a non-technical user with an install of Neo4j Desktop, set them up a project and ask them to click a couple of buttons to active a particular graph connection and open up an application full of custom dashboards and visualisations.   The best example of this is <a href=""https://neo4j.com/bloom/"" target=""_blank"" rel=""noopener"">Bloom</a>, which visualises large graphs and provides a natural language search interface.  No code; no, java, no cypher.
+
+In this post I'll talk through a few options for using the official Neo4j JavaScript drivers inside a VueJS application.
+
+My post also has an ulterior motive - to promote React's shy younger brother <a href=""https://vuejs.org/"" target=""_blank"" rel=""noopener"">VueJS</a>.  At <a href=""http://www.neo4j.com"" target=""_blank"" rel=""noopener"">Neo4j</a>, like most of the companies I visit, they use React exclusively for graph apps so you won't hear too much about how to use VueJS with Neo4j.  Compared to other front end frameworks, I find VueJS (and by association <em>vuex</em>) to be a more mature framework  and a much more pleasant development experience.
+
+I won't go into details on how to build or structure a Vue application, but the <a href=""https://vuejs.org/v2/guide/"">official guide</a> is a great starting point and there are <a href=""https://madewithvuejs.com/tutorials"" target=""_blank"" rel=""noopener"">many</a> <a href=""https://laracasts.com/series/learn-vue-2-step-by-step"" target=""_blank"" rel=""noopener"">great</a> <a href=""https://scotch.io/tutorials/build-a-to-do-app-with-vue-js-2"" target=""_blank"" rel=""noopener"">tutorials</a> around.
+
+&nbsp;
+<h2>Sample Application</h2>
+The easiest way to get a project up and running is with the <a href=""https://cli.vuejs.org/"" target=""_blank"" rel=""noopener"">VueJS CLI</a>.  You can install <code>@vue/cli</code> globally using npm (or yarn).
+
+[code]npm install -g @vue/cli[/code]
+
+Then you can use the CLI interface to initiate a project.
+[code]vue create mygraphapp[/code]
+
+Once the project has been set up, move into the directory, install the dependencies and serve the application.
+[code]cd mygraphapp
+npm install
+npm run serve # or npm run dev depending on the template[/code]
+
+You should then see the VueJS logo and some generic content.
+
+<b>PUT AN IMAGE HERE</b>
+<h2>Enabling Development Mode</h2>
+While developing an application, you can enable development mode to add a temporary application to the applications list.  This will give you access to the <code>window.neo4jDesktopApi</code> API's as you would in a finished application.
+
+&nbsp;
+<ol>
+ 	<li>Enable Development Mode in Neo4j Desktop</li>
+ 	<li>Introducing window.neo4jDesktopApi</li>
+ 	<li>Adding as a plugin</li>
+ 	<li>Using in vuex</li>
+</ol>
+&nbsp;
+<h2>A Word of Warning</h2>
+Although convenient, using the Neo4j Drivers directly in a public facing front end application should be done with extreme caution.  Connecting directly to Neo4j exposes both the Neo4j address and connection credentials.  For production applications consider placing either a REST or GraphQL API between the application and Neo4j.
+
+&nbsp;
+
+&nbsp;","Graph Apps|Neo4j|VueJS",,,http://www.adamcowley.co.uk/?p=455
+471,"Calculating TF-IDF scores in Neo4j with Cypher","When extracting information from documents using NLP, attempting to separate important terms from noise can be tricky.  By Calculating a <strong>TF-IDF</strong> (Term Frequency-Inverse Document Frequency) score, you can elevate important terms in a document compared to the document set overall.  This is a nice addition to the Bag of Words approach to Natural Language Processing because it dampens the score of commonly mentioned terms that do not contain as much informational content.
+
+<strong>TL;DR: </strong><a href=""#full-query"">The full query is at the bottom of this post</a>.
+<h2>TF-IDF: The Theory</h2>
+Say we're analysing a set of emails.  Terms like <em>""Dear IT Support""</em> and <em>""kind regards""</em>  are commonly used and will appear often in the corpus.  These terms are noise compared to the important terms that we would like to extract, like place names or products.
+
+The <strong>Term Frequency (TF)</strong> scores the frequency of a word in a given document.  This is calculated by taking the number of times a term is mentioned in the document and dividing it by the total number of terms mentioned in the document.
+
+[code]n/N # n = Mentions of term in document, N = Total terms in document[/code]
+
+The <strong>Inverse Document Frequency (IDF)</strong> is calculated by taking the total number of documents, the number of documents that a given term is mentioned in and dividing before adding to a logarithmic scale.
+
+[code]1 + log(N/n) # N = Total number of documents,  n = Documents that mention the term[/code]
+
+There are many packages around that will calculate TF-IDF scores, but as this is a relatively simple calculation we can do this using only a Cypher statement.
+<h2>Data Model</h2>
+The simplest way to analyse this in Neo4j would be to extract words and/or ngrams from a body of text into a <code>:Document</code> node with a <code>:MENTIONS</code> relationship to one or more <code>:Term</code> nodes.
+
+<a href=""http://www.adamcowley.co.uk/wp-content/uploads/2019/04/Screenshot-2019-04-06-at-11.53.21.png""><img class=""alignnone size-full wp-image-475"" src=""http://www.adamcowley.co.uk/wp-content/uploads/2019/04/Screenshot-2019-04-06-at-11.53.21.png"" alt=""A simple model of (:Document)-[:MENTIONS]->(:Term)"" /></a>
+<h2>Approach</h2>
+First, we'll need the total number of documents. Then, choose a term and document to calculate the score for.
+
+[code lang=""cypher""]MATCH (:Document) WITH count(*) AS totalDocuments
+
+MATCH (t:Term {name: $term})
+MATCH (d:Document {id: $id})[/code]
+
+Next, we'll need to gather some statistical information on the term and the document:
+
+[code lang=""cypher""]WITH d, t,
+&nbsp;&nbsp;&nbsp;&nbsp;totalDocuments,
+&nbsp;&nbsp;&nbsp;&nbsp;size((d)-[:MENTIONS]-&gt;(t)) AS occurrencesInDocument,
+&nbsp;&nbsp;&nbsp;&nbsp;size((d)-[:MENTIONS]-&gt;()) AS termsInDocument,
+&nbsp;&nbsp;&nbsp;&nbsp;size(()-[:MENTIONS]-&gt;(t)) AS documentsWithTerm[/code]
+
+Then, calculate the <strong>tf</strong>, and the <strong>idf</strong> scores
+
+[code lang=""cypher""]WITH d, t,
+&nbsp;&nbsp;&nbsp;&nbsp;totalDocuments,
+1.0 * occurrencesInDocument / termsInDocument AS tf,
+log10( totalDocuments / documentsWithTerm ) AS idf[/code]
+
+Finally, multiply the TF by the IDF to get a score. This will give us the ID of the document node, the name property of the term and a <strong>tf-idf</strong> score.  This value could be stored on the :MENTIONS relationship and then used to return relevant scores at query time.  You may also want to remove scores under a particular threshold or only keep references to the top <em>X</em> values.
+
+[code lang=""cypher""]RETURN d.id, t.name, tf * idf as tfIdf[/code]
+
+&nbsp;
+<h2 id=""full-query"">Full Query</h2>
+[code lang=cypher]
+// Total number of documents
+MATCH (:Document) WITH count(*) AS totalDocuments
+
+// Pick a Term and a Document
+MATCH (t:Term {name: $term})
+MATCH (d:Document {id: $id})
+
+// Get Statistics on Document and Term
+WITH d, t,
+&nbsp;&nbsp;&nbsp;&nbsp;totalDocuments,
+&nbsp;&nbsp;&nbsp;&nbsp;size((d)-[:MENTIONS]-&gt;(t)) AS occurrencesInDocument,
+&nbsp;&nbsp;&nbsp;&nbsp;size((d)-[:MENTIONS]-&gt;()) AS termsInDocument,
+&nbsp;&nbsp;&nbsp;&nbsp;size(()-[:MENTIONS]-&gt;(t)) AS documentsWithTerm
+
+// Calculate TF and IDF
+WITH d, t,
+&nbsp;&nbsp;&nbsp;&nbsp;totalDocuments,
+&nbsp;&nbsp;&nbsp;&nbsp;1.0 * occurrencesInDocument / termsInDocument AS tf,
+&nbsp;&nbsp;&nbsp;&nbsp;log10( totalDocuments / documentsWithTerm ) AS idf
+
+// Combine together to return a result
+RETURN d.id, t.name, tf * idf as tfIdf[/code]",Neo4j|NLP,,calculating-tf-idf-score-cypher,http://www.adamcowley.co.uk/neo4j/calculating-tf-idf-score-cypher/
