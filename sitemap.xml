@@ -1,29 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>http://www.adamcowley.co.uk/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/core-api/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/java/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/posts/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/social/</loc>
+    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
   </url>
   
   <url>
@@ -34,31 +50,6 @@
   <url>
     <loc>http://www.adamcowley.co.uk/tags/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/core-api/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/java/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/social/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -69,13 +60,11 @@
   <url>
     <loc>http://www.adamcowley.co.uk/tags/nlp/</loc>
     <lastmod>2019-04-06T11:11:40+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/bigquery/</loc>
     <lastmod>2018-07-06T10:45:54+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -86,13 +75,31 @@
   <url>
     <loc>http://www.adamcowley.co.uk/tags/jdbc/</loc>
     <lastmod>2018-07-06T10:45:54+00:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/drivers/</loc>
+    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/javascript/</loc>
     <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/javascript/</loc>
+    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/nodejs/</loc>
+    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/temporal/</loc>
+    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
   </url>
   
   <url>
@@ -101,32 +108,18 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/drivers/</loc>
-    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/javascript/</loc>
-    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/nodejs/</loc>
-    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/temporal/</loc>
-    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/neo4j/temporal-native-dates/</loc>
     <lastmod>2018-05-16T22:25:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/node/</loc>
+    <lastmod>2018-03-02T19:15:42+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/promises/</loc>
+    <lastmod>2018-03-02T19:15:42+00:00</lastmod>
   </url>
   
   <url>
@@ -135,44 +128,28 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/node/</loc>
-    <lastmod>2018-03-02T19:15:42+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/promises/</loc>
-    <lastmod>2018-03-02T19:15:42+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/</loc>
-    <lastmod>2018-02-21T10:54:24+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/sdn/</loc>
     <lastmod>2018-02-21T10:54:24+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/spring/</loc>
     <lastmod>2018-02-21T10:54:24+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/spring-boot/</loc>
     <lastmod>2018-02-21T10:54:24+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/spring-data-neo4j/</loc>
     <lastmod>2018-02-21T10:54:24+00:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/</loc>
+    <lastmod>2018-02-21T10:54:24+00:00</lastmod>
   </url>
   
   <url>
@@ -183,7 +160,6 @@
   <url>
     <loc>http://www.adamcowley.co.uk/tags/cypher/</loc>
     <lastmod>2017-09-06T11:55:37+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -192,38 +168,38 @@
   </url>
   
   <url>
+    <loc>http://www.adamcowley.co.uk/tags/apoc/</loc>
+    <lastmod>2017-06-16T13:25:43+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.adamcowley.co.uk/neo4j/loading-tweets-into-neo4j-with-apoc/</loc>
     <lastmod>2017-06-16T13:25:43+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/apoc/</loc>
-    <lastmod>2017-06-16T13:25:43+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/reference/</loc>
     <lastmod>2017-06-16T13:25:43+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/twitter/</loc>
     <lastmod>2017-06-16T13:25:43+00:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/pagerank/</loc>
+    <lastmod>2017-04-03T13:48:37+00:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/recommendation-engine/</loc>
     <lastmod>2017-04-03T13:48:37+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/recommendations/</loc>
     <lastmod>2017-04-03T13:48:37+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -232,14 +208,13 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/pagerank/</loc>
-    <lastmod>2017-04-03T13:48:37+00:00</lastmod>
-    <priority>0</priority>
+    <loc>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/</loc>
+    <lastmod>2017-03-09T16:30:51+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/</loc>
-    <lastmod>2017-03-09T16:30:51+00:00</lastmod>
+    <loc>http://www.adamcowley.co.uk/tags/wordpress/</loc>
+    <lastmod>2017-03-07T15:50:49+00:00</lastmod>
   </url>
   
   <url>
@@ -248,9 +223,13 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/wordpress/</loc>
-    <lastmod>2017-03-07T15:50:49+00:00</lastmod>
-    <priority>0</priority>
+    <loc>http://www.adamcowley.co.uk/tags/php/</loc>
+    <lastmod>2017-03-07T13:48:47+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/tutorials/</loc>
+    <lastmod>2017-03-07T13:48:47+00:00</lastmod>
   </url>
   
   <url>
@@ -259,15 +238,8 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/php/</loc>
-    <lastmod>2017-03-07T13:48:47+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/tutorials/</loc>
-    <lastmod>2017-03-07T13:48:47+00:00</lastmod>
-    <priority>0</priority>
+    <loc>http://www.adamcowley.co.uk/tags/es2015/</loc>
+    <lastmod>2016-07-15T12:14:19+00:00</lastmod>
   </url>
   
   <url>
@@ -276,21 +248,23 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/es2015/</loc>
-    <lastmod>2016-07-15T12:14:19+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/export/</loc>
     <lastmod>2016-07-15T12:14:19+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/import/</loc>
     <lastmod>2016-07-15T12:14:19+00:00</lastmod>
-    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/gulp/</loc>
+    <lastmod>2016-06-03T16:14:47+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/mocha/</loc>
+    <lastmod>2016-06-03T16:14:47+00:00</lastmod>
   </url>
   
   <url>
@@ -299,21 +273,8 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/tags/gulp/</loc>
-    <lastmod>2016-06-03T16:14:47+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/mocha/</loc>
-    <lastmod>2016-06-03T16:14:47+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/tdd/</loc>
     <lastmod>2016-06-03T16:14:47+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

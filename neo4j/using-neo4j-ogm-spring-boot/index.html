@@ -9,8 +9,8 @@
 Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/" />
-<meta property="article:published_time" content="2018-02-21T10:54:24&#43;00:00"/>
-<meta property="article:modified_time" content="2018-02-21T10:54:24&#43;00:00"/>
+<meta property="article:published_time" content="2018-02-21T10:54:24+00:00" />
+<meta property="article:modified_time" content="2018-02-21T10:54:24+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using Neo4j-OGM with Spring Boot"/>
 <meta name="twitter:description" content="In my last post, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the Neo4j-OGM to encapsulate your business logic into java objects that can be mapped directly to the graph.
@@ -35,10 +35,6 @@ Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map P
 			</h1>
 			<nav class="nav" role="navigation">
 				<ul>
-					
-					<li>
-						<a href="/about-me/">about</a>
-					</li>
 					
 					<li>
 						<a href="/categories/javascript/">javascript</a>
@@ -80,6 +76,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 
 
+
 	<div class="introduction">
 		<div class="container">
 			
@@ -115,12 +112,12 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <div class="file">
 <span>build.gradle</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">dependencies <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">dependencies {
     <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span>    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>core:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
-    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>api:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
-    compile<span style="color:#f92672">(</span><span style="color:#960050;background-color:#1e0010">&#39;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>bolt<span style="color:#f92672">-</span>driver:3<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">)</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>    compile(<span style="color:#960050;background-color:#1e0010">&#39;</span>org.<span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>core<span style="color:#f92672">:</span>3.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span>)
+    compile(<span style="color:#960050;background-color:#1e0010">&#39;</span>org.<span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>api<span style="color:#f92672">:</span>3.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span>)
+    compile(<span style="color:#960050;background-color:#1e0010">&#39;</span>org.<span style="color:#a6e22e">neo4j</span><span style="color:#f92672">:</span>neo4j<span style="color:#f92672">-</span>ogm<span style="color:#f92672">-</span>bolt<span style="color:#f92672">-</span>driver<span style="color:#f92672">:</span>3.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">1</span><span style="color:#960050;background-color:#1e0010">&#39;</span>)
+}</code></pre></div>
 <p>Once you have the dependencies, you can start to create domain entities.</p>
 
 <h2>
@@ -147,9 +144,9 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <span>Entity.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeEntity</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Entity</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>Entity {
     <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>Next, we define a property to hold the ID.  This takes two annotations, the <code>@Id</code> annotation identifies the field as the identifier and the <code>@GeneratedValue</code> is used with the <code>@Id</code> annotation to define a generation strategy.</p>
 
 <div class="file">
@@ -157,10 +154,10 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Id</span>
 <span style="color:#a6e22e">@GeneratedValue</span>
-<span style="color:#66d9ef">private</span> Long id<span style="color:#f92672">;</span>
-<span style="color:#66d9ef">public</span> Long <span style="color:#a6e22e">getId</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> id<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<span style="color:#960050;background-color:#1e0010">private Long </span>id;
+<span style="color:#960050;background-color:#1e0010">public Long </span>getId() {
+    <span style="color:#66d9ef">return</span> id;
+}</code></pre></div>
 <p>There are two strategies for ID generation, a UUID strategy or Internal ID strategy which is uses by default.</p>
 
 <h3>
@@ -175,12 +172,12 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <span>Person.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeEntity</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">extends</span> Entity <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> String firstName<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> String lastName<span style="color:#f92672">;</span>
-    <span style="color:#a6e22e">@Relationship</span><span style="color:#f92672">(</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> <span style="color:#f92672">)</span>
-    Set<span style="color:#f92672">&lt;</span>Knows<span style="color:#f92672">&gt;</span> knows<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<span style="color:#960050;background-color:#1e0010">public class Person extends </span>Entity {
+    <span style="color:#960050;background-color:#1e0010">private String </span>firstName;
+    <span style="color:#960050;background-color:#1e0010">private String </span>lastName;
+    <span style="color:#a6e22e">@Relationship</span>( type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> )
+    <span style="color:#960050;background-color:#1e0010">Set&lt;Knows&gt; knows</span>;
+}</code></pre></div>
 <p>Inside this class I have defined two properties; firstName and lastName and defined a set of relationships using the <code>@Relationship </code>annotation.</p>
 
 <p>
@@ -190,12 +187,12 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <div class="file">
 <span>Person.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setLastName</span><span style="color:#f92672">(</span>String lastName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lastName</span> <span style="color:#f92672">=</span> lastName<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getLastName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> lastName<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public void </span>setLastName(<span style="color:#960050;background-color:#1e0010">String lastName</span>) {
+    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lastName</span> <span style="color:#f92672">=</span> lastName;
+}
+<span style="color:#960050;background-color:#1e0010">public String </span>getLastName() {
+    <span style="color:#66d9ef">return</span> lastName;
+}</code></pre></div>
 <h3>
     Knows <code>RelationshipEntity</code>
 </h3>
@@ -207,19 +204,19 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <div class="file">
 <span>Knows.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RelationshipEntity</span><span style="color:#f92672">(</span> type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> <span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Knows</span> <span style="color:#66d9ef">extends</span> Entity <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RelationshipEntity</span>( type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;KNOWS&#34;</span> )
+<span style="color:#960050;background-color:#1e0010">public class Knows extends </span>Entity {
     <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>As with the Person entity, we assign properties directly to the relationship.  <code>RelationshipEntity</code> classes take a couple of extra annotations.  The <code>@StartNode</code> and <code>@EndNode</code> annotations identify the entities that are used as the start and end nodes of the relationships.  In this case, the start and end nodes for the relationship will be instances of the <code>Person</code> class that we defined above.</p>
 
 <div class="file">
 <span>Knows.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@StartNode</span>
-Person source<span style="color:#f92672">;</span>
+<span style="color:#960050;background-color:#1e0010">Person source</span>;
 <span style="color:#a6e22e">@EndNode</span>
-Person target<span style="color:#f92672">;</span></code></pre></div>
+<span style="color:#960050;background-color:#1e0010">Person target</span>;</code></pre></div>
 <p>At the time of writing, Neo4j doesn&#8217;t support dates as a <a href="https://neo4j.com/docs/developer-manual/current/drivers/cypher-values/" target="_blank" rel="noopener">valid data type</a>.  Instead, we can choose to store the date as a string or the seconds since epoch as a Long.  In order to use dates in our application, we can use a <strong>Converter </strong>to handle the conversion when storing the data and again when retrieving the information from the database.  The OGM comes with the following converters:</p>
 
 <ul>
@@ -237,18 +234,18 @@ Person target<span style="color:#f92672">;</span></code></pre></div>
 <span>Knows.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@DateLong</span>
-Date since<span style="color:#f92672">;</span></code></pre></div>
+<span style="color:#960050;background-color:#1e0010">Date since</span>;</code></pre></div>
 <p>Now we can use native java dates, while the OGM takes care of the conversion when hydrating the object or persisting it back to the graph.</p>
 
 <div class="file">
 <span>Knows.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setSince</span><span style="color:#f92672">(</span>Date since<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">since</span> <span style="color:#f92672">=</span> since<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">public</span> Date <span style="color:#a6e22e">getSince</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> since<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public void </span>setSince(<span style="color:#960050;background-color:#1e0010">Date since</span>) {
+    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">since</span> <span style="color:#f92672">=</span> since;
+}
+<span style="color:#960050;background-color:#1e0010">public Date </span>getSince() {
+    <span style="color:#66d9ef">return</span> since;
+}</code></pre></div>
 <h2>
     Accessing Data with Sessions
 </h2>
@@ -261,20 +258,20 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <span>Neo4jConfiguration.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Bean</span>
-<span style="color:#66d9ef">public</span> org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ogm</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Configuration</span> <span style="color:#a6e22e">getConfiguration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> org<span style="color:#f92672">.</span><span style="color:#a6e22e">neo4j</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ogm</span><span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Configuration</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Builder</span><span style="color:#f92672">()</span>
-        <span style="color:#f92672">.</span><span style="color:#a6e22e">uri</span><span style="color:#f92672">(</span> getUri<span style="color:#f92672">()</span> <span style="color:#f92672">)</span>
-        <span style="color:#f92672">.</span><span style="color:#a6e22e">credentials</span><span style="color:#f92672">(</span> username<span style="color:#f92672">,</span> password <span style="color:#f92672">)</span>
-        <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<span style="color:#960050;background-color:#1e0010">public org</span>.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">ogm</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">Configuration</span> getConfiguration() {
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> org.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">ogm</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">Configuration</span>.<span style="color:#a6e22e">Builder</span>()
+        .<span style="color:#a6e22e">uri</span>( getUri() )
+        .<span style="color:#a6e22e">credentials</span>( username, password )
+        .<span style="color:#a6e22e">build</span>();
+}</code></pre></div>
 <p>In this snippet, we&#8217;re using the OGM&#8217;s Configuration Builder to create a configuration object and exposing this as a bean.  Then, we can create a method that will take this configuration and use it to create an instance of the <code>SessionFactory</code>.  We can pass through an optional set of package names which the session factory will scan for domain objects.</p>
 
 <div class="file">
 <span>Neo4jConfiguration.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> SessionFactory <span style="color:#a6e22e">getSessionFactory</span><span style="color:#f92672">(</span>Neo4jConfiguration config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SessionFactory<span style="color:#f92672">(</span> config<span style="color:#f92672">.</span><span style="color:#a6e22e">getConfiguration</span><span style="color:#f92672">(),</span> <span style="color:#e6db74">&#34;co.adamcowley.neobeans&#34;</span> <span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public SessionFactory </span>getSessionFactory(<span style="color:#960050;background-color:#1e0010">Neo4jConfiguration config</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SessionFactory( config.<span style="color:#a6e22e">getConfiguration</span>(), <span style="color:#e6db74">&#34;co.adamcowley.neobeans&#34;</span> );
+}</code></pre></div>
 <p>By default the SessionFactory will be treated as a <a href="https://en.wikipedia.org/wiki/Singleton_pattern" target="_blank" rel="noopener">singleton</a> and instantiated only once across the application.</p>
 
 <h2>
@@ -293,13 +290,13 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <span>CreatePerson.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Service</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CreatePerson</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> SessionFactory sessionFactory<span style="color:#f92672">;</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>CreatePerson {
+    <span style="color:#960050;background-color:#1e0010">private final SessionFactory sessionFactory</span>;
     <span style="color:#a6e22e">@Autowired</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CreatePerson</span><span style="color:#f92672">(</span>SessionFactory sessionFactory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sessionFactory</span> <span style="color:#f92672">=</span> sessionFactory<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#960050;background-color:#1e0010">public CreatePerson</span>(<span style="color:#960050;background-color:#1e0010">SessionFactory sessionFactory</span>) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sessionFactory</span> <span style="color:#f92672">=</span> sessionFactory;
+    }
+}</code></pre></div>
 <h2>
     Persisting Data
 </h2>
@@ -311,17 +308,17 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <div class="file">
 <span>CreatePerson.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>String firstName<span style="color:#f92672">,</span> String lastName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Person output <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Person<span style="color:#f92672">();</span>
-    output<span style="color:#f92672">.</span><span style="color:#a6e22e">setFirstName</span><span style="color:#f92672">(</span> firstName <span style="color:#f92672">);</span>
-    output<span style="color:#f92672">.</span><span style="color:#a6e22e">setLastName</span><span style="color:#f92672">(</span> lastName <span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public Person </span>create(<span style="color:#960050;background-color:#1e0010">String firstName</span>, <span style="color:#960050;background-color:#1e0010">String lastName</span>) {
+    <span style="color:#960050;background-color:#1e0010">Person output </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Person();
+    output.<span style="color:#a6e22e">setFirstName</span>( firstName );
+    output.<span style="color:#a6e22e">setLastName</span>( lastName );
 
-    Session session <span style="color:#f92672">=</span> sessionFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">openSession</span><span style="color:#f92672">();</span>
+    <span style="color:#960050;background-color:#1e0010">Session session </span><span style="color:#f92672">=</span> sessionFactory.<span style="color:#a6e22e">openSession</span>();
 
-    session<span style="color:#f92672">.</span><span style="color:#a6e22e">save</span><span style="color:#f92672">(</span> output <span style="color:#f92672">);</span>
+    session.<span style="color:#a6e22e">save</span>( output );
 
-    <span style="color:#66d9ef">return</span> output<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#66d9ef">return</span> output;
+}</code></pre></div>
 <p>Here, I have instantiated a new Person object, used the setter functions to set their first and last names.  Then, after opening a new session, the object is created.</p>
 
 <p>
@@ -332,23 +329,23 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <span>PersonController.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonController</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> CreatePerson service<span style="color:#f92672">;</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>PersonController {
+    <span style="color:#960050;background-color:#1e0010">private final CreatePerson service</span>;
     <span style="color:#a6e22e">@Autowired</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PersonController</span><span style="color:#f92672">(</span>CreatePerson service<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">service</span> <span style="color:#f92672">=</span> service<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#960050;background-color:#1e0010">public PersonController</span>(<span style="color:#960050;background-color:#1e0010">CreatePerson service</span>) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">service</span> <span style="color:#f92672">=</span> service;
+    }
 
-    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">postIndex</span><span style="color:#f92672">(</span> <span style="color:#a6e22e">@RequestBody</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> body <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        String firstName <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> body<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;firstName&#34;</span><span style="color:#f92672">);</span>
-        String lastName <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> body<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;lastName&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#a6e22e">@RequestMapping</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people&#34;</span>, method <span style="color:#f92672">=</span> RequestMethod.<span style="color:#a6e22e">POST</span>)
+    <span style="color:#960050;background-color:#1e0010">public Person </span>postIndex( <span style="color:#a6e22e">@RequestBody</span> Map<span style="color:#f92672">&lt;</span>String, <span style="color:#960050;background-color:#1e0010">Object&gt; body </span>) {
+        <span style="color:#960050;background-color:#1e0010">String firstName </span><span style="color:#f92672">=</span> (String) body.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;firstName&#34;</span>);
+        <span style="color:#960050;background-color:#1e0010">String lastName </span><span style="color:#f92672">=</span> (String) body.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;lastName&#34;</span>);
 
-        Person output <span style="color:#f92672">=</span> service<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>firstName<span style="color:#f92672">,</span> lastName<span style="color:#f92672">);</span>
+        <span style="color:#960050;background-color:#1e0010">Person output </span><span style="color:#f92672">=</span> service.<span style="color:#a6e22e">create</span>(firstName, lastName);
 
-        <span style="color:#66d9ef">return</span> output<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+        <span style="color:#66d9ef">return</span> output;
+    }
+}</code></pre></div>
 <h2>
     Reading Data
 </h2>
@@ -368,11 +365,11 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <div class="file">
 <span>PersonController.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> Collection<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span>
-    <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> page<span style="color:#f92672">,</span>
-    <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> limit<span style="color:#f92672">)</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/people&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">public Collection</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">Person&gt; getIndex</span>(
+    <span style="color:#a6e22e">@RequestParam</span>(defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span>) <span style="color:#960050;background-color:#1e0010">int page</span>,
+    <span style="color:#a6e22e">@RequestParam</span>(defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span>) <span style="color:#960050;background-color:#1e0010">int limit</span>)
+}</code></pre></div>
 <p>Here I have created a <code>Pagination</code> instance using the page and limit parameters retrieved from the request.  This is then passed to the <code>session.loadAll</code> method along with the class that the results should be bound to.
 </p></p>
 
@@ -383,11 +380,11 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 <div class="file">
 <span>PersonController.java</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people/{id}&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">GET</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> Person <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span> <span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> Long id <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Session session <span style="color:#f92672">=</span> factory<span style="color:#f92672">.</span><span style="color:#a6e22e">openSession</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">return</span> session<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span> Person<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> id <span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RequestMapping</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/people/{id}&#34;</span>, method <span style="color:#f92672">=</span> RequestMethod.<span style="color:#a6e22e">GET</span>)
+<span style="color:#960050;background-color:#1e0010">public Person </span>getIndex( <span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;id&#34;</span>) <span style="color:#960050;background-color:#1e0010">Long id </span>) {
+    <span style="color:#960050;background-color:#1e0010">Session session </span><span style="color:#f92672">=</span> factory.<span style="color:#a6e22e">openSession</span>();
+    <span style="color:#66d9ef">return</span> session.<span style="color:#a6e22e">load</span>( Person.<span style="color:#a6e22e">class</span>, id );
+}</code></pre></div>
 <h2 id="conclusion">Conclusion</h2>
 
 <p>
@@ -400,6 +397,28 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 
 
 				
+
+				
+
+
+
+    <i class="lnr lnr-tag tag-icon"></i>
+    <ul class="tags">
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/neo4j/">neo4j</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/sdn/">sdn</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/spring/">spring</a>
+        </li>
+        
+        </ul>
+
+
+
 			</article>
 		</section>
 	</div>
@@ -409,6 +428,13 @@ Date since<span style="color:#f92672">;</span></code></pre></div>
 		</main>
 
 		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
 			<div class="social">
 				<div class="container">
 					<ul>
@@ -433,12 +459,6 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
     </li>
 					</ul>
 				</div>
-			</div>
-
-			<div class="container">
-				<p class="copyright">
-					Copyright &copy; 2019  Adam Cowley.
-				</p>
 			</div>
 		</footer>
 	</div>

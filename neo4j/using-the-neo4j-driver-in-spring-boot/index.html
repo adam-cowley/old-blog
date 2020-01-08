@@ -8,8 +8,8 @@
 However, since being introduced to Spring, I&#8217;ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/" />
-<meta property="article:published_time" content="2018-02-13T15:18:29&#43;00:00"/>
-<meta property="article:modified_time" content="2018-02-13T15:18:29&#43;00:00"/>
+<meta property="article:published_time" content="2018-02-13T15:18:29+00:00" />
+<meta property="article:modified_time" content="2018-02-13T15:18:29+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using the Neo4j Driver in Spring Boot"/>
 <meta name="twitter:description" content="By choice, I&#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I&#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp; Procedures in Neo4j.
@@ -33,10 +33,6 @@ However, since being introduced to Spring, I&#8217;ve been impressed by how quic
 			</h1>
 			<nav class="nav" role="navigation">
 				<ul>
-					
-					<li>
-						<a href="/about-me/">about</a>
-					</li>
 					
 					<li>
 						<a href="/categories/javascript/">javascript</a>
@@ -74,6 +70,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 		<main role="main">
 
 		<section>
+
 
 
 
@@ -124,15 +121,15 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <span>NeobeansApplication.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NeobeansApplication</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>Application<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>NeobeansApplication {
+    <span style="color:#960050;background-color:#1e0010">public static void main</span>(<span style="color:#960050;background-color:#1e0010">String[] args</span>) {
+        SpringApplication.<span style="color:#a6e22e">run</span>(Application.<span style="color:#a6e22e">class</span>, args);
+    }
     <span style="color:#a6e22e">@Bean</span>
-    <span style="color:#66d9ef">public</span> Driver <span style="color:#a6e22e">neo4jDriver</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> GraphDatabase<span style="color:#f92672">.</span><span style="color:#a6e22e">driver</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bolt://localhost:7687&#34;</span><span style="color:#f92672">,</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">basic</span><span style="color:#f92672">(</span> <span style="color:#e6db74">&#34;neo4j&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;p455w0rd&#34;</span> <span style="color:#f92672">));</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#960050;background-color:#1e0010">public Driver </span>neo4jDriver() {
+        <span style="color:#66d9ef">return</span> GraphDatabase.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;bolt://localhost:7687&#34;</span>, AuthTokens.<span style="color:#a6e22e">basic</span>( <span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;p455w0rd&#34;</span> ));
+    }
+}</code></pre></div>
 <p>In this example, I am using a Basic auth token but Neo4j also supports Kerberos tokens and custom authentication schemes.</p>
 
 <p>Once the bean has been defined, we can “wire” this into any class, controller or component using the <code>@Autowired</code> annotation.</p>
@@ -141,32 +138,32 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <span>PersonController.js</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonController</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>PersonController {
     <span style="color:#a6e22e">@Autowired</span>
-    Driver driver<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">Driver driver</span>;
 
-    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/people&#34;</span><span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">getIndex</span><span style="color:#f92672">(</span>
-            <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> page<span style="color:#f92672">,</span>
-            <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> limit
-    <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span> Session session <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span><span style="color:#a6e22e">session</span><span style="color:#f92672">()</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            Number skip <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>page <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> limit<span style="color:#f92672">;</span>
+    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/people&#34;</span>)
+    <span style="color:#960050;background-color:#1e0010">public List</span><span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">&lt;</span>String, <span style="color:#960050;background-color:#1e0010">Object&gt;&gt; getIndex</span>(
+            <span style="color:#a6e22e">@RequestParam</span>(defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span>) <span style="color:#960050;background-color:#1e0010">int page</span>,
+            <span style="color:#a6e22e">@RequestParam</span>(defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span>) <span style="color:#960050;background-color:#1e0010">int limit
+</span><span style="color:#960050;background-color:#1e0010">    </span>) {
+        <span style="color:#66d9ef">try</span> ( <span style="color:#960050;background-color:#1e0010">Session session </span><span style="color:#f92672">=</span> driver.<span style="color:#a6e22e">session</span>() ) {
+            <span style="color:#960050;background-color:#1e0010">Number skip </span><span style="color:#f92672">=</span> (page <span style="color:#f92672">-</span> 1) <span style="color:#f92672">*</span> limit;
 
-            String query <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person) RETURN p ORDER BY p.name SKIP {skip} LIMIT {limit}&#34;</span><span style="color:#f92672">;</span>
+            <span style="color:#960050;background-color:#1e0010">String query </span><span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person) RETURN p ORDER BY p.name SKIP {skip} LIMIT {limit}&#34;</span>;
 
-            Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> params <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{{</span>
-                put<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">,</span> limit<span style="color:#f92672">);</span>
-                put<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;skip&#34;</span><span style="color:#f92672">,</span> skip<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}};-&gt;</span>
+            Map<span style="color:#f92672">&lt;</span>String, <span style="color:#960050;background-color:#1e0010">Object&gt; params </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">&lt;</span>String, Object<span style="color:#f92672">&gt;</span>() {{
+                put(<span style="color:#e6db74">&#34;limit&#34;</span>, limit);
+                put(<span style="color:#e6db74">&#34;skip&#34;</span>, skip);
+            }};<span style="color:#f92672">-&gt;</span>
 
-            <span style="color:#66d9ef">return</span> session<span style="color:#f92672">.</span><span style="color:#a6e22e">readTransaction</span><span style="color:#f92672">(</span>tx <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-               <span style="color:#66d9ef">return</span> tx<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>query<span style="color:#f92672">,</span> params<span style="color:#f92672">)</span>
-                       <span style="color:#f92672">.</span><span style="color:#a6e22e">list</span><span style="color:#f92672">(</span> row <span style="color:#f92672">-&gt;</span> row<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;p&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">asMap</span><span style="color:#f92672">()</span> <span style="color:#f92672">);</span>
-            <span style="color:#f92672">});</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+            <span style="color:#66d9ef">return</span> session.<span style="color:#a6e22e">readTransaction</span>(tx <span style="color:#f92672">-&gt;</span> {
+               <span style="color:#66d9ef">return</span> tx.<span style="color:#a6e22e">run</span>(query, params)
+                       .<span style="color:#a6e22e">list</span>( row <span style="color:#f92672">-&gt;</span> row.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;p&#34;</span>).<span style="color:#a6e22e">asMap</span>() );
+            });
+        }
+    }
+}</code></pre></div>
 <p>The <code>@RestController</code> annotation will identify this class as a REST controller.</p>
 
 <p>
@@ -186,9 +183,9 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <div class="file">
 <span>build.gradle</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">processResources <span style="color:#f92672">{</span>
-    expand<span style="color:#f92672">(</span>project<span style="color:#f92672">.</span><span style="color:#a6e22e">properties</span><span style="color:#f92672">)</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">processResources {
+    expand(project.<span style="color:#a6e22e">properties</span>)
+}</code></pre></div>
 <p></p></p>
 
 <p>
@@ -216,14 +213,14 @@ neo4j.auth.password=p455w0rd</code></pre></div>
 <span>Neo4jConfiguration.java</span>
 </div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Neo4jConfiguration</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>Neo4jConfiguration {
     <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>
         In order to pull the properties into the application, we can annotate properties with <code>@Value</code>. The annotation will take the full key of the property, prefixed with a <code>$</code> and wrapped in braces.
 </p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${neo4j.scheme:bolt}&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">private</span> String scheme<span style="color:#f92672">;</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${neo4j.scheme:bolt}&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">private String </span>scheme;</code></pre></div>
 <p>
         In this example, I&#8217;ve provided a default value of <code>bolt</code>. If you do not provide a default value and the setting, an exception will be thrown on start up.
 </p>
@@ -236,16 +233,16 @@ neo4j.auth.password=p455w0rd</code></pre></div>
 </span><span style="color:#75715e"> *
 </span><span style="color:#75715e"> * @return AuthToken
 </span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">public</span> AuthToken <span style="color:#a6e22e">getAuthToken</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">switch</span> <span style="color:#f92672">(</span> authType <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public AuthToken </span>getAuthToken() {
+    <span style="color:#66d9ef">switch</span> ( authType ) {
         <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;basic&#34;</span><span style="color:#f92672">:</span>
-            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">basic</span><span style="color:#f92672">(</span>username<span style="color:#f92672">,</span> password<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">return</span> AuthTokens.<span style="color:#a6e22e">basic</span>(username, password);
         <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;kerberos&#34;</span><span style="color:#f92672">:</span>
-            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">kerberos</span><span style="color:#f92672">(</span>ticket<span style="color:#f92672">);</span>
-        default:
-            <span style="color:#66d9ef">return</span> AuthTokens<span style="color:#f92672">.</span><span style="color:#a6e22e">none</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+            <span style="color:#66d9ef">return</span> AuthTokens.<span style="color:#a6e22e">kerberos</span>(ticket);
+        <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+            <span style="color:#66d9ef">return</span> AuthTokens.<span style="color:#a6e22e">none</span>();
+    }
+}</code></pre></div>
 <p>
         Then combine the scheme, host, port and routing policy to create a valid URI.
 </p>
@@ -253,15 +250,15 @@ neo4j.auth.password=p455w0rd</code></pre></div>
 </span><span style="color:#75715e"> * Get the URI for the Neo4j Server
 </span><span style="color:#75715e"> * @return String
 </span><span style="color:#75715e"> */</span>
-<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUri</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public String </span>getUri() {
     <span style="color:#75715e">// Get the base URI (ie bolt://localhost:7474)
-</span><span style="color:#75715e"></span>    String uri <span style="color:#f92672">=</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%s://%s:%s&#34;</span><span style="color:#f92672">,</span> scheme<span style="color:#f92672">,</span> host<span style="color:#f92672">,</span> port<span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">String uri </span><span style="color:#f92672">=</span> String.<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;%s://%s:%s&#34;</span>, scheme, host, port);
     <span style="color:#75715e">// If there is a CC routing policy, append it to the end of the string
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> scheme <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;bolt+routing&#34;</span> <span style="color:#f92672">&amp;&amp;</span> routingPolicy <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        uri <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;?policy=&#34;</span><span style="color:#f92672">+</span> routingPolicy<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">return</span> uri<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> ( scheme <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;bolt+routing&#34;</span> <span style="color:#f92672">&amp;&amp;</span> routingPolicy <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> ) {
+        uri <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;?policy=&#34;</span><span style="color:#f92672">+</span> routingPolicy;
+    }
+    <span style="color:#66d9ef">return</span> uri;
+}</code></pre></div>
 <p>
         Finally, we can move our driver <code>@Bean</code> into the configuration file and use the methods to create a URI and Auth Token.
 </p>
@@ -297,6 +294,27 @@ public Driver neo4jDriver() {
 
 
 				
+
+				
+
+
+
+    <i class="lnr lnr-tag tag-icon"></i>
+    <ul class="tags">
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/java/">java</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/neo4j/">neo4j</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/spring/">spring</a>
+        </li>
+        </ul>
+
+
+
 			</article>
 		</section>
 	</div>
@@ -306,6 +324,13 @@ public Driver neo4jDriver() {
 		</main>
 
 		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
 			<div class="social">
 				<div class="container">
 					<ul>
@@ -330,12 +355,6 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
     </li>
 					</ul>
 				</div>
-			</div>
-
-			<div class="container">
-				<p class="copyright">
-					Copyright &copy; 2019  Adam Cowley.
-				</p>
 			</div>
 		</footer>
 	</div>

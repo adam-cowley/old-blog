@@ -7,8 +7,8 @@
 <meta property="og:description" content="How to squeeze as much peformance out of a high-traffic, high-volume social feed using Neo4j&#39;s Core API." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/" />
-<meta property="article:published_time" content="2019-07-03T14:21:20&#43;01:00"/>
-<meta property="article:modified_time" content="2019-07-03T14:21:20&#43;01:00"/>
+<meta property="article:published_time" content="2019-07-03T14:21:20+01:00" />
+<meta property="article:modified_time" content="2019-07-03T14:21:20+01:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Social Feed Cursor Based Pagination"/>
 <meta name="twitter:description" content="How to squeeze as much peformance out of a high-traffic, high-volume social feed using Neo4j&#39;s Core API."/>
@@ -31,10 +31,6 @@
 			</h1>
 			<nav class="nav" role="navigation">
 				<ul>
-					
-					<li>
-						<a href="/about-me/">about</a>
-					</li>
 					
 					<li>
 						<a href="/categories/javascript/">javascript</a>
@@ -72,6 +68,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 		<main role="main">
 
 		<section>
+
 
 
 
@@ -217,183 +214,183 @@ dependencies <span style="color:#f92672">{</span>
 </ul>
 
 <p>These need to public and non-final and annotated as <code>@Context</code>.  Apart from <code>@Context</code>-annotated variables, classes that define procedures or functions should only contain static variables.  Here we’re defining a Customer label that we will use later on in the class.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> org.neo4j.graphdb.GraphDatabaseService<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> org.neo4j.logging.Log<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> org.neo4j.procedure.Context<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> org.neo4j.procedure.TerminationGuard<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">import org</span>.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">graphdb</span>.<span style="color:#a6e22e">GraphDatabaseService</span>;
+<span style="color:#960050;background-color:#1e0010">import org</span>.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">logging</span>.<span style="color:#a6e22e">Log</span>;
+<span style="color:#960050;background-color:#1e0010">import org</span>.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">procedure</span>.<span style="color:#a6e22e">Context</span>;
+<span style="color:#960050;background-color:#1e0010">import org</span>.<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">procedure</span>.<span style="color:#a6e22e">TerminationGuard</span>;
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Feed</span> <span style="color:#f92672">{</span>
+<span style="color:#960050;background-color:#1e0010">public class </span>Feed {
 
     <span style="color:#75715e">// Context variables must be public and non-final
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Context</span>
-    <span style="color:#66d9ef">public</span> GraphDatabaseService db<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">public GraphDatabaseService </span>db;
 
     <span style="color:#a6e22e">@Context</span>
-    <span style="color:#66d9ef">public</span> Log log<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">public Log </span>log;
 
     <span style="color:#a6e22e">@Context</span>
-    <span style="color:#66d9ef">public</span> TerminationGuard guard<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">public TerminationGuard </span>guard;
 
     <span style="color:#75715e">// Everything that isn&#39;t a context variable must be Sstatic
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Label User <span style="color:#f92672">=</span> Label<span style="color:#f92672">.</span><span style="color:#a6e22e">label</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;User&#34;</span><span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">private static Label User </span><span style="color:#f92672">=</span> Label.<span style="color:#a6e22e">label</span>(<span style="color:#e6db74">&#34;User&#34;</span>);
 
     <span style="color:#75715e">// Write some Procedures
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <h3 id="procedure-definition">Procedure Definition</h3>
 
 <p>Next, a procedure function needs to be defined.  In order to make this callable from a Cypher query it needs to be annotated with the <code>@Procedure</code> annotation.  By default, the procedure will be named <code>{packageName}.{functionName}</code>, but this can be overridden by providing a <code>name</code> value.
 A <code>@Description</code> parameter can be added to provide a friendly description for end users.  Any parameters passed into the function need to be annotated with <code>@Name</code>, and can be given a <code>defaultValue</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Procedure</span><span style="color:#f92672">(</span>name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;social.feed&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#a6e22e">@Description</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;social.feed(username, [limit, [cursorType, since]]) :: post, author | Get the feed for a user&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> Stream<span style="color:#f92672">&lt;</span>PostResult<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">socialFeed</span><span style="color:#f92672">(</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;username&#34;</span><span style="color:#f92672">)</span> String username<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> Double limit<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cursor&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;before&#34;</span><span style="color:#f92672">)</span> String cursorType<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;sinceId&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> String sinceId
-<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Procedure</span>(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;social.feed&#34;</span>)
+<span style="color:#a6e22e">@Description</span>(<span style="color:#e6db74">&#34;social.feed(username, [limit, [cursorType, since]]) :: post, author | Get the feed for a user&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">public Stream</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">PostResult&gt; socialFeed</span>(
+        <span style="color:#a6e22e">@Name</span>(<span style="color:#e6db74">&#34;username&#34;</span>) <span style="color:#960050;background-color:#1e0010">String username</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span>) <span style="color:#960050;background-color:#1e0010">Double limit</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cursor&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;before&#34;</span>) <span style="color:#960050;background-color:#1e0010">String cursorType</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;sinceId&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>) <span style="color:#960050;background-color:#1e0010">String sinceId
+</span><span style="color:#960050;background-color:#1e0010"></span>) {
     <span style="color:#75715e">// Code here...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <h3 id="result-pojo">Result POJO</h3>
 
 <p>As you can see, the procedure returns a <code>java.util.Stream</code> of <code>PostResult</code>.  This is simply a <strong>POJO</strong>(Plain old Java Object) where any public property in the POJO can be <code>YIELD</code>ed into the query.  In this case I just want to return a <code>Map</code> that represents the decorated post.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PostResult</span>
-<span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public class </span>PostResult
+{
     <span style="color:#75715e">// Can be yielded
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> post<span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">public Map</span><span style="color:#f92672">&lt;</span>String, <span style="color:#960050;background-color:#1e0010">Object&gt; post</span>;
 
     <span style="color:#75715e">// Cannot be yielded
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Object hidden<span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">private Object </span>hidden;
 
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PostResult</span><span style="color:#f92672">(</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> post<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">post</span> <span style="color:#f92672">=</span> post<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#960050;background-color:#1e0010">public PostResult</span>(Map<span style="color:#f92672">&lt;</span>String, <span style="color:#960050;background-color:#1e0010">Object&gt; post</span>) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">post</span> <span style="color:#f92672">=</span> post;
+    }
+}</code></pre></div>
 <h3 id="the-service">The Service</h3>
 
 <p>I prefer to split my procedures out into their own classes so it makes them easier to unit test. Any interactions with the graph start with the <code>GraphDatabaseService</code> so I will add this as a parameter on the constructor.  The <code>Log</code> class is also useful for logging information out into neo4j.log.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GetFeed</span>
-<span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> GraphDatabaseService db<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Log log<span style="color:#f92672">;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public class </span>GetFeed
+{
+    <span style="color:#960050;background-color:#1e0010">private final GraphDatabaseService db</span>;
+    <span style="color:#960050;background-color:#1e0010">private final Log log</span>;
 
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">GetFeed</span><span style="color:#f92672">(</span> GraphDatabaseService db<span style="color:#f92672">,</span> Log log <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> db<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">log</span> <span style="color:#f92672">=</span> log<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#960050;background-color:#1e0010">public GetFeed</span>( <span style="color:#960050;background-color:#1e0010">GraphDatabaseService db</span>, <span style="color:#960050;background-color:#1e0010">Log log </span>) {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> db;
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">log</span> <span style="color:#f92672">=</span> log;
+    }
 
     <span style="color:#75715e">// Code here...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>Then, define a function that can be called in the procedure definition, taking the user&rsquo;s username, the type of cursor, the cursor itself and the number of results to return.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> Stream<span style="color:#f92672">&lt;</span>PostResult<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">forUser</span><span style="color:#f92672">(</span>
-    String username<span style="color:#f92672">,</span>
-    String cursorType<span style="color:#f92672">,</span>
-    String sinceId<span style="color:#f92672">,</span>
-    Double limit
-<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public Stream</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">PostResult&gt; forUser</span>(
+    <span style="color:#960050;background-color:#1e0010">String username</span>,
+    <span style="color:#960050;background-color:#1e0010">String cursorType</span>,
+    <span style="color:#960050;background-color:#1e0010">String sinceId</span>,
+    <span style="color:#960050;background-color:#1e0010">Double limit
+</span><span style="color:#960050;background-color:#1e0010"></span>) {
     <span style="color:#75715e">// Code here...
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>Now we can write some code to pull the user&rsquo;s feed.</p>
 
 <h4 id="getting-the-user">Getting the User</h4>
 
 <p>The <code>GraphDatabaseService::findNode</code> function allows you to find a single node based on a property.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> Node <span style="color:#a6e22e">getUser</span><span style="color:#f92672">(</span>String username<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> db<span style="color:#f92672">.</span><span style="color:#a6e22e">findNode</span><span style="color:#f92672">(</span> Labels<span style="color:#f92672">.</span><span style="color:#a6e22e">User</span><span style="color:#f92672">,</span> Properties<span style="color:#f92672">.</span><span style="color:#a6e22e">username</span><span style="color:#f92672">,</span> username <span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">private Node </span>getUser(<span style="color:#960050;background-color:#1e0010">String username</span>) {
+    <span style="color:#66d9ef">return</span> db.<span style="color:#a6e22e">findNode</span>( Labels.<span style="color:#a6e22e">User</span>, Properties.<span style="color:#a6e22e">username</span>, username );
+}</code></pre></div>
 <h4 id="list-of-follows">List of Follows</h4>
 
 <p>The <code>Node</code> object allows you to expand nodes in various combinations, allowing you to get all relationships in any direction or of a specific type.  In this case, we want posts from Users that the current user follows and also their friends through the <code>FRIEND_OF</code> relationship in either direction.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> Set<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getFollowing</span><span style="color:#f92672">(</span>Node user<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Set<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> users <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;&gt;(</span>  <span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">private Set</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">Node&gt; getFollowing</span>(<span style="color:#960050;background-color:#1e0010">Node user</span>) {
+    <span style="color:#960050;background-color:#1e0010">Set&lt;Node&gt; users </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;&gt;</span>(  );
 
     <span style="color:#75715e">// (user)-[:FOLLOWS]-&gt;(:User)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span> Relationship rel <span style="color:#f92672">:</span> user<span style="color:#f92672">.</span><span style="color:#a6e22e">getRelationships</span><span style="color:#f92672">(</span> RelationshipTypes<span style="color:#f92672">.</span><span style="color:#a6e22e">FOLLOWS</span><span style="color:#f92672">,</span> Direction<span style="color:#f92672">.</span><span style="color:#a6e22e">OUTGOING</span> <span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        users<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span> rel<span style="color:#f92672">.</span><span style="color:#a6e22e">getOtherNode</span><span style="color:#f92672">(</span> user <span style="color:#f92672">)</span> <span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> ( <span style="color:#960050;background-color:#1e0010">Relationship rel </span><span style="color:#f92672">:</span> user.<span style="color:#a6e22e">getRelationships</span>( RelationshipTypes.<span style="color:#a6e22e">FOLLOWS</span>, Direction.<span style="color:#a6e22e">OUTGOING</span> ) ) {
+        users.<span style="color:#a6e22e">add</span>( rel.<span style="color:#a6e22e">getOtherNode</span>( user ) );
+    }
 
     <span style="color:#75715e">// (user)-[:FRIEND_OF]-(:User)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span> Relationship rel <span style="color:#f92672">:</span> user<span style="color:#f92672">.</span><span style="color:#a6e22e">getRelationships</span><span style="color:#f92672">(</span> RelationshipTypes<span style="color:#f92672">.</span><span style="color:#a6e22e">FRIEND_OF</span><span style="color:#f92672">,</span> Direction<span style="color:#f92672">.</span><span style="color:#a6e22e">BOTH</span> <span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        users<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span> rel<span style="color:#f92672">.</span><span style="color:#a6e22e">getOtherNode</span><span style="color:#f92672">(</span> user <span style="color:#f92672">)</span> <span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> ( <span style="color:#960050;background-color:#1e0010">Relationship rel </span><span style="color:#f92672">:</span> user.<span style="color:#a6e22e">getRelationships</span>( RelationshipTypes.<span style="color:#a6e22e">FRIEND_OF</span>, Direction.<span style="color:#a6e22e">BOTH</span> ) ) {
+        users.<span style="color:#a6e22e">add</span>( rel.<span style="color:#a6e22e">getOtherNode</span>( user ) );
+    }
 
-    <span style="color:#66d9ef">return</span> users<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#66d9ef">return</span> users;
+}</code></pre></div>
 <h4 id="posts-by-cursor">Posts by Cursor</h4>
 
 <p>Next, we need to get an upper bound for the dated relationships to traverse.  If no cursor/ID is specified, the code should fall back to the current date and time.  Otherwise, we&rsquo;ll need a function to look up a post by it&rsquo;s ID and use it&rsquo;s <code>createdAt</code> property.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// Default Date to current time
-</span><span style="color:#75715e"></span>ZonedDateTime dateTime <span style="color:#f92672">=</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">();</span>
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">ZonedDateTime dateTime </span><span style="color:#f92672">=</span> ZonedDateTime.<span style="color:#a6e22e">now</span>();
 
 <span style="color:#75715e">// If a post ID is specified, then get a
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> sinceId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>sinceId<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    dateTime <span style="color:#f92672">=</span> getPostTime<span style="color:#f92672">(</span> sinceId <span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> ( sinceId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>sinceId.<span style="color:#a6e22e">equals</span>(<span style="color:#e6db74">&#34;&#34;</span>) ) {
+    dateTime <span style="color:#f92672">=</span> getPostTime( sinceId );
+}</code></pre></div>
 <p>Again, you can use <code>db.findNode</code> to get a Node of a particular label by a key/value pairing.  If the post is found, the <code>getProperty</code> method will allow you to access the property.  Otherwise, fallback to the current date and time.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> ZonedDateTime <span style="color:#a6e22e">getPostTime</span><span style="color:#f92672">(</span>String postId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Node post <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span><span style="color:#a6e22e">findNode</span><span style="color:#f92672">(</span> Labels<span style="color:#f92672">.</span><span style="color:#a6e22e">Post</span><span style="color:#f92672">,</span> Properties<span style="color:#f92672">.</span><span style="color:#a6e22e">postId</span><span style="color:#f92672">,</span> postId <span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">private ZonedDateTime </span>getPostTime(<span style="color:#960050;background-color:#1e0010">String postId</span>) {
+    <span style="color:#960050;background-color:#1e0010">Node post </span><span style="color:#f92672">=</span> db.<span style="color:#a6e22e">findNode</span>( Labels.<span style="color:#a6e22e">Post</span>, Properties.<span style="color:#a6e22e">postId</span>, postId );
 
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> post <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>ZonedDateTime<span style="color:#f92672">)</span> post<span style="color:#f92672">.</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span> Properties<span style="color:#f92672">.</span><span style="color:#a6e22e">postCreatedAt</span><span style="color:#f92672">,</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">()</span> <span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">if</span> ( post <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> ) {
+        <span style="color:#66d9ef">return</span> (ZonedDateTime) post.<span style="color:#a6e22e">getProperty</span>( Properties.<span style="color:#a6e22e">postCreatedAt</span>, ZonedDateTime.<span style="color:#a6e22e">now</span>() );
+    }
 
     <span style="color:#75715e">// Post not found, use the current date and time
-</span><span style="color:#75715e"></span>    log<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span> <span style="color:#e6db74">&#34;Cannot find post &#34;</span><span style="color:#f92672">+</span> postId <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;. Using now() as value&#34;</span> <span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">return</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>    log.<span style="color:#a6e22e">debug</span>( <span style="color:#e6db74">&#34;Cannot find post &#34;</span><span style="color:#f92672">+</span> postId <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;. Using now() as value&#34;</span> );
+    <span style="color:#66d9ef">return</span> ZonedDateTime.<span style="color:#a6e22e">now</span>();
+}</code></pre></div>
 <h3 id="getting-before-after-the-cursor">Getting Before After the Cursor</h3>
 
 <p>After finding the date and time of the last viewed post, the next thing required is a function that will iterate through the list of users that the current user is following, find any posts that they&rsquo;ve made on this day and by traversing the dated relationship and add them to a <code>List</code> and sort them by their created date.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getPostsOnDate</span><span style="color:#f92672">(</span>Set<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> users<span style="color:#f92672">,</span> ZonedDateTime date<span style="color:#f92672">,</span> Comparator comparator<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> output <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;(</span>  <span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">private List</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">Node&gt; getPostsOnDate</span>(<span style="color:#960050;background-color:#1e0010">Set&lt;Node&gt; users</span>, <span style="color:#960050;background-color:#1e0010">ZonedDateTime date</span>, <span style="color:#960050;background-color:#1e0010">Comparator comparator</span>) {
+    <span style="color:#960050;background-color:#1e0010">List&lt;Node&gt; output </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>(  );
 
     <span style="color:#75715e">// Get all posts from each user on the date
-</span><span style="color:#75715e"></span>    RelationshipType relType <span style="color:#f92672">=</span> RelationshipType<span style="color:#f92672">.</span><span style="color:#a6e22e">withName</span><span style="color:#f92672">(</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span>POSTED_ON<span style="color:#f92672">,</span>  date<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span> Time<span style="color:#f92672">.</span><span style="color:#a6e22e">formatter</span> <span style="color:#f92672">))</span> <span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">RelationshipType relType </span><span style="color:#f92672">=</span> RelationshipType.<span style="color:#a6e22e">withName</span>( String.<span style="color:#a6e22e">format</span>(POSTED_ON,  date.<span style="color:#a6e22e">format</span>( Time.<span style="color:#a6e22e">formatter</span> )) );
 
-    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span> Node user <span style="color:#f92672">:</span> users <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span> Relationship rel: user<span style="color:#f92672">.</span><span style="color:#a6e22e">getRelationships</span><span style="color:#f92672">(</span> relType<span style="color:#f92672">,</span> Direction<span style="color:#f92672">.</span><span style="color:#a6e22e">OUTGOING</span><span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">for</span> ( <span style="color:#960050;background-color:#1e0010">Node user </span><span style="color:#f92672">:</span> users ) {
+        <span style="color:#66d9ef">for</span> ( <span style="color:#960050;background-color:#1e0010">Relationship rel</span><span style="color:#f92672">:</span> user.<span style="color:#a6e22e">getRelationships</span>( relType, Direction.<span style="color:#a6e22e">OUTGOING</span>) ) {
             <span style="color:#75715e">// Add to output
-</span><span style="color:#75715e"></span>            output<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span> rel<span style="color:#f92672">.</span><span style="color:#a6e22e">getEndNode</span><span style="color:#f92672">()</span> <span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+</span><span style="color:#75715e"></span>            output.<span style="color:#a6e22e">add</span>( rel.<span style="color:#a6e22e">getEndNode</span>() );
+        }
+    }
 
     <span style="color:#75715e">// Sort
-</span><span style="color:#75715e"></span>    output<span style="color:#f92672">.</span><span style="color:#a6e22e">sort</span><span style="color:#f92672">(</span>
-        Comparator<span style="color:#f92672">.</span><span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>
-            n <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">(</span> <span style="color:#f92672">(</span>ZonedDateTime<span style="color:#f92672">)</span> <span style="color:#f92672">((</span>Node<span style="color:#f92672">)</span> n<span style="color:#f92672">).</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span> Properties<span style="color:#f92672">.</span><span style="color:#a6e22e">postCreatedAt</span> <span style="color:#f92672">)</span> <span style="color:#f92672">).</span><span style="color:#a6e22e">toEpochSecond</span><span style="color:#f92672">(),</span>
+</span><span style="color:#75715e"></span>    output.<span style="color:#a6e22e">sort</span>(
+        Comparator.<span style="color:#a6e22e">comparing</span>(
+            n <span style="color:#f92672">-&gt;</span> ( (ZonedDateTime) ((Node) n).<span style="color:#a6e22e">getProperty</span>( Properties.<span style="color:#a6e22e">postCreatedAt</span> ) ).<span style="color:#a6e22e">toEpochSecond</span>(),
             comparator
-        <span style="color:#f92672">)</span>
-    <span style="color:#f92672">);</span>
+        )
+    );
 
-    <span style="color:#66d9ef">return</span> output<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#66d9ef">return</span> output;
+}</code></pre></div>
 <p>Because there may be no posts at all on this date to fill the limit, or possibly too many, a function is needed to to keep checking the previous days until either the limit is reached.  A floor is also needed to stop the function running in an infinite loop.  In this case, I have chosen an abitrary date of 3 December 2007, but this could just as easily be the date of the first post in the database.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getPostsBefore</span><span style="color:#f92672">(</span>Set users<span style="color:#f92672">,</span> ZonedDateTime dateTime<span style="color:#f92672">,</span> Double limit<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> output <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;(</span>  <span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">private List</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">Node&gt; getPostsBefore</span>(<span style="color:#960050;background-color:#1e0010">Set users</span>, <span style="color:#960050;background-color:#1e0010">ZonedDateTime dateTime</span>, <span style="color:#960050;background-color:#1e0010">Double limit</span>) {
+    <span style="color:#960050;background-color:#1e0010">final List</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">Node&gt; output </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>(  );
 
-    ZonedDateTime originalDateTime <span style="color:#f92672">=</span> dateTime<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">ZonedDateTime originalDateTime </span><span style="color:#f92672">=</span> dateTime;
 
     <span style="color:#75715e">// Set a minimum date to stop the code running forever
-</span><span style="color:#75715e"></span>    ZonedDateTime floor <span style="color:#f92672">=</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;2007-12-03T10:15:30+01:00[Europe/London]&#34;</span><span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">ZonedDateTime floor </span><span style="color:#f92672">=</span> ZonedDateTime.<span style="color:#a6e22e">parse</span>(<span style="color:#e6db74">&#34;2007-12-03T10:15:30+01:00[Europe/London]&#34;</span>);
 
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span> output<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">&lt;</span> limit <span style="color:#f92672">&amp;&amp;</span> dateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">isAfter</span><span style="color:#f92672">(</span> floor <span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> posts <span style="color:#f92672">=</span> getPostsOnDate<span style="color:#f92672">(</span>users<span style="color:#f92672">,</span> dateTime<span style="color:#f92672">,</span> reverseOrder<span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">while</span> ( output.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">&lt;</span> limit <span style="color:#f92672">&amp;&amp;</span> dateTime.<span style="color:#a6e22e">isAfter</span>( floor ) ) {
+        <span style="color:#960050;background-color:#1e0010">List&lt;Node&gt; posts </span><span style="color:#f92672">=</span> getPostsOnDate(users, dateTime, reverseOrder());
 
-        posts<span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span> n <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            ZonedDateTime postCreatedAt <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>ZonedDateTime<span style="color:#f92672">)</span> <span style="color:#f92672">((</span>Node<span style="color:#f92672">)</span> n<span style="color:#f92672">).</span><span style="color:#a6e22e">getProperty</span><span style="color:#f92672">(</span> Properties<span style="color:#f92672">.</span><span style="color:#a6e22e">postCreatedAt</span> <span style="color:#f92672">);</span>
+        posts.<span style="color:#a6e22e">forEach</span>( n <span style="color:#f92672">-&gt;</span> {
+            <span style="color:#960050;background-color:#1e0010">ZonedDateTime postCreatedAt </span><span style="color:#f92672">=</span> (ZonedDateTime) ((Node) n).<span style="color:#a6e22e">getProperty</span>( Properties.<span style="color:#a6e22e">postCreatedAt</span> );
 
             <span style="color:#75715e">// Add to the
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> postCreatedAt<span style="color:#f92672">.</span><span style="color:#a6e22e">isBefore</span><span style="color:#f92672">(</span> originalDateTime <span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                output<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span> n <span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span> <span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> ( postCreatedAt.<span style="color:#a6e22e">isBefore</span>( originalDateTime ) ) {
+                output.<span style="color:#a6e22e">add</span>( n );
+            }
+        } );
 
         <span style="color:#75715e">// Try again with the day before
-</span><span style="color:#75715e"></span>        dateTime <span style="color:#f92672">=</span> dateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">minusDays</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+</span><span style="color:#75715e"></span>        dateTime <span style="color:#f92672">=</span> dateTime.<span style="color:#a6e22e">minusDays</span>(1);
+    }
 
     <span style="color:#75715e">// Trim to size and return
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> output<span style="color:#f92672">.</span><span style="color:#a6e22e">subList</span><span style="color:#f92672">(</span> 0<span style="color:#f92672">,</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>limit<span style="color:#f92672">.</span><span style="color:#a6e22e">intValue</span><span style="color:#f92672">(),</span> output<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">())</span> <span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> output.<span style="color:#a6e22e">subList</span>( 0, Math.<span style="color:#a6e22e">min</span>(limit.<span style="color:#a6e22e">intValue</span>(), output.<span style="color:#a6e22e">size</span>()) );
+}</code></pre></div>
 <p>Once the from each date are found, a check is added to make sure that the date is after the time of the original post so you don&rsquo;t return any duplicates.  Then the list is trimmed to size using the <code>limit</code> variable supplied into the function.</p>
 
 <h3 id="decorating-posts">Decorating Posts</h3>
@@ -405,92 +402,92 @@ A <code>@Description</code> parameter can be added to provide a friendly descrip
 <h2 id="tl-dr-putting-it-all-together">TL;DR: Putting it all together</h2>
 
 <p><a href="https://github.com/adam-cowley/social/blob/master/src/main/java/ac/owley/social/feed/procedures/GetFeed.java">The code is available on Github</a> - feel free to clone and try it out for yourself.  The callable function below takes all of the functions into a single method that can be called.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> Stream<span style="color:#f92672">&lt;</span>PostResult<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">forUser</span><span style="color:#f92672">(</span>
-    String username<span style="color:#f92672">,</span>
-    String cursorType<span style="color:#f92672">,</span>
-    String sinceId<span style="color:#f92672">,</span>
-    Double limit
-<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">public Stream</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">PostResult&gt; forUser</span>(
+    <span style="color:#960050;background-color:#1e0010">String username</span>,
+    <span style="color:#960050;background-color:#1e0010">String cursorType</span>,
+    <span style="color:#960050;background-color:#1e0010">String sinceId</span>,
+    <span style="color:#960050;background-color:#1e0010">Double limit
+</span><span style="color:#960050;background-color:#1e0010"></span>) {
     <span style="color:#75715e">// Get User
-</span><span style="color:#75715e"></span>    Node user <span style="color:#f92672">=</span> getUser<span style="color:#f92672">(</span>username<span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">Node user </span><span style="color:#f92672">=</span> getUser(username);
 
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> user <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        log<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span> <span style="color:#e6db74">&#34;Cannot find user &#34;</span><span style="color:#f92672">+</span> username <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;. Returning empty stream&#34;</span> <span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">if</span> ( user <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> ) {
+        log.<span style="color:#a6e22e">debug</span>( <span style="color:#e6db74">&#34;Cannot find user &#34;</span><span style="color:#f92672">+</span> username <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;. Returning empty stream&#34;</span> );
+        <span style="color:#66d9ef">return</span> Stream.<span style="color:#a6e22e">empty</span>();
+    }
 
     <span style="color:#75715e">// Get Following
-</span><span style="color:#75715e"></span>    Set following <span style="color:#f92672">=</span> getFollowing<span style="color:#f92672">(</span> user <span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">Set following </span><span style="color:#f92672">=</span> getFollowing( user );
 
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> following<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0 <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        log<span style="color:#f92672">.</span><span style="color:#a6e22e">debug</span><span style="color:#f92672">(</span> <span style="color:#e6db74">&#34;User&#34;</span><span style="color:#f92672">+</span> username <span style="color:#f92672">+</span><span style="color:#e6db74">&#34; isn&#39;t following anyone. Returning empty stream&#34;</span> <span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">if</span> ( following.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">==</span> 0 ) {
+        log.<span style="color:#a6e22e">debug</span>( <span style="color:#e6db74">&#34;User&#34;</span><span style="color:#f92672">+</span> username <span style="color:#f92672">+</span><span style="color:#e6db74">&#34; isn&#39;t following anyone. Returning empty stream&#34;</span> );
+        <span style="color:#66d9ef">return</span> Stream.<span style="color:#a6e22e">empty</span>();
+    }
 
     <span style="color:#75715e">// Get Date of last/next post
-</span><span style="color:#75715e"></span>    ZonedDateTime dateTime <span style="color:#f92672">=</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">();</span>
+</span><span style="color:#75715e"></span>    <span style="color:#960050;background-color:#1e0010">ZonedDateTime dateTime </span><span style="color:#f92672">=</span> ZonedDateTime.<span style="color:#a6e22e">now</span>();
 
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> sinceId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>sinceId<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        dateTime <span style="color:#f92672">=</span> getPostTime<span style="color:#f92672">(</span> sinceId <span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">if</span> ( sinceId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>sinceId.<span style="color:#a6e22e">equals</span>(<span style="color:#e6db74">&#34;&#34;</span>) ) {
+        dateTime <span style="color:#f92672">=</span> getPostTime( sinceId );
+    }
 
     <span style="color:#75715e">// Correct Cursor Type
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> cursorType <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#f92672">(</span> <span style="color:#f92672">!</span>cursorType<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>CURSOR_TYPE_BEFORE<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>cursorType<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>CURSOR_TYPE_AFTER<span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        cursorType <span style="color:#f92672">=</span> CURSOR_TYPE_BEFORE<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> ( cursorType <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> ( <span style="color:#f92672">!</span>cursorType.<span style="color:#a6e22e">equals</span>(CURSOR_TYPE_BEFORE) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>cursorType.<span style="color:#a6e22e">equals</span>(CURSOR_TYPE_AFTER) ) ) {
+        cursorType <span style="color:#f92672">=</span> CURSOR_TYPE_BEFORE;
+    }
 
-    List<span style="color:#f92672">&lt;</span>Node<span style="color:#f92672">&gt;</span> output<span style="color:#f92672">;</span>
+    <span style="color:#960050;background-color:#1e0010">List&lt;Node&gt; output</span>;
 
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span> cursorType<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>CURSOR_TYPE_AFTER<span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        output <span style="color:#f92672">=</span> getPostsAfter<span style="color:#f92672">(</span>following<span style="color:#f92672">,</span> dateTime<span style="color:#f92672">,</span> limit<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-        output <span style="color:#f92672">=</span> getPostsBefore<span style="color:#f92672">(</span>following<span style="color:#f92672">,</span> dateTime<span style="color:#f92672">,</span> limit<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">if</span> ( cursorType.<span style="color:#a6e22e">equals</span>(CURSOR_TYPE_AFTER) ) {
+        output <span style="color:#f92672">=</span> getPostsAfter(following, dateTime, limit);
+    }
+    <span style="color:#66d9ef">else</span> {
+        output <span style="color:#f92672">=</span> getPostsBefore(following, dateTime, limit);
+    }
 
     <span style="color:#75715e">// Get the next X posts before this post
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> output
-            <span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
-            <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>e <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">new</span> PostResult<span style="color:#f92672">(</span> Decorator<span style="color:#f92672">.</span><span style="color:#a6e22e">decoratePost</span><span style="color:#f92672">(</span> e <span style="color:#f92672">)</span> <span style="color:#f92672">));</span>
-<span style="color:#f92672">}</span></code></pre></div>
+            .<span style="color:#a6e22e">stream</span>()
+            .<span style="color:#a6e22e">map</span>(e <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">new</span> PostResult( Decorator.<span style="color:#a6e22e">decoratePost</span>( e ) ));
+}</code></pre></div>
 <p>The <code>GetFeed</code> class can then be instantiated in the <code>@Procedure</code> annotated function and called with the parameters passed through from the Cypher call.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Procedure</span><span style="color:#f92672">(</span>name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;social.feed&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#a6e22e">@Description</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;social.feed(username, [limit, [cursorType, since]]) :: post, author | Get the feed for a user&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> Stream<span style="color:#f92672">&lt;</span>PostResult<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">socialFeed</span><span style="color:#f92672">(</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;username&#34;</span><span style="color:#f92672">)</span> String username<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span><span style="color:#f92672">)</span> Double limit<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cursor&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;before&#34;</span><span style="color:#f92672">)</span> String cursorType<span style="color:#f92672">,</span>
-        <span style="color:#a6e22e">@Name</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;sinceId&#34;</span><span style="color:#f92672">,</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">)</span> String sinceId
-<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    GetFeed feed <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GetFeed<span style="color:#f92672">(</span>db<span style="color:#f92672">,</span> log<span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Procedure</span>(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;social.feed&#34;</span>)
+<span style="color:#a6e22e">@Description</span>(<span style="color:#e6db74">&#34;social.feed(username, [limit, [cursorType, since]]) :: post, author | Get the feed for a user&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">public Stream</span><span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">PostResult&gt; socialFeed</span>(
+        <span style="color:#a6e22e">@Name</span>(<span style="color:#e6db74">&#34;username&#34;</span>) <span style="color:#960050;background-color:#1e0010">String username</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10&#34;</span>) <span style="color:#960050;background-color:#1e0010">Double limit</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cursor&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;before&#34;</span>) <span style="color:#960050;background-color:#1e0010">String cursorType</span>,
+        <span style="color:#a6e22e">@Name</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;sinceId&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>) <span style="color:#960050;background-color:#1e0010">String sinceId
+</span><span style="color:#960050;background-color:#1e0010"></span>) {
+    <span style="color:#960050;background-color:#1e0010">GetFeed feed </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GetFeed(db, log);
 
-    <span style="color:#66d9ef">return</span> feed<span style="color:#f92672">.</span><span style="color:#a6e22e">forUser</span><span style="color:#f92672">(</span>username<span style="color:#f92672">,</span> cursorType<span style="color:#f92672">,</span> sinceId<span style="color:#f92672">,</span> limit<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span></code></pre></div>
+    <span style="color:#66d9ef">return</span> feed.<span style="color:#a6e22e">forUser</span>(username, cursorType, sinceId, limit);
+}</code></pre></div>
 <h2 id="testing-the-procedure">Testing the Procedure</h2>
 
 <p>The Neo4j Test Harness comes with a <code>Neo4jRule</code> class which exposes an implementation of Neo4j for test purposes.  This can be used to create an in-memory database.  The <code>.withProcedure</code> method will allow us to load any classes that contain procedure definitions into the Test Server.  Any test data required for the test can be loaded in using the <code>.withFixture</code> method.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Rule</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> Neo4jRule neo4j <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Neo4jRule<span style="color:#f92672">()</span>
+<span style="color:#960050;background-color:#1e0010">public final Neo4jRule neo4j </span><span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Neo4jRule()
     <span style="color:#75715e">// Register Procedures
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">withProcedure</span><span style="color:#f92672">(</span>Procedures<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+</span><span style="color:#75715e"></span>    .<span style="color:#a6e22e">withProcedure</span>(Procedures.<span style="color:#a6e22e">class</span>)
 
     <span style="color:#75715e">// Cypher query that creates an example dataset
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">withFixture</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CREATE (n) ...&#34;</span><span style="color:#f92672">);</span></code></pre></div>
+</span><span style="color:#75715e"></span>    .<span style="color:#a6e22e">withFixture</span>(<span style="color:#e6db74">&#34;CREATE (n) ...&#34;</span>);</code></pre></div>
 <p>Then a test method can be written to execute a Cypher statement and make some assertions on the result.  There is a more verbose example of the test class <a href="https://github.com/adam-cowley/social/blob/master/src/test/java/ac/owley/social/feed/FeedTest.java">in the repository</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">shouldMountMyProcedures</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
-    GraphDatabaseService db <span style="color:#f92672">=</span> neo4j<span style="color:#f92672">.</span><span style="color:#a6e22e">getGraphDatabaseService</span><span style="color:#f92672">();</span>
+<span style="color:#960050;background-color:#1e0010">public void </span>shouldMountMyProcedures() <span style="color:#960050;background-color:#1e0010">throws Throwable </span>{
+    <span style="color:#960050;background-color:#1e0010">GraphDatabaseService db </span><span style="color:#f92672">=</span> neo4j.<span style="color:#a6e22e">getGraphDatabaseService</span>();
 
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span> Transaction tx <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span><span style="color:#a6e22e">beginTx</span><span style="color:#f92672">()</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        Result res <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CALL social.feed(&#39;adam&#39;, 10) YIELD post RETURN post&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">try</span> ( <span style="color:#960050;background-color:#1e0010">Transaction tx </span><span style="color:#f92672">=</span> db.<span style="color:#a6e22e">beginTx</span>() ) {
+        <span style="color:#960050;background-color:#1e0010">Result res </span><span style="color:#f92672">=</span> db.<span style="color:#a6e22e">execute</span>(<span style="color:#e6db74">&#34;CALL social.feed(&#39;adam&#39;, 10) YIELD post RETURN post&#34;</span>);
 
         <span style="color:#75715e">// Result is an Iterator so you can get the `next` post
 </span><span style="color:#75715e"></span>        <span style="color:#75715e">// or iterate over the results in a for loop
-</span><span style="color:#75715e"></span>        Node node <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">)</span> res<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">().</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;post&#34;</span><span style="color:#f92672">);</span>
+</span><span style="color:#75715e"></span>        <span style="color:#960050;background-color:#1e0010">Node node </span><span style="color:#f92672">=</span> (Node) res.<span style="color:#a6e22e">next</span>().<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;post&#34;</span>);
 
         <span style="color:#75715e">// Make some assertions
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
+</span><span style="color:#75715e"></span>    }
+}</code></pre></div>
 <h2 id="deploying-the-procedure">Deploying the Procedure</h2>
 
 <p>The deployment process is the only drawback of writing <a href="https://neo4j.com/docs/java-reference/current/extending-neo4j/procedures-and-functions/procedures/">User Defined Procedures &amp; Functions</a>.  For every release, you need to build a jar file, deploy it to all of the Neo4j servers and restart the Neo4j service on each server.  That said, if the performance wins are enough this is a challenge well worth taking on.</p>
@@ -539,6 +536,27 @@ RETURN name, description
 
 
 				
+
+				
+
+
+
+    <i class="lnr lnr-tag tag-icon"></i>
+    <ul class="tags">
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/neo4j/">neo4j</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/java/">java</a>
+        </li>
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/social/">social</a>
+        </li></ul>
+
+
+
 			</article>
 		</section>
 	</div>
@@ -548,6 +566,13 @@ RETURN name, description
 		</main>
 
 		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
 			<div class="social">
 				<div class="container">
 					<ul>
@@ -572,12 +597,6 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
     </li>
 					</ul>
 				</div>
-			</div>
-
-			<div class="container">
-				<p class="copyright">
-					Copyright &copy; 2019  Adam Cowley.
-				</p>
 			</div>
 		</footer>
 	</div>

@@ -22,8 +22,6 @@
     	else if ( position <= (window_height-height) ) {
     		nav.className = nav.className.replace(fixed_class, '');
 		}
-		
-		console.log('scroll', position, window_height, height, nav.className, position >= (window_height-height))
 
     	/* Show logo? */
     	//var logo_offset = hero.offsetHeight  + window_height- nav.clientHeight;
