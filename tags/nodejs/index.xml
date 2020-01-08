@@ -6,10 +6,20 @@
     <description>Recent content in nodejs on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Mon, 04 Jun 2018 17:44:38 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jan 2020 12:55:08 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/tags/nodejs/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building a Real-Time UI on top of Neo4j with Vue.js and Kafka</title>
+      <link>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</link>
+      <pubDate>Tue, 07 Jan 2020 12:55:08 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</guid>
+      <description>In this post, I will demonstrate how you can build a real-time application on top of Neo4j using a few open source plugins. Due to brevity, this will only be a basic application but you can take the principles and make it as complicated as you need.
+For this example, I will also be using Vue.js on top of an express server communicating through websockets. If you prefer something like React then it will work just as well.</description>
+    </item>
     
     <item>
       <title>Using Neo4j Temporal types in JavaScript</title>

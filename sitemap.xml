@@ -4,12 +4,57 @@
   
   <url>
     <loc>http://www.adamcowley.co.uk/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/kafka/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/nodejs/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/posts/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/socket.io/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/vuejs/</loc>
+    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>
   
   <url>
@@ -23,32 +68,12 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/posts/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/social/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</loc>
-    <lastmod>2019-07-03T14:21:20+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/</loc>
     <lastmod>2019-07-03T14:21:20+01:00</lastmod>
   </url>
   
@@ -89,11 +114,6 @@
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/javascript/</loc>
-    <lastmod>2018-06-04T17:44:38+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/nodejs/</loc>
     <lastmod>2018-06-04T17:44:38+00:00</lastmod>
   </url>
   
