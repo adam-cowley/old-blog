@@ -108,7 +108,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <ol>
 <li>When a user selects a <em>Node</em> in the UI, a <code>lock</code> event should be sent to the API via websockets.  This status update should be distributed to the other users, and that node locked in their front end</li>
 <li>As the user drags the <em>Node</em>, a <code>drag</code> event should be sent with the x/y coordinates of the node so this can be reflected in what each other user sees.</li>
-<li>When the <em>Node</em> is dropped, the node should be <em>unlocked</em> for all users</li>
+<li>When the <em>Node</em> is dropped, the node should be <em>unlocked</em> for all users by a <code>lock</code> event</li>
 </ol>
 
 <h2 id="creating-a-basic-express-api">Creating a basic express API</h2>
@@ -121,9 +121,10 @@ npm i -S express neode kafka-node socket.io</code></pre></div>
 <li><strong>express</strong> - This is an unopinionated framework for building REST APIs</li>
 <li><strong>neode</strong> - An OGM that I&rsquo;ll use to take care of the legwork when communicating with Neo4j.</li>
 <li><strong>kafka-node</strong> - A library for interacting with Kafka.  This package allows you to create Producers and Consumers in node.</li>
+<li><strong>socket.io</strong> - A library that enables communication over websockets</li>
 </ul>
 
-<p>For now, let&rsquo;s create a simple Hello World page. that will serve</p>
+<p>For now, I&rsquo;ll create a server that socket.io and the kafka consumer will bind to.</p>
 
 <div class="file">api/src/index.js</div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">express</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;express&#39;</span>)
@@ -613,11 +614,26 @@ KAFKA_GROUP=LocksGroup1</code></pre></div>
 
 <p>This is quite a basic example, but you could use this to do some pretty clever things.  For example, neo4j could push the information to another topic, which another topic listens to, runs some aggregation and then passes the new value to another queue.</p>
 
-<p>Neo4j could be used a as a conusmer as well as a <a href="https://neo4j.com/docs/labs/neo4j-streams/current/consumer/">Consumer</a> as well as a Producer and process messages directly from a Kafka topic.</p>
+<p>Neo4j could be used as a <a href="https://neo4j.com/docs/labs/neo4j-streams/current/consumer/">Consumer</a> as well as a Producer and process messages directly from a Kafka topic.</p>
 
 <p>On the websockets side, Socket.io has <a href="https://socket.io/docs/rooms-and-namespaces/">Rooms and Namespaces</a> functionality that could be used for a multi-tenancy system.  As a connection is received, some authentication could take place that resulted in the user joining a room belonging to it&rsquo;s organisation.  That way only the relevant messages are sent to each user.</p>
 
 <p>The <a href="https://github.com/adam-cowley/real-time-ui-vuejs-neo4j-kafka">code is up on github</a>, feel free to clone and play for yourself.</p>
+
+<p>If you have any questions or comments, I&rsquo;m <a href="http://twitter.com/adamcowley">@adamcowley</a> or feel free to continue the conversation on the <a href="https://community.neo4j.com/t/building-a-real-time-ui-on-top-of-neo4j-with-vue-js-and-kafka/13495">Neo4j Community site</a>.</p>
+
+<div id="discourse-comments"></div>
+
+<script type="text/javascript">
+  window.DiscourseEmbed = { discourseUrl: 'https://community.neo4j.com/',
+                     topicId: 13495 };
+
+  (function() {
+    var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+    d.src = window.DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+  })();
+</script>
 
 
 				
