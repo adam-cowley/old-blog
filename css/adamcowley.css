@@ -77,3 +77,6 @@ pre code {background: transparent}
 	margin: 18px -18px;
 	border-radius: 6px;
 }
+
+.tags {margin-top: 24px; border-top: 3px solid #f2f2f2; padding-top: 4px; }
+.tag-icon {display: none}

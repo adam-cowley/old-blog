@@ -6,10 +6,21 @@
     <description>Recent content on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Tue, 07 Jan 2020 12:55:08 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jan 2020 08:30:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>When and how to implement Sharding in Neo4j 4.0</title>
+      <link>http://www.adamcowley.co.uk/neo4j/sharding-neo4j-4.0/</link>
+      <pubDate>Wed, 15 Jan 2020 08:30:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/sharding-neo4j-4.0/</guid>
+      <description>When you are dealing with large volumes of data, you may need to shard your graph across many physical servers. A quick google search will tell you that:
+ Sharding is a type of database partitioning that separates very large databases the into smaller, faster, more easily managed parts called data shards. The word shard means a small part of a whole.
+ In essence, if your data is too large to fit on a single server (and with hardware capabilities and costs, we&amp;rsquo;re talking terrabytes worth), you should consider sharding.</description>
+    </item>
     
     <item>
       <title>Building a Real-Time UI on top of Neo4j with Vue.js and Kafka</title>

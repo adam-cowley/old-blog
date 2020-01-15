@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>sharding on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/sharding/</link>
+    <description>Recent content in sharding on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Wed, 15 Jan 2020 08:30:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/sharding/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>When and how to implement Sharding in Neo4j 4.0</title>
+      <link>http://www.adamcowley.co.uk/neo4j/sharding-neo4j-4.0/</link>
+      <pubDate>Wed, 15 Jan 2020 08:30:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/sharding-neo4j-4.0/</guid>
+      <description>When you are dealing with large volumes of data, you may need to shard your graph across many physical servers. A quick google search will tell you that:
+ Sharding is a type of database partitioning that separates very large databases the into smaller, faster, more easily managed parts called data shards. The word shard means a small part of a whole.
+ In essence, if your data is too large to fit on a single server (and with hardware capabilities and costs, we&amp;rsquo;re talking terrabytes worth), you should consider sharding.</description>
+    </item>
+    
+  </channel>
+</rss>

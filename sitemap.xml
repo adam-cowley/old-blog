@@ -3,17 +3,52 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://www.adamcowley.co.uk/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+    <loc>http://www.adamcowley.co.uk/tags/4.0/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
+    <loc>http://www.adamcowley.co.uk/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/posts/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/sharding/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/sharding-neo4j-4.0/</loc>
+    <lastmod>2020-01-15T08:30:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</loc>
     <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>
   
@@ -23,32 +58,12 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/nodejs/</loc>
     <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/posts/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/socket.io/</loc>
-    <lastmod>2020-01-07T12:55:08+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/</loc>
     <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>
   
