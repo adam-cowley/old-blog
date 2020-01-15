@@ -22,5 +22,15 @@
  In essence, if your data is too large to fit on a single server (and with hardware capabilities and costs, we&amp;rsquo;re talking terrabytes worth), you should consider sharding.</description>
     </item>
     
+    <item>
+      <title>Multi-Tenancy in Neo4j 4.0</title>
+      <link>http://www.adamcowley.co.uk/neo4j/multi-tenancy-neo4j-4.0/</link>
+      <pubDate>Wed, 15 Jan 2020 08:20:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/multi-tenancy-neo4j-4.0/</guid>
+      <description>A big change in the 4.0 release of Neo4j is the introduction of multiple databases in Enterprise Edition. Previous to 4.0, you could only have a single instance of Neo4j running a single database on any port at any time. This made multi-tenancy a problem because you had to build the segregation of data into the application layer.
+Now, you can create, start and stop multipel databases on the same Neo4j instance.</description>
+    </item>
+    
   </channel>
 </rss>

@@ -48,6 +48,16 @@
   </url>
   
   <url>
+    <loc>http://www.adamcowley.co.uk/tags/multi-database/</loc>
+    <lastmod>2020-01-15T08:20:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/multi-tenancy-neo4j-4.0/</loc>
+    <lastmod>2020-01-15T08:20:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.adamcowley.co.uk/neo4j/real-time-ui-vuejs-neo4j-kafka/</loc>
     <lastmod>2020-01-07T12:55:08+00:00</lastmod>
   </url>

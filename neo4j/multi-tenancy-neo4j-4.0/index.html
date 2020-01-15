@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Multi-Tenancy in Neo4j 4.0 - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Multi-Tenancy in Neo4j 4.0" />
+<meta property="og:description" content="How to manage and connect to multiple databases in Neo4j 4.0" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/multi-tenancy-neo4j-4.0/" />
+<meta property="article:published_time" content="2020-01-15T08:20:00+00:00" />
+<meta property="article:modified_time" content="2020-01-15T08:20:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Multi-Tenancy in Neo4j 4.0"/>
+<meta name="twitter:description" content="How to manage and connect to multiple databases in Neo4j 4.0"/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Multi-Tenancy in Neo4j 4.0</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2020-01-15 08:20">
+						15/01/2020 08:20
+					</time>
+				</p>
+
+				
+
+<p>A big change in the 4.0 release of Neo4j is the introduction of multiple databases in Enterprise Edition.  Previous to 4.0, you could only have a single instance of Neo4j running a single database on any port at any time.  This made multi-tenancy a problem because you had to build the segregation of data into the application layer.</p>
+
+<p>Now, you can create, start and stop multipel databases on the same Neo4j instance.  This experience reminds me a lot of traditional RDMS&rsquo; - no surprise that <a href="https://twitter.com/izoratti">Ivan Zoratti</a>, ex. MySQL, joined Neo4j as a Product Manager in 2019.  First, there are a couple of concepts that need defining.</p>
+
+<ul>
+<li><strong>Instance</strong> - a java processing running Neo4j on a particular port (think 7474 for http or 7687 for bolt).  An instance can host many <strong>Databases</strong>.</li>
+<li><strong>Database</strong> - a collection of data, with it&rsquo;s own separate physical database structure (think your 3.x neo4j graph.db folder)</li>
+</ul>
+
+<p>The syntax to manage the DBMS seems to be in line with most other databases, and it&rsquo;s a really simple syntax.</p>
+
+<p><strong>Note:</strong> All of the system code examples will be run through cypher-shell, but these can just as easily be run against the system database in the browser.</p>
+
+<pre><code>:use system
+</code></pre>
+
+<h2 id="installation">Installation</h2>
+
+<p>Installation of 4.0 is no different to 3.x, just head to neo4j.com/download, click Server Version and select the relevant version.  Alternatively, you can download and install 4.0 through <a href="https://neo4j.com/desktop">Desktop</a>.  If you&rsquo;ve downloaded the binaries, run <code>bin/neo4j</code> to start the server.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd /path/to/neo4j-4.0/
+bin/neo4j-admin set-initial-password trustn01 <span style="color:#75715e"># set an initial password</span>
+bin/neo4j start <span style="color:#75715e"># start neo4j and wait...</span>
+
+open http://localhost:7474</code></pre></div>
+<h2 id="databases">Databases</h2>
+
+<p>By default, you start with two databases; <code>neo4j</code> and <code>system</code>.  The <code>system</code> database is a new addition - this holds the metadata for Neo4j as a DMBS (<strong>D</strong>ata<strong>b</strong>ase <strong>M</strong>anagement <strong>S</strong>ystem) - database information and authentication.  The <code>neo4j</code> database is a regular instance of the graph database you know and love.  This an be <em>dropped</em>, but the system database cannot.</p>
+
+<p>Databases are completely separate from eachother, meaning that a relationship cannot be created between two nodes in different databases.</p>
+
+<h3 id="creating-a-database">Creating a Database</h3>
+
+<p>First, open cypher-shell in the command line by running the following command.  Once connected, type the <code>:use system</code> command to switch over to the system database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">bin/cypher-shell -a bolt://localhost:7687 -u neo4j -p trustn01
+
+Connected to Neo4j <span style="color:#ae81ff">4</span>.0.0 at neo4j://localhost:7687 as user neo4j.
+Type :help <span style="color:#66d9ef">for</span> a list of available commands or :exit to exit the shell.
+Note that Cypher queries must end with a semicolon.
+neo4j@neo4j&gt; :use system
+neo4j@system&gt; </code></pre></div>
+<p>Typing <code>:use system</code> means that all future queries will be ran against the <code>system</code> database.   Once in the system database, run <code>SHOW DATABASES</code> to see a list of databases.  You should see that both th system database and the default neo4j database already exist.</p>
+
+<pre><code>neo4j@system&gt; SHOW DATABASES;
++------------------------------------------------------------------------------------------------+
+| name     | address          | role         | requestedStatus | currentStatus | error | default |
++------------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot;  | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
+| &quot;system&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
++------------------------------------------------------------------------------------------------+
+</code></pre>
+
+<p>You can type <code>SHOW DATABASE</code> to see information about an individual database.</p>
+
+<pre><code>neo4j@system&gt; SHOW DATABASE neo4j;
++-----------------------------------------------------------------------------------------------+
+| name    | address          | role         | requestedStatus | currentStatus | error | default |
++-----------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
++-----------------------------------------------------------------------------------------------+
+</code></pre>
+
+<p>To create a database, you just run <code>CREATE DATABASE {name}</code>.</p>
+
+<pre><code>neo4j@system&gt; CREATE DATABASE myclient;
+0 rows available after 5 ms, consumed after another 0 ms
+neo4j@system&gt; SHOW DATABASES;
++--------------------------------------------------------------------------------------------------+
+| name       | address          | role         | requestedStatus | currentStatus | error | default |
++--------------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot;    | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
+| &quot;system&quot;   | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
+| &quot;myclient&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
++--------------------------------------------------------------------------------------------------+
+</code></pre>
+
+<p>You can then switch to the database using the <code>:USE</code> syntax as above.</p>
+
+<h3 id="starting-and-stopping-a-database">Starting and Stopping a Database</h3>
+
+<p>When you create a database, it will start by default.  You can stop it by running <code>STOP DATABASE {name}</code>.</p>
+
+<pre><code>neo4j@system&gt; STOP DATABASE myclient;
+0 rows available after 66 ms, consumed after another 1 ms
+neo4j@system&gt; SHOW DATABASES;
++--------------------------------------------------------------------------------------------------+
+| name       | address          | role         | requestedStatus | currentStatus | error | default |
++--------------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot;    | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
+| &quot;system&quot;   | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
+| &quot;myclient&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;offline&quot;       | &quot;offline&quot;     | &quot;&quot;    | FALSE   |
++--------------------------------------------------------------------------------------------------+
+
+3 rows available after 3 ms, consumed after another 0 ms
+</code></pre>
+
+<p>Not that the <code>requestedStatus</code> and <code>currentStatus</code> columns are both now <code>offline</code>.  You can start the database back up by running <code>START DATABASE {name}</code>.</p>
+
+<pre><code>neo4j@system&gt; START DATABASE myclient;
+0 rows available after 80 ms, consumed after another 0 ms
+neo4j@system&gt; SHOW DATABASES;
++--------------------------------------------------------------------------------------------------+
+| name       | address          | role         | requestedStatus | currentStatus | error | default |
++--------------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot;    | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
+| &quot;system&quot;   | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
+| &quot;myclient&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
++--------------------------------------------------------------------------------------------------+
+</code></pre>
+
+<h3 id="removing-a-database">Removing a Database</h3>
+
+<p>If you don&rsquo;t want the database any longer, you can run <code>DROP DATABASE {name}</code> to drop it.</p>
+
+<pre><code>neo4j@system&gt; DROP DATABASE myclient;
+0 rows available after 6 ms, consumed after another 0 ms
+neo4j@system&gt; SHOW DATABASES;
++------------------------------------------------------------------------------------------------+
+| name     | address          | role         | requestedStatus | currentStatus | error | default |
++------------------------------------------------------------------------------------------------+
+| &quot;neo4j&quot;  | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | TRUE    |
+| &quot;system&quot; | &quot;localhost:7687&quot; | &quot;standalone&quot; | &quot;online&quot;        | &quot;online&quot;      | &quot;&quot;    | FALSE   |
++------------------------------------------------------------------------------------------------+
+
+</code></pre>
+
+<p><strong>Warning:</strong> This will delete the underlying store files and cannot be undone.  There are no warnings when you run the command!</p>
+
+<h3 id="connecting-to-the-database-in-an-application">Connecting to the Database in an application</h3>
+
+<p>One thing to note with the 4.0 release is that the connection strings are slightly different.  There is no longer a <code>bolt+routing</code> protocol, instead you use the new <code>neo4j://</code> protocol when connecting to a cluster.  This does the same job as bolt+routing did before, creating an instance of the routing driver.  Connecting directly to a neo4j instance is the same, you just use the <code>bolt://</code> protocol.  (<a href="https://neo4j.com/docs/driver-manual/4.0-preview/client-applications/#driver-connection-uris">More information here</a>)</p>
+
+<p>The driver creation stays the same, but when you create a session, you specify the database that you would like to connect to.  Everything else is identical.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j&#39;</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#39;neo4j://localhost:7687&#39;</span>)
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>({
+    <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;myclient&#39;</span>, <span style="color:#75715e">// &lt;-- the only change
+</span><span style="color:#75715e"></span>})
+
+<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#39;MATCH (n) RETURN count(n) AS count&#39;</span>)
+    .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">res</span> =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">records</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;count&#39;</span>)))
+</code></pre></div>
+<p><strong>Note:</strong> If you do not specify a database, the query will be run on the default database.  This is defined in <code>neo4j.conf</code> under <code>dbms.default_database</code>.</p>
+
+<div class="file">neo4j.conf</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-conf" data-lang="conf">dbms.default_database=mydefaultdb</code></pre></div>
+<h3 id="that-s-it">That&rsquo;s it!</h3>
+
+<p>That&rsquo;s it!  This is a feature that has been missing from Neo4j for a while and will make life a lot easier for anyone wanting to build a SaaS application on Neo4j.</p>
+
+<p>Have you set up a multi-database in Neo4j yet?  Let me know below on the <a href="https://community.neo4j.com/">Neo4j Community</a> site.</p>
+
+
+				
+
+				
+
+
+
+    <i class="lnr lnr-tag tag-icon"></i>
+    <ul class="tags">
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/neo4j/">neo4j</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/multi-database/">multi-database</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/4.0/">4.0</a>
+        </li></ul>
+
+
+
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2020 Adam Cowley.
+				</p>
+			</div>
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-3764211-9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-3764211-9');
+</script>
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>
