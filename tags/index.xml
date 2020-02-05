@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Wed, 15 Jan 2020 08:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jan 2020 14:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,18 +14,36 @@
     <item>
       <title>4.0</title>
       <link>http://www.adamcowley.co.uk/tags/4.0/</link>
-      <pubDate>Wed, 15 Jan 2020 08:30:00 +0000</pubDate>
+      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/tags/4.0/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>multi-database</title>
+      <link>http://www.adamcowley.co.uk/tags/multi-database/</link>
+      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/multi-database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>neo4j</title>
       <link>http://www.adamcowley.co.uk/tags/neo4j/</link>
-      <pubDate>Wed, 15 Jan 2020 08:30:00 +0000</pubDate>
+      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/tags/neo4j/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vuejs</title>
+      <link>http://www.adamcowley.co.uk/tags/vuejs/</link>
+      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/vuejs/</guid>
       <description></description>
     </item>
     
@@ -35,15 +53,6 @@
       <pubDate>Wed, 15 Jan 2020 08:30:00 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/tags/sharding/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>multi-database</title>
-      <link>http://www.adamcowley.co.uk/tags/multi-database/</link>
-      <pubDate>Wed, 15 Jan 2020 08:20:00 +0000</pubDate>
-      
-      <guid>http://www.adamcowley.co.uk/tags/multi-database/</guid>
       <description></description>
     </item>
     
@@ -71,15 +80,6 @@
       <pubDate>Tue, 07 Jan 2020 12:55:08 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/tags/socket.io/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>vuejs</title>
-      <link>http://www.adamcowley.co.uk/tags/vuejs/</link>
-      <pubDate>Tue, 07 Jan 2020 12:55:08 +0000</pubDate>
-      
-      <guid>http://www.adamcowley.co.uk/tags/vuejs/</guid>
       <description></description>
     </item>
     

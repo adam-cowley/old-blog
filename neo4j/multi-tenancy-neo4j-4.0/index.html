@@ -93,7 +93,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 <p>A big change in the 4.0 release of Neo4j is the introduction of multiple databases in Enterprise Edition.  Previous to 4.0, you could only have a single instance of Neo4j running a single database on any port at any time.  This made multi-tenancy a problem because you had to build the segregation of data into the application layer.</p>
 
-<p>Now, you can create, start and stop multipel databases on the same Neo4j instance.  This experience reminds me a lot of traditional RDMS&rsquo; - no surprise that <a href="https://twitter.com/izoratti">Ivan Zoratti</a>, ex. MySQL, joined Neo4j as a Product Manager in 2019.  First, there are a couple of concepts that need defining.</p>
+<p>Now, you can create, start and stop multiple databases on the same Neo4j instance.  This experience reminds me a lot of traditional RDMS&rsquo; - no surprise that <a href="https://twitter.com/izoratti">Ivan Zoratti</a>, ex. MySQL, joined Neo4j as a Product Manager in 2019.  First, there are a couple of concepts that need defining.</p>
 
 <ul>
 <li><strong>Instance</strong> - a java processing running Neo4j on a particular port (think 7474 for http or 7687 for bolt).  An instance can host many <strong>Databases</strong>.</li>
@@ -117,7 +117,7 @@ bin/neo4j start <span style="color:#75715e"># start neo4j and wait...</span>
 open http://localhost:7474</code></pre></div>
 <h2 id="databases">Databases</h2>
 
-<p>By default, you start with two databases; <code>neo4j</code> and <code>system</code>.  The <code>system</code> database is a new addition - this holds the metadata for Neo4j as a DMBS (<strong>D</strong>ata<strong>b</strong>ase <strong>M</strong>anagement <strong>S</strong>ystem) - database information and authentication.  The <code>neo4j</code> database is a regular instance of the graph database you know and love.  This an be <em>dropped</em>, but the system database cannot.</p>
+<p>By default, you start with two databases; <code>neo4j</code> and <code>system</code>.  The <code>system</code> database is a new addition - this holds the metadata for Neo4j as a DMBS (<strong>D</strong>ata<strong>b</strong>ase <strong>M</strong>anagement <strong>S</strong>ystem) - database information and authentication.  The <code>neo4j</code> database is a regular instance of the graph database you know and love.  This can be <em>dropped</em>, but the system database cannot.</p>
 
 <p>Databases are completely separate from eachother, meaning that a relationship cannot be created between two nodes in different databases.</p>
 

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Building a Multi-tenant SaaS Control Panel for Neo4j Desktop - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Building a Multi-tenant SaaS Control Panel for Neo4j Desktop" />
+<meta property="og:description" content="The multi-database feature of Neo4j 4.0 opens up a lot of possibilities for SaaS vendors.  Here is discuss how to create a Graph App in Neo4j Desktop for managing the creation of" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/" />
+<meta property="article:published_time" content="2020-01-31T14:00:00+00:00" />
+<meta property="article:modified_time" content="2020-01-31T14:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Building a Multi-tenant SaaS Control Panel for Neo4j Desktop"/>
+<meta name="twitter:description" content="The multi-database feature of Neo4j 4.0 opens up a lot of possibilities for SaaS vendors.  Here is discuss how to create a Graph App in Neo4j Desktop for managing the creation of"/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Building a Multi-tenant SaaS Control Panel for Neo4j Desktop</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2020-01-31 14:00">
+						31/01/2020 14:00
+					</time>
+				</p>
+
+				
+
+<p>The introduction of <a href="/neo4j/multi-tenancy-neo4j-4.0/">multi-database in Neo4j 4.0</a> has certainly made the lives of aspiring SaaS vendors.  Previously to <a href="http://neo4j.com/download">4.0</a>, it was only possible to run one instance of a Neo4j database on a server at any time.  This meant a lot of effort around standing up Neo4j instances for customers of SaaS services.  Now, it&rsquo;s as simple as <a href="/neo4j/multi-tenancy-neo4j-4.0/">running a <code>CREATE DATABASE</code> command against the <em>system</em> database</a>.</p>
+
+<h2 id="the-scenario">The Scenario</h2>
+
+<p>So, let&rsquo;s paint a scenario.  Say we have a customer, <em>Vendorpower</em>.  VP sell SaaS services to clients that allow them to view and track sales opportunities.  As a relatively new company, they still handle the onboarding process of clients and at the moment this involves creating a new server manually every time a customer signs up.  Now that they have upgraded to 4.0, they would like to take advantage of Multi-database and automate their processes.</p>
+
+<p>Because the tasks will only ever be run internally, we can build a Graph App that can be run via Neo4j Desktop.  The app should be capable of connecting to the Neo4j System database and creating a new database when a subscription is created.</p>
+
+<p><a href="/neo4j/real-time-ui-vuejs-neo4j-kafka/">As previously mentioned</a>, I&rsquo;m a fan of Vue.js so I will be using this in this example.  <!-- I've also read a lot about tailwindcss so this will be a nice excuse to try that out too.  -->  The underlying code will all be Cypher so this can be executed from whichever frontend or backend framework(s) you prefer.</p>
+
+<h2 id="inception-for-graph-databases">Inception for Graph Databases</h2>
+
+<p>Ironically, in order to enable automated multi-tenancy - the first thing to do would be to create a database to hold the client information.  For this we could use the default neo4j database but instead I will create one called <code>clients</code>.  This database will hold the information on each Customer and their subscriptions.  For each <code>:Product</code>, there will be one or more <code>:Script</code> nodes which can be queried to run to create constraints or seed the database with data.</p>
+
+<p>The model for the customers database will look something like this:</p>
+
+<p><img src="/uploads/sass-control-panel-graph-app/arrows.svg" alt="Arrows Model" title="Customer purchased Subscription for Product, Product requires Script" /></p>
+
+<p>As this will only be run once, I will use <code>cypher-shell</code>.  The <code>-d</code> flag allows you to specify which database you query against (without this cypher-shell will fall back to the default database).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">bin/cypher-shell -a bolt://localhost:7687 -u neo4j -p neo -d system
+
+neo4j@system&gt; CREATE DATABASE customers;
+neo4j@system&gt; SHOW DATABASES;
++---------------------------------------------------------------------------------------------------+
+| name        | address          | role         | requestedStatus | currentStatus | error | default |
++---------------------------------------------------------------------------------------------------+
+| <span style="color:#e6db74">&#34;customers&#34;</span> | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
+| <span style="color:#e6db74">&#34;neo4j&#34;</span>     | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | TRUE    |
+| <span style="color:#e6db74">&#34;system&#34;</span>    | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
++---------------------------------------------------------------------------------------------------+</code></pre></div>
+<p>Neo4j requires at least one database, so now that the clients database exists I can drop neo4j.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">neo4j@system&gt; DROP DATABASE neo4j;</code></pre></div>
+<p>Next, there will need to be some constraints.  Each database will be named after the client that owns it, so for that I can create a unique constraint on the <code>:Client</code> name property.  The <code>:Product</code> and <code>:Subscription</code> nodes will also require unique constraints on the <code>id</code> property, and we&rsquo;ll also likely query subscriptions by <code>endDate</code> so I&rsquo;ll create that too.</p>
+
+<pre><code>neo4j@system&gt; :use customers
+neo4j@customers&gt; CREATE CONSTRAINT ON (c:Customer) ASSERT c.name IS UNIQUE;
+neo4j@customers&gt; CREATE CONSTRAINT ON (p:Product) ASSERT p.id IS UNIQUE;
+neo4j@customers&gt; CREATE CONSTRAINT ON (s:Subscription) ASSERT s.id IS UNIQUE;
+neo4j@customers&gt; CREATE INDEX ON :Subscription(endDate);
+</code></pre>
+
+<h2 id="creating-products">Creating Products</h2>
+
+<p>A subscription to a product will require some setup scripts.  For now, I will create a couple of generic scripts to create a constraint and some dummy data along with a <code>:Config</code> node that could hold some global config for that client at a later date.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">// Create some generic scripts
+CREATE (constraint:Script { cypher: &#34;CREATE CONSTRAINT ON (c:Customer) ASSERT c.id IS UNIQUE&#34; })
+CREATE (seed:Script { cypher: &#34;CREATE (c:Customer {id: 1, customer: &#39;Dummy Customer&#39;}) ASSERT c.id IS UNIQUE&#34; })
+WITH constraint, seed
+
+// Create gold, silver and bronze products
+UNWIND [
+    { id: 1, name: &#39;Bronze&#39;, price: 9.99 },
+    { id: 2, name: &#39;Silver&#39;, price: 14.99 },
+    { id: 3, name: &#39;Gold&#39;, price: 28.99 }
+] AS row
+
+CREATE (p:Product) SET p += row
+
+// Create links to generic scripts
+CREATE (p)-[:REQUIRES_SCRIPT]-&gt;(constraint)
+CREATE (p)-[:REQUIRES_SCRIPT]-&gt;(seed)
+
+// Run a script to create some sort of Config node
+CREATE (p)-[:REQUIRES_SCRIPT]-&gt;(:Script { cypher: &#34;CREATE (:Config { package: &#39;&#34;+ row.name +&#34;&#39; })&#34; })</code></pre></div>
+<p>Each Product node should be related to the two generic script nodes and an additional relationship to a third <code>:Script</code> node.</p>
+
+<p><img src="/uploads/sass-control-panel-graph-app/products.svg" alt="Product and Script nodes" title="A graph showing 3 products with relationships to several script nodes" /></p>
+
+<p>Nice!  Now the packages are there, we can start on a UI.</p>
+
+<h2 id="creating-our-first-customer">Creating our first Customer</h2>
+
+<p>First step, let&rsquo;s create a new project with the vue-cli.  Because I&rsquo;m <del>lazy</del> a fan of open source, I will also install the <a href="https://www.npmjs.com/package/vue-neo4j">vue-neo4j</a> package to allow me to quickly connect to Neo4j.  This will also let me build in support for Neo4j Desktop and allow me to connect to the current active database.</p>
+
+<p>I won&rsquo;t concentrate too much on design, the functionality is way more important to me.  Let&rsquo;s just pretend that the <em>Vendorpower</em> staff don&rsquo;t have a great eye for design.  Neo4j favours <a href="https://semantic-ui.com/">Semantic UI</a> for UI, so I will use the <a href="https://semantic-ui-vue.github.io/">Semantic UI Vue</a> package to speed things up a bit.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vue create vendorpower
+cd vendorpower
+
+npm i --save vue-neo4j semantic-ui-vue semantic-ui-css
+npm run serve</code></pre></div>
+<p>Once it has done it&rsquo;s thing, there should be a barebones project running on :8080. The next step is to include the two dependencies in <code>main.js</code>.</p>
+
+<div class="file">src/main.js</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue&#39;</span>
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">SuiVue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;semantic-ui-vue&#39;</span>
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">VueNeo4j</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue-neo4j&#39;</span>
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">App</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./App.vue&#39;</span>
+
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">config</span>.<span style="color:#a6e22e">productionTip</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+
+<span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#39;semantic-ui-css/semantic.min.css&#39;</span>;
+
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">SuiVue</span>)
+<span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">VueNeo4j</span>)
+
+<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+  <span style="color:#a6e22e">render</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">h</span> =&gt; <span style="color:#a6e22e">h</span>(<span style="color:#a6e22e">App</span>),
+}).<span style="color:#a6e22e">$mount</span>(<span style="color:#e6db74">&#39;#app&#39;</span>)
+</code></pre></div>
+<p>Now, I can use the <code>&lt;sui-*&gt;</code> components in my templates and interact with neo4j in components using  <code>this.$neo4j</code>.  <code>vue-neo4j</code> comes with a login component, so I will use that to create a quick login form.</p>
+
+<p>In App.vue, I&rsquo;ll add a <code>data()</code> function that sets the a <code>driver</code> to false by default, then use this to power the <code>&lt;vue-neo4j-connect&gt;</code> component.  When you connect to an active database, the callback should overwrite the driver and display the UI.</p>
+
+<p>The component provides a list of Projects and Databases plus a button to connect to the Active Graph.  This requires the Neo4j Desktop API which is injected into graph apps - for development purposes you&rsquo;ll need to put Neo4j Desktop into development mode to get this to work.</p>
+
+<h3 id="enabling-development-mode-in-neo4j-desktop">Enabling Development mode in Neo4j Desktop</h3>
+
+<p><img style="float:right;width:360px;margin-left: 24px;" src="/uploads/sass-control-panel-graph-app/dev-mode.png" alt="Enable development mode, set initial entry point to localhost:8080 and root path to /"></p>
+
+<p>To do this, click the <strong>Settings</strong> icon in Neo4j Desktop and tick <strong>Enable development mode</strong> at the bottom of the pane.  The Entry point should be the address that the vue project is running at, and the root path should be <code>/</code>.  After this, you should see <strong>Development App</strong> at the top of your Neo4j Desktop screen next to Neo4j Browser.</p>
+
+<p><br style="clear:both"></p>
+
+<p>The App.vue component should look something like this:</p>
+
+<div class="file">src/App.vue</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">template</span>&gt;
+  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ui container&#34;</span>&gt;
+    &lt;<span style="color:#f92672">vue-neo4j-connect</span>
+      <span style="color:#a6e22e">v-if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;!driver&#34;</span>
+      <span style="color:#a6e22e">:onConnect</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;onConnect&#34;</span>
+      <span style="color:#a6e22e">:showActive</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;true&#34;</span>
+    /&gt;
+    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">v-else</span>&gt;
+      &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">is</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sui-header&#34;</span>&gt;Welcome!&lt;/<span style="color:#f92672">h1</span>&gt;
+      Connected to {{driver}}!
+    &lt;/<span style="color:#f92672">div</span>&gt;
+  &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">template</span>&gt;
+
+&lt;<span style="color:#f92672">script</span>&gt;
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;app&#39;</span>,
+  <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> () =&gt; ({ <span style="color:#a6e22e">driver</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>, }),
+  <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+    <span style="color:#a6e22e">onConnect</span>(<span style="color:#a6e22e">driver</span>) {
+      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>
+    },
+  },
+}
+&lt;/<span style="color:#f92672">script</span>&gt;</code></pre></div>
+<p>&hellip;and give you a screen like this once connected:</p>
+
+<p><img src="/uploads/sass-control-panel-graph-app/connected.png" alt="Connected!" title="The Developer application with some debug info" /></p>
+
+<h2 id="creating-a-customer">Creating a Customer</h2>
+
+<p>A simple form is required to create a new customer - for this, we need the list of packages from the <code>customers</code> database.  This query is best placed in the <code>mounted</code> function on the component.  If you were using the <a href="https://github.com/neo4j/neo4j-javascript-driver">vanilla drivers</a>, you would <a href="/neo4j/sass-control-panel-graph-app/">specify the database name when you create a new session</a> but because I&rsquo;m using   the <a href="https://github.com/adam-cowley/vue-neo4j">vue-neo4j</a> package I will specify this as the third argument on <code>this.$neo4j.run()</code>:</p>
+
+<div class="file">src/components/CreateCustomer.vue</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;CreateCustomer&#39;</span>,
+  <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> () =&gt; ({ <span style="color:#a6e22e">loading</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">products</span><span style="color:#f92672">:</span> [], }),
+  <span style="color:#a6e22e">mounted</span>() {
+    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$neo4j</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">      MATCH (p:Product)
+</span><span style="color:#e6db74">      RETURN p.id AS id, 
+</span><span style="color:#e6db74">        p.name AS name, 
+</span><span style="color:#e6db74">        [ (p)-[:REQUIRES_SCRIPT]-&gt;(s) | s.cypher ] AS scripts
+</span><span style="color:#e6db74">    `</span>, {}, { <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;customers&#39;</span> })
+      .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">res</span> =&gt; {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">products</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">records</span>.<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">row</span> =&gt; ({
+          <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;id&#39;</span>),
+          <span style="color:#a6e22e">text</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;name&#39;</span>),
+          <span style="color:#a6e22e">scripts</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">row</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;scripts&#39;</span>),
+        }))
+
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">loading</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+      })
+  },
+}
+</code></pre></div>
+<p>Next, a template using the semantic-ui-vue components to create a form which holds the customer name and a dropdown for the packages.</p>
+
+<div class="file">src/components/CreateCustomer.vue</div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">template</span>&gt;
+    &lt;<span style="color:#f92672">div</span>&gt;
+      &lt;<span style="color:#f92672">sui-form</span> <span style="color:#a6e22e">v-if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;!loading&#34;</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">submit</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">prevent</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;handleSubmit&#34;</span>&gt;
+        &lt;<span style="color:#f92672">h2</span> <span style="color:#a6e22e">is</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sui-header&#34;</span>&gt;Create Customer&lt;/<span style="color:#f92672">h2</span>&gt;
+        &lt;<span style="color:#f92672">sui-form-field</span>&gt;
+          &lt;<span style="color:#f92672">label</span>&gt;Name&lt;/<span style="color:#f92672">label</span>&gt;
+          &lt;<span style="color:#f92672">sui-input</span> <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;name&#34;</span> /&gt;
+        &lt;/<span style="color:#f92672">sui-form-field</span>&gt;
+        &lt;<span style="color:#f92672">sui-form-field</span>&gt;
+          &lt;<span style="color:#f92672">label</span>&gt;Package&lt;/<span style="color:#f92672">label</span>&gt;
+          &lt;<span style="color:#f92672">sui-dropdown</span>
+            <span style="color:#a6e22e">placeholder</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Package&#34;</span>
+            <span style="color:#a6e22e">selection</span>
+            <span style="color:#a6e22e">:options</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;products&#34;</span>
+            <span style="color:#a6e22e">v-model</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;product&#34;</span>
+          /&gt;
+        &lt;/<span style="color:#f92672">sui-form-field</span>&gt;
+        &lt;<span style="color:#f92672">sui-button</span> <span style="color:#a6e22e">primary</span>&gt;Submit&lt;/<span style="color:#f92672">sui-button</span>&gt;
+      &lt;/<span style="color:#f92672">sui-form</span>&gt;
+    &lt;/<span style="color:#f92672">div</span>&gt;
+&lt;/<span style="color:#f92672">template</span>&gt;</code></pre></div>
+<p>When this form is submitted, two actions are required:</p>
+
+<ol>
+<li>The customer must be created within the <code>customers</code> database</li>
+<li>A new Neo4j database and native user should be created OK m</li>
+<li>Ensure that the customer&rsquo;s database can only be accessed by this user using the new <a href="https://neo4j.com/docs/operations-manual/current/authentication-authorization/access-control/">4.0 Fine Grained Access Controls</a></li>
+</ol>
+
+<p>In an ideal world you would send an automated onboarding email emails to the customer with their username and password but I will leave that for now.</p>
+
+
+				
+
+				
+
+
+
+    <i class="lnr lnr-tag tag-icon"></i>
+    <ul class="tags">
+        
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/4.0/">4.0</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/multi-database/">multi-database</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/neo4j/">neo4j</a>
+        </li>
+        <li>
+            <a href="http://www.adamcowley.co.uk/tags/vuejs/">vuejs</a>
+        </li></ul>
+
+
+
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2020 Adam Cowley.
+				</p>
+			</div>
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-3764211-9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-3764211-9');
+</script>
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

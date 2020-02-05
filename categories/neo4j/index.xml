@@ -6,10 +6,20 @@
     <description>Recent content in Neo4j on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Wed, 15 Jan 2020 08:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jan 2020 14:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/categories/neo4j/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building a Multi-tenant SaaS Control Panel for Neo4j Desktop</title>
+      <link>http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/</link>
+      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/</guid>
+      <description>The introduction of multi-database in Neo4j 4.0 has certainly made the lives of aspiring SaaS vendors. Previously to 4.0, it was only possible to run one instance of a Neo4j database on a server at any time. This meant a lot of effort around standing up Neo4j instances for customers of SaaS services. Now, it&amp;rsquo;s as simple as running a CREATE DATABASE command against the system database.
+The Scenario So, let&amp;rsquo;s paint a scenario.</description>
+    </item>
     
     <item>
       <title>When and how to implement Sharding in Neo4j 4.0</title>
@@ -29,7 +39,7 @@
       
       <guid>http://www.adamcowley.co.uk/neo4j/multi-tenancy-neo4j-4.0/</guid>
       <description>A big change in the 4.0 release of Neo4j is the introduction of multiple databases in Enterprise Edition. Previous to 4.0, you could only have a single instance of Neo4j running a single database on any port at any time. This made multi-tenancy a problem because you had to build the segregation of data into the application layer.
-Now, you can create, start and stop multipel databases on the same Neo4j instance.</description>
+Now, you can create, start and stop multiple databases on the same Neo4j instance.</description>
     </item>
     
     <item>
