@@ -6,7 +6,7 @@
     <description>Recent content in Posts on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Fri, 31 Jan 2020 14:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Feb 2020 14:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Building a Multi-tenant SaaS Control Panel for Neo4j Desktop</title>
       <link>http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/</link>
-      <pubDate>Fri, 31 Jan 2020 14:00:00 +0000</pubDate>
+      <pubDate>Mon, 10 Feb 2020 14:00:00 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/</guid>
       <description>The introduction of multi-database in Neo4j 4.0 has certainly made the lives of aspiring SaaS vendors. Previously to 4.0, it was only possible to run one instance of a Neo4j database on a server at any time. This meant a lot of effort around standing up Neo4j instances for customers of SaaS services. Now, it&amp;rsquo;s as simple as running a CREATE DATABASE command against the system database.

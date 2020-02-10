@@ -7,8 +7,8 @@
 <meta property="og:description" content="The multi-database feature of Neo4j 4.0 opens up a lot of possibilities for SaaS vendors.  Here is discuss how to create a Graph App in Neo4j Desktop for managing the creation of" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://www.adamcowley.co.uk/neo4j/sass-control-panel-graph-app/" />
-<meta property="article:published_time" content="2020-01-31T14:00:00+00:00" />
-<meta property="article:modified_time" content="2020-01-31T14:00:00+00:00" />
+<meta property="article:published_time" content="2020-02-10T14:00:00+00:00" />
+<meta property="article:modified_time" content="2020-02-10T14:00:00+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Building a Multi-tenant SaaS Control Panel for Neo4j Desktop"/>
 <meta name="twitter:description" content="The multi-database feature of Neo4j 4.0 opens up a lot of possibilities for SaaS vendors.  Here is discuss how to create a Graph App in Neo4j Desktop for managing the creation of"/>
@@ -84,8 +84,8 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 		<section>
 			<article class="post">
 				<p class="date">
-					<time datetime="2020-01-31 14:00">
-						31/01/2020 14:00
+					<time datetime="2020-02-10 14:00">
+						10/02/2020 14:00
 					</time>
 				</p>
 
@@ -99,7 +99,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 <p>Because the tasks will only ever be run internally, we can build a Graph App that can be run via Neo4j Desktop.  The app should be capable of connecting to the Neo4j System database and creating a new database when a subscription is created.</p>
 
-<p><a href="/neo4j/real-time-ui-vuejs-neo4j-kafka/">As previously mentioned</a>, I&rsquo;m a fan of Vue.js so I will be using this in this example.  <!-- I've also read a lot about tailwindcss so this will be a nice excuse to try that out too.  -->  The underlying code will all be Cypher so this can be executed from whichever frontend or backend framework(s) you prefer.</p>
+<p><a href="/neo4j/real-time-ui-vuejs-neo4j-kafka/">As previously mentioned</a>, I&rsquo;m a fan of Vue.js so I will be using this in this example.  The underlying code will all be Cypher so this can be executed from whichever frontend or backend framework(s) you prefer.</p>
 
 <h2 id="inception-for-graph-databases">Inception for Graph Databases</h2>
 
@@ -109,7 +109,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 <p><img src="/uploads/sass-control-panel-graph-app/arrows.svg" alt="Arrows Model" title="Customer purchased Subscription for Product, Product requires Script" /></p>
 
-<p>As this will only be run once, I will use <code>cypher-shell</code>.  The <code>-d</code> flag allows you to specify which database you query against (without this cypher-shell will fall back to the default database).</p>
+<p>As this will only be run once, I will use <code>cypher-shell</code>.  The <code>-d</code> flag allows you to specify which database you query against (without this cypher-shell will fall back to the default database specified in <code>dbms.default_database</code>).</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">bin/cypher-shell -a bolt://localhost:7687 -u neo4j -p neo -d system
 
 neo4j@system&gt; CREATE DATABASE customers;
@@ -121,9 +121,9 @@ neo4j@system&gt; SHOW DATABASES;
 | <span style="color:#e6db74">&#34;neo4j&#34;</span>     | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | TRUE    |
 | <span style="color:#e6db74">&#34;system&#34;</span>    | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
 +---------------------------------------------------------------------------------------------------+</code></pre></div>
-<p>Neo4j requires at least one database, so now that the clients database exists I can drop neo4j.</p>
+<p>Neo4j requires at least one database, so now that the customer database exists I can drop neo4j.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">neo4j@system&gt; DROP DATABASE neo4j;</code></pre></div>
-<p>Next, there will need to be some constraints.  Each database will be named after the client that owns it, so for that I can create a unique constraint on the <code>:Client</code> name property.  The <code>:Product</code> and <code>:Subscription</code> nodes will also require unique constraints on the <code>id</code> property, and we&rsquo;ll also likely query subscriptions by <code>endDate</code> so I&rsquo;ll create that too.</p>
+<p>Next, there will need to be some constraints.  Each database will be named after the customer that owns it, so for that I can create a unique constraint on the <code>:Customer</code> name property.  The <code>:Product</code> and <code>:Subscription</code> nodes will also require unique constraints on the <code>id</code> property, and we&rsquo;ll also likely query subscriptions by <code>endDate</code> so I&rsquo;ll create that too.</p>
 
 <pre><code>neo4j@system&gt; :use customers
 neo4j@customers&gt; CREATE CONSTRAINT ON (c:Customer) ASSERT c.name IS UNIQUE;
@@ -137,7 +137,7 @@ neo4j@customers&gt; CREATE INDEX ON :Subscription(endDate);
 <p>A subscription to a product will require some setup scripts.  For now, I will create a couple of generic scripts to create a constraint and some dummy data along with a <code>:Config</code> node that could hold some global config for that client at a later date.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cypher" data-lang="cypher">// Create some generic scripts
 CREATE (constraint:Script { cypher: &#34;CREATE CONSTRAINT ON (c:Customer) ASSERT c.id IS UNIQUE&#34; })
-CREATE (seed:Script { cypher: &#34;CREATE (c:Customer {id: 1, customer: &#39;Dummy Customer&#39;}) ASSERT c.id IS UNIQUE&#34; })
+CREATE (seed:Script { cypher: &#34;CREATE (c:Customer {id: 1, customer: &#39;Dummy Customer&#39;})&#34; })
 WITH constraint, seed
 
 // Create gold, silver and bronze products
@@ -287,15 +287,220 @@ npm run serve</code></pre></div>
       &lt;/<span style="color:#f92672">sui-form</span>&gt;
     &lt;/<span style="color:#f92672">div</span>&gt;
 &lt;/<span style="color:#f92672">template</span>&gt;</code></pre></div>
-<p>When this form is submitted, two actions are required:</p>
+<p>When this form is submitted, the UI will need to:</p>
 
 <ol>
-<li>The customer must be created within the <code>customers</code> database</li>
-<li>A new Neo4j database and native user should be created OK m</li>
+<li>Create new <code>:Customer</code> and <code>:Subscription</code> nodes in the <code>customers</code> database</li>
+<li>Create a new Neo4j database and a native user to connect to it</li>
 <li>Ensure that the customer&rsquo;s database can only be accessed by this user using the new <a href="https://neo4j.com/docs/operations-manual/current/authentication-authorization/access-control/">4.0 Fine Grained Access Controls</a></li>
 </ol>
 
 <p>In an ideal world you would send an automated onboarding email emails to the customer with their username and password but I will leave that for now.</p>
+
+<h3 id="restricting-access">Restricting Access</h3>
+
+<p>All databases are made available to all users by default.  In order to ensure that a customer&rsquo;s database is only accessible by one user, we&rsquo;ll need to create a <em>public</em> role that will be assigned to all users.  Each time a database is created, access to the database by the public role will need to be explicitly denied.  Then, a specific user (in this case with the same name) will be created and assigned to a role which has been explicitly allowed access to the database of the same name.</p>
+
+<p>First, the new role will be created.  Let&rsquo;s call it <code>customer</code>.  Then, for good measure, deny it access to the customers database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">neo4j@system&gt; CREATE ROLE customer;
+<span style="color:#ae81ff">0</span> rows available after <span style="color:#ae81ff">27</span> ms, consumed after another <span style="color:#ae81ff">0</span> ms
+
+neo4j@system&gt; DENY ACCESS ON DATABASE customers TO customer;
+<span style="color:#ae81ff">0</span> rows available after <span style="color:#ae81ff">199</span> ms, consumed after another <span style="color:#ae81ff">0</span> ms</code></pre></div>
+<p>Now, when the form is submitted a handler function should execute the steps above.  For this, I will create a new <code>async</code> method called <code>handleSubmit</code> which will run the queries in.  An async function will allow me to <code>await</code> the response of each query and append a message to a <code>confirmations</code> array.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;CreateCustomer&#39;</span>,
+  <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>  <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+    <span style="color:#a6e22e">async</span> <span style="color:#a6e22e">handleSubmit</span>() {
+      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span> <span style="color:#f92672">=</span> []
+      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">creating</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+
+      <span style="color:#75715e">// The next few lines of code will go here...
+</span><span style="color:#75715e"></span>
+      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">creating</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+  }
+}
+</code></pre></div>
+<p>Because we&rsquo;ll need to <code>await</code> for a few of the cypher statements to run, I have defined it as an <code>async</code> function.   I have defined a boolean to hold the creating state, then the array of confirmation messages will be displayed on screen - we could also use this to display a progress bar.  Now, let&rsquo;s add some scripts:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Create Customer in Customers database
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">createCustomer</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$neo4j</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  MATCH (p:Product {id: $product})
+</span><span style="color:#e6db74">  MERGE (c:Customer { name: $name })
+</span><span style="color:#e6db74">  CREATE (s:Subscription { id: $name + &#39;-&#39; + $product + &#39;-&#39; + date(), startDate: date(), endDate: date()+duration(&#39;P365D&#39;) })
+</span><span style="color:#e6db74">  MERGE (c)-[:HAS_SUBSCRIPTION]-&gt;(s)-[:FOR_PRODUCT]-&gt;(p)
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>, { <span style="color:#a6e22e">product</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">product</span>, <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span> }, { <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;customers&#39;</span> })
+</code></pre></div>
+<p>This script finds the product node with the corresponding ID, merges the customer node into the database by it&rsquo;s name and then creates a subscription node expiring in a years time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">system</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$neo4j</span>.<span style="color:#a6e22e">getSession</span>({ <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;system&#39;</span> })
+<span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">password</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>
+
+<span style="color:#75715e">// Create Database
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  CREATE DATABASE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Database </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> created`</span>)
+</code></pre></div>
+<p>Next, create a new database for the client in the system database.  In order to do this, I have created a <code>system</code> variable holding a session to the system database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Deny access to everyone
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  DENY ACCESS ON DATABASE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> TO customer
+</span><span style="color:#e6db74">`</span>)
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Access denied to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> for members with customer role`</span>)
+</code></pre></div>
+<p>Because this database should only be accessed by the current customer, we need to explicitly deny access to all other customers.  Because all SaaS customer users will assigned the <code>customer</code> role, the role can be denied access to all databases as they&rsquo;re created by default.  Without this, any customer could access the other databases.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Create user
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  CREATE USER </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> SET PASSWORD $password CHANGE NOT REQUIRED
+</span><span style="color:#e6db74">`</span>, { <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">password</span> })
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`The user </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> has been created with password </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">password</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</code></pre></div>
+<p>Then, create a user with the same name of the database.  Appending <code>CHANGE NOT REQUIRED</code> to the command will ensure that the user doesn&rsquo;t receive a prompt to change their password once they&rsquo;ve logged in.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Assign generic role to user
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  GRANT ROLE customer to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Assigned </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to customer role`</span>)
+</code></pre></div>
+<p>&hellip;and assign them to the <code>customer</code> role - automatically denying them access to all other client databases.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Create unique role for database
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  CREATE ROLE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`New role </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> created`</span>)
+</code></pre></div>
+<p>By assigning a custom role to the user (in this case, with the same name), they will have explicit access to read and write on their own database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Grant unique role access to the new database
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  GRANT ACCESS ON DATABASE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Role </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> granted access to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</code></pre></div>
+<p>This command allows the user to access the database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Grant name management 
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  GRANT NAME MANAGEMENT ON DATABASE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Role </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> granted management privileges to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</code></pre></div>
+<p>Granting name management to the role will allow the user to create new labels, relationship types and properties in their own database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Grant write access (privilege to create labels, relationship types, and property names) to the database
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  GRANT WRITE ON GRAPH </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Role </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> granted write access to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</code></pre></div>
+<p>Then granting write privileges will allow them to write data to their database.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Assign unique role to user
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">await</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">`
+</span><span style="color:#e6db74">  GRANT ROLE </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">`</span>)
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Assigned </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> role`</span>)
+</code></pre></div>
+<p>Finally, the user should be assigned the role.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Seed Data
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">customerDriver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#39;bolt://localhost:7687&#39;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">basic</span>(<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">password</span>))
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">customerSession</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">customerDriver</span>.<span style="color:#a6e22e">session</span>({ <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">name</span> })
+
+<span style="color:#a6e22e">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">products</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">p</span> =&gt; <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">product</span>)
+  .<span style="color:#a6e22e">scripts</span>
+  .<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">async</span> <span style="color:#a6e22e">cypher</span> =&gt; <span style="color:#a6e22e">await</span> <span style="color:#a6e22e">customerSession</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">cypher</span>))
+
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">confirmations</span>.<span style="color:#a6e22e">push</span>(<span style="color:#e6db74">`Seed scripts run against database </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</code></pre></div>
+<p>Now that the database has been set up, it needs to be seeded with some data.  Because I loaded the scripts when the form was <code>mounted</code>, I can just run these one by one against a new instance of the driver.  If this is successful there should be a constraint created and a single <code>:Config</code> node in the database.</p>
+
+<p>&nbsp;</p>
+
+<p><img src="/uploads/sass-control-panel-graph-app/completed-form.png" alt="The end result" title="A Graph application in development moode showing a list of successful queries" /></p>
+
+<p>&nbsp;</p>
+
+<p><strong>NB</strong>: The nice thing about this being an <em>internal application</em> is that I can be quite gung-ho with the security concerns.  Obviously, you might want to be a bit more careful in a production environment.</p>
+
+<p>But that&rsquo;s it, a quick test of the UI with the client name <code>foo</code> shows all of the confirmations displaying properly.  If I check in the system database, I can see that the user and role have been created.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">neo4j@system&gt; SHOW DATABASES;
++---------------------------------------------------------------------------------------------------------+
+| name              | address          | role         | requestedStatus | currentStatus | error | default |
++---------------------------------------------------------------------------------------------------------+
+| <span style="color:#e6db74">&#34;system&#34;</span>          | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
+| <span style="color:#e6db74">&#34;customers&#34;</span>       | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
+| <span style="color:#e6db74">&#34;foo&#34;</span>             | <span style="color:#e6db74">&#34;localhost:7687&#34;</span> | <span style="color:#e6db74">&#34;standalone&#34;</span> | <span style="color:#e6db74">&#34;online&#34;</span>        | <span style="color:#e6db74">&#34;online&#34;</span>      | <span style="color:#e6db74">&#34;&#34;</span>    | FALSE   |
++---------------------------------------------------------------------------------------------------------+
+
+neo4j@system&gt; SHOW ROLES;
++-------------------------------+
+| role              | isBuiltIn |
++-------------------------------+
+| <span style="color:#e6db74">&#34;admin&#34;</span>           | TRUE      |
+| <span style="color:#e6db74">&#34;publisher&#34;</span>       | TRUE      |
+| <span style="color:#e6db74">&#34;editor&#34;</span>          | TRUE      |
+| <span style="color:#e6db74">&#34;reader&#34;</span>          | TRUE      |
+| <span style="color:#e6db74">&#34;architect&#34;</span>       | TRUE      |
+| <span style="color:#e6db74">&#34;clients&#34;</span>         | FALSE     |
+| <span style="color:#e6db74">&#34;foo&#34;</span>             | FALSE     |
++-------------------------------+
+
+neo4j@system&gt; SHOW USER foo PRIVILEGES;
++------------------------------------------------------------------------------------------------+
+| access    | action   | resource         | graph       | segment           | role       | user  |
++------------------------------------------------------------------------------------------------+
+| <span style="color:#e6db74">&#34;DENIED&#34;</span>  | <span style="color:#e6db74">&#34;access&#34;</span> | <span style="color:#e6db74">&#34;database&#34;</span>       | <span style="color:#e6db74">&#34;customers&#34;</span> | <span style="color:#e6db74">&#34;database&#34;</span>        | <span style="color:#e6db74">&#34;customer&#34;</span> | <span style="color:#e6db74">&#34;foo&#34;</span> |
+| <span style="color:#e6db74">&#34;DENIED&#34;</span>  | <span style="color:#e6db74">&#34;access&#34;</span> | <span style="color:#e6db74">&#34;database&#34;</span>       | <span style="color:#e6db74">&#34;foo&#34;</span>       | <span style="color:#e6db74">&#34;database&#34;</span>        | <span style="color:#e6db74">&#34;customer&#34;</span> | <span style="color:#e6db74">&#34;foo&#34;</span> |
+| <span style="color:#e6db74">&#34;GRANTED&#34;</span> | <span style="color:#e6db74">&#34;write&#34;</span>  | <span style="color:#e6db74">&#34;all_properties&#34;</span> | <span style="color:#e6db74">&#34;foo&#34;</span>       | <span style="color:#e6db74">&#34;NODE(*)&#34;</span>         | <span style="color:#e6db74">&#34;foo&#34;</span>      | <span style="color:#e6db74">&#34;foo&#34;</span> |
+| <span style="color:#e6db74">&#34;GRANTED&#34;</span> | <span style="color:#e6db74">&#34;write&#34;</span>  | <span style="color:#e6db74">&#34;all_properties&#34;</span> | <span style="color:#e6db74">&#34;foo&#34;</span>       | <span style="color:#e6db74">&#34;RELATIONSHIP(*)&#34;</span> | <span style="color:#e6db74">&#34;foo&#34;</span>      | <span style="color:#e6db74">&#34;foo&#34;</span> |
+| <span style="color:#e6db74">&#34;GRANTED&#34;</span> | <span style="color:#e6db74">&#34;access&#34;</span> | <span style="color:#e6db74">&#34;database&#34;</span>       | <span style="color:#e6db74">&#34;foo&#34;</span>       | <span style="color:#e6db74">&#34;database&#34;</span>        | <span style="color:#e6db74">&#34;foo&#34;</span>      | <span style="color:#e6db74">&#34;foo&#34;</span> |
++------------------------------------------------------------------------------------------------+</code></pre></div>
+<p>We can confirm the access using a new session in cypher shell.  There should be one <code>:Config</code> node created via the seed script that includes some information about the user&rsquo;s subscription and a <code>:Customer</code> record with the name property <code>Dummy Customer</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">bin/cypher-shell -a bolt://localhost:7687 -u foo -p bar -d foo
+nopwd@nopwd&gt; MATCH <span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> RETURN count<span style="color:#f92672">(</span>n<span style="color:#f92672">)</span>;
++-------------------------+
+| labels<span style="color:#f92672">(</span>n<span style="color:#f92672">)</span>    | count<span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> |
++-------------------------+
+| <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;Config&#34;</span><span style="color:#f92672">]</span>   | <span style="color:#ae81ff">1</span>        |
+| <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;Customer&#34;</span><span style="color:#f92672">]</span> | <span style="color:#ae81ff">1</span>        |
++-------------------------+</code></pre></div>
+<h2 id="deploying-the-app">Deploying the App</h2>
+
+<p>You can deploy applications remotely via npm but as this is only an internal application this would be overkill.  The easiest way to deploy the app is to use npm&rsquo;s <a href="https://docs.npmjs.com/cli-commands/build.html">build</a> and <a href="https://docs.npmjs.com/cli-commands/pack.html"><code>pack</code></a> commands.  The build command uses <a href="https://cli.vuejs.org/guide/build-targets.html#app"><code>vue-cli</code>&rsquo;s build</a> command to create a dist/ folder full of assets that can then be deployed.  The pack command then uses the files in the dist folder to create a <code>.tgz</code> file that can be easily distributed.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ npm run build
+&gt; vendorpower@0.1.0 build /Users/adam/projects/vendorpower
+&gt; vue-cli-service build
+
+  File                                   Size              Gzipped
+
+  dist/js/chunk-vendors.86cb0ed7.js      <span style="color:#ae81ff">1106</span>.54 KiB       <span style="color:#ae81ff">288</span>.39 KiB
+  dist/js/app.cb7ef089.js                <span style="color:#ae81ff">7</span>.05 KiB          <span style="color:#ae81ff">2</span>.72 KiB
+  dist/css/chunk-vendors.0c3fd141.css    <span style="color:#ae81ff">603</span>.02 KiB        <span style="color:#ae81ff">100</span>.55 KiB
+  dist/css/app.a1b2901f.css              <span style="color:#ae81ff">0</span>.02 KiB          <span style="color:#ae81ff">0</span>.04 KiB
+
+
+$ npm pack
+$ ls *.tgz
+vendorpower-0.1.0.tgz</code></pre></div>
+<p>The result of this process will be <code>vendorpower-0.1.0.tgz</code>.  This can be installed as an application in Neo4j Desktop either by copying and pasting the location of the file (prefixed by <code>file:///</code>) into the Graph App URL textbox at the bottom of the Graph Applications pane, or by dragging and dropping the zip file into the textbox.</p>
+
+<video width="812" height="470" controls>
+  <source src="/uploads/sass-control-panel-graph-app/install-graph-app.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+<p>Once it has been installed, navigate to the project and click <strong>Add Application</strong> next to Neo4j Browser to make the application available for that project.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>The example is a little tongue in cheek but hopefully it demonstrates the basics of creating an application that interacts successfully the system database.  Neo4j 4.0 provides many new features that bring it in line with other databases.  Add to that the benefits of storing your data in a graph and the opportunities are practically endless.  Now SaaS vendors can easily fire up new Neo4j databases for their clients while making sure that the data is safe and secure.</p>
+
+<p>Have you tried multi-database yet?  Let me know how you get on in the <a href="https://community.neo4j.com">Neo4j Community</a> forum.</p>
 
 
 				
