@@ -6,10 +6,37 @@
     <description>Recent content in Tags on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Mon, 10 Feb 2020 14:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Feb 2020 02:20:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>docker</title>
+      <link>http://www.adamcowley.co.uk/tags/docker/</link>
+      <pubDate>Thu, 20 Feb 2020 02:20:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>neo4j</title>
+      <link>http://www.adamcowley.co.uk/tags/neo4j/</link>
+      <pubDate>Thu, 20 Feb 2020 02:20:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/neo4j/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>neo4j-admin</title>
+      <link>http://www.adamcowley.co.uk/tags/neo4j-admin/</link>
+      <pubDate>Thu, 20 Feb 2020 02:20:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/tags/neo4j-admin/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>4.0</title>
@@ -26,15 +53,6 @@
       <pubDate>Mon, 10 Feb 2020 14:00:00 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/tags/multi-database/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>neo4j</title>
-      <link>http://www.adamcowley.co.uk/tags/neo4j/</link>
-      <pubDate>Mon, 10 Feb 2020 14:00:00 +0000</pubDate>
-      
-      <guid>http://www.adamcowley.co.uk/tags/neo4j/</guid>
       <description></description>
     </item>
     
