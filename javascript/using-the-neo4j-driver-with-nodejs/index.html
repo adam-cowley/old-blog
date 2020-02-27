@@ -115,18 +115,22 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <div class="file">
 <span>CommonJS</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-const neo4j = require('neo4j').v1;" data-lang="const neo4j = require('neo4j').v1;">const driver = new neo4j.driver(&#34;bolt://localhost:7687&#34;, neo4j.auth.driver(&#34;neo4j&#34;, &#34;p455word&#34;));</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;neo4j://localhost:7687&#34;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;p455word&#34;</span>));
+</code></pre></div>
 <p>Or using ES6 import:</p>
 
 <div class="file">
 <span>ES6</span>
 </div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-import { v1 as neo4j } from 'neo4j-driver';" data-lang="import { v1 as neo4j } from 'neo4j-driver';">const driver = new neo4j.driver(&#34;bolt://localhost:7687&#34;, neo4j.auth.driver(&#34;neo4j&#34;, &#34;p455word&#34;));</code></pre></div>
-<p>In both of these examples, I&#8217;m creating a new instance of the driver and connecting to <code>bolt://localhost:7687</code>. I&#8217;ve used a basic auth token, but as with Java Neo4j also supports <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L39" target="_blank" rel="noopener">Kerberos tokens</a> and <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L42" target="_blank" rel="noopener">custom authentication schemes</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;neo4j-driver&#39;</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;neo4j://localhost:7687&#34;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;p455word&#34;</span>));
+</code></pre></div>
+<p>In both of these examples, I&#8217;m creating a new instance of the driver and connecting to <code>neo4j://localhost:7687</code>. I&#8217;ve used a basic auth token, but as with Java Neo4j also supports <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L39" target="_blank" rel="noopener">Kerberos tokens</a> and <a href="https://github.com/neo4j/neo4j-javascript-driver/blob/2df2e28c90c85522a2e4f9a327f69412578dce9b/test/types/v1/index.test.ts#L42" target="_blank" rel="noopener">custom authentication schemes</a>.</p>
 
-<p>Providing the <code>bolt+routing</code> scheme to the connection string will ensure a Routing Driver is instantiated.  This will balance read and write queries across a Causal Cluster.  Where you are using a multi-datacenter setup or advanced routing policies, you can append a routing context to the end of the connection string.</p>
+<p>Providing the <code>neo4j</code> scheme to the connection string will ensure that a Routing Driver is instantiated when connecting to a Causal Cluster.  This will balance read and write queries across a Causal Cluster.  Where you are using a multi-datacenter setup or advanced routing policies, you can append a routing context to the end of the connection string.</p>
 
-<pre><code>bolt+routing://localhost:7687?policy=uk
+<pre><code>neo4j://localhost:7687?policy=uk
 </code></pre>
 
 <h2>
@@ -147,9 +151,9 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 </h3>
 
 <p>
-        When creating a session, you can declare a mode as either read or write.  This can ensure that the driver routes the queries to the right place.  Constants for read and write sessions can be taken from <code>v1.session.READ</code> or <code>v1.session.WRITE</code>.
+        When creating a session, you can declare a mode as either read or write.  This can ensure that the driver routes the queries to the right place.  Constants for read and write sessions can be taken from <code>neo4j.session.READ</code> or <code>neo4j.session.WRITE</code>.
 </p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>(<span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">READ</span>);
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>({ <span style="color:#a6e22e">defaultAccessMode</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">READ</span> });
 </code></pre></div>
 <h3>
         Auto-commit Transactions
@@ -279,10 +283,10 @@ result.records.forEach(record =&gt; { // Iterate through records
             TL;DR &#8211; Code Example
 </h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Require Neo4j
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j-driver&#39;</span>).<span style="color:#a6e22e">v1</span>;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">neo4j</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;neo4j-driver&#39;</span>);
 
 <span style="color:#75715e">// Create Driver
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;bolt://localhost:7687&#34;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">basic</span>(<span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;neo&#34;</span>));
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">driver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">driver</span>(<span style="color:#e6db74">&#34;neo4j://localhost:7687&#34;</span>, <span style="color:#a6e22e">neo4j</span>.<span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">basic</span>(<span style="color:#e6db74">&#34;neo4j&#34;</span>, <span style="color:#e6db74">&#34;neo&#34;</span>));
 
 <span style="color:#75715e">// Create Driver session
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>();
@@ -308,6 +312,13 @@ result.records.forEach(record =&gt; { // Iterate through records
         <span style="color:#75715e">// Close the Driver
 </span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">close</span>();
     });
+</code></pre></div>
+<h2 id="multi-database-with-neo4j-4-0">Multi Database with Neo4j 4.0</h2>
+
+<p>From Neo4j Enterprise Edition version 4.0 and above, you can now <a href="/neo4j/multi-tenancy-neo4j-4.0/">create multiple databases</a>.  If you want to connect to anything other than the default database, you can specify this when creating the session:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">session</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">session</span>({
+    <span style="color:#a6e22e">database</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;myclient&#39;</span>, <span style="color:#75715e">// &lt;-- Connect to the database `myclient`
+</span><span style="color:#75715e"></span>})
 </code></pre></div>
 <h2>
             Further Reading
