@@ -159,9 +159,9 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
         Auto-commit Transactions
 </h3>
 
-<p><span class="s1">Auto-commit transactions are sent to the server and acknowledged immediately.  We can do by calling the <code>run</code> method on the session.  This method accepts two parameters, a parameterised Cypher query string and an optional object containing parameters in key, value format.</span>
+<p><span class="s1">Auto-commit transactions are sent to the server and acknowledged immediately.  We can do by calling the <code>run</code> method on the session.  This method accepts two arguments, a parameterised Cypher query string and an optional object containing parameters in key, value format.</span>
 </p></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cypher</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person {name: {name} }) RETURN count(p) AS count&#34;</span>;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cypher</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MATCH (p:Person {name: $name }) RETURN count(p) AS count&#34;</span>;
 <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> };
 
 <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">cypher</span>, <span style="color:#a6e22e">params</span>);
@@ -178,7 +178,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
             We can run a transaction in one of two ways, either by calling <code>session.beginTransaction()</code> which returns a transaction object, or calling <code>session.readTransaction()</code> or <code>session.writeTransaction()</code> with a function containing the work for that transaction.  The first argument for this function will be a transaction.  We can use this to <code>run</code> queries.
 </p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">driver</span>.<span style="color:#a6e22e">writeTransaction</span>(<span style="color:#a6e22e">tx</span> =&gt; {
-    <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: {name} });&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> });
+    <span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: $name })&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> });
 });
 </code></pre></div>
 <h3>
@@ -189,7 +189,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
             The more declarative approach uses <code>session.beginTransaction()</code>.  This returns a transaction which can be used similarly to above
 </p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tx</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">beginTransaction</span>();
-<span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: {name} });&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> })
+<span style="color:#a6e22e">tx</span>.<span style="color:#a6e22e">run</span>(<span style="color:#e6db74">&#34;CREATE (p:Person { name: $name })&#34;</span>, { <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adam&#34;</span> })
     .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">res</span> =&gt; {
         <span style="color:#75715e">// Run another query with the tx variable...
 </span><span style="color:#75715e"></span>    })
