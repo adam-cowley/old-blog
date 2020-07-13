@@ -166,7 +166,7 @@ NEO4J_PORT=7687</code></pre></div>
         <span style="color:#a6e22e">valid</span><span style="color:#f92672">:</span> [ <span style="color:#e6db74">&#39;locked&#39;</span>, <span style="color:#e6db74">&#39;unlocked&#39;</span>, ], <span style="color:#75715e">// I want two statuses
 </span><span style="color:#75715e"></span>    },
     <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;float&#39;</span>,   <span style="color:#75715e">// These are a simple shorthand for {type: &#39;float&#39;}
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;float&#39;</span>,   
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;float&#39;</span>,
 }
 </code></pre></div>
 <p>Then, an instance of neode.  For clarity, I will create this in a new file called <code>neode.js</code> but this could quite easily just be written in index.js.</p>
@@ -225,7 +225,7 @@ On connection, a <code>connection</code> event is fired which provides a <code>s
 </span><span style="color:#75715e"></span>
     <span style="color:#75715e">// Listen for events from that socket
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;disconnect&#39;</span>, () =&gt; {
-        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`&lt;-- LEFT  : </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>) <span style="color:#75715e">// &lt;-- LEFT  : sbIpyb0yM64cYcX_AAAA 
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`&lt;-- LEFT  : </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>) <span style="color:#75715e">// &lt;-- LEFT  : sbIpyb0yM64cYcX_AAAA
 </span><span style="color:#75715e"></span>    })
 })
 </code></pre></div>
@@ -251,7 +251,7 @@ On connection, a <code>connection</code> event is fired which provides a <code>s
         .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">node</span> =&gt; <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">update</span>({
             <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;locked&#39;</span>,
             <span style="color:#75715e">// So we have some context of who locked it, we can use the socket ID
-</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">by</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">id</span>, 
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">by</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">id</span>,
         }))
         .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">node</span> =&gt; <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">toJson</span>())
         .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">json</span> =&gt; <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">emit</span>(<span style="color:#e6db74">&#39;locked&#39;</span>, <span style="color:#a6e22e">json</span>))
@@ -274,7 +274,7 @@ On connection, a <code>connection</code> event is fired which provides a <code>s
 
 <h2 id="building-a-front-end-with-vue-js">Building a Front End with Vue.js</h2>
 
-<p>Essentially, we want a framework that allows us to build an application quickly and that can consume messages via websockets using jabascript.  My personal preference is Vue.js but you could te easily swap out Vue.js for  React, Angular, Ember, jQuery, Backbone (is that still a thing?!), YourFavouriteFrontEndFramework and the result would be the same.</p>
+<p>Essentially, we want a framework that allows us to build an application quickly and that can consume messages via websockets using javascript.  My personal preference is Vue.js but you could te easily swap out Vue.js for  React, Angular, Ember, jQuery, Backbone (is that still a thing?!), YourFavouriteFrontEndFramework and the result would be the same.</p>
 
 <p>The <code>@vue/cli</code> tools allow you to quickly generate a project template and get started in minutes.  The following command creates a new project in the <code>ui</code> folder.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vue create ui</code></pre></div>
@@ -590,7 +590,7 @@ KAFKA_GROUP=LocksGroup1</code></pre></div>
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">createSocket</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">server</span>, <span style="color:#a6e22e">neode</span>, <span style="color:#a6e22e">consumer</span>) =&gt; {
     <span style="color:#75715e">// ...
 </span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// Listen for Kafka 
+    <span style="color:#75715e">// Listen for Kafka
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">consumer</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;message&#39;</span>, ({ <span style="color:#a6e22e">value</span>, }) =&gt; {
         <span style="color:#75715e">// Parse the JSON value into an object
 </span><span style="color:#75715e"></span>        <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">payload</span>, } <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">value</span>)
