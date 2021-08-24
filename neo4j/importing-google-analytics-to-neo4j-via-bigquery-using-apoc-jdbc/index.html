@@ -115,7 +115,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 <p>The tables are exported daily in the format of <code>ga_sessions_{YYYY}{MM}{DD}</code>. A really nice feature of BigQuery is that you can run queries on multiple tables at once using a wildcard (<code>ga_sessons_201807*</code>) or a where clause (<code>_TABLE_SUFFIX &gt;= '20180701'</code>). But <strong>beware</strong>, you’re billed by the data that you process during the query. So if you run a query for all tables in a particular year, you could end up with a hefty bill.</p>
 <p>If you <a href="ttps://bigquery.cloud.google.com/table/bigquery-public-data:google_analytics_sample.ga_sessions_20170801">head to the schema viewer</a>, you’ll see that there is a lot of information available.</p>
 <p>BigQuery uses it’s own version of SQL to run queries. Let’s run a query in the console to explore the data.</p>
-<pre><code>SELECT
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">SELECT</span>
   fullVisitorId,
   visitorId,
   visitNumber,
@@ -127,7 +127,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
   hits.page.pageTitle,
   hits.page.hostname,
   trafficSource.campaign,
-  trafficSource.source,
+  trafficSource.<span style="color:#66d9ef">source</span>,
   trafficSource.medium,
   trafficSource.keyword,
   trafficSource.adwordsClickInfo.campaignId,
@@ -138,8 +138,8 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
   geoNetwork.city,
   geoNetwork.latitude,
   geoNetwork.longitude
-FROM [bigquery-public-data:google_analytics_sample.ga_sessions_20170801] LIMIT 1000
-</code></pre><p><a href="https://docs.google.com/spreadsheets/d/1Ef6TxSs1d2lDAPgfdGitS6b9_KIbZqhHikxUSgZ-yXk/edit?usp=sharing" rel="nofollow">View an export of the top 1000 rows on Google Sheets</a></p>
+<span style="color:#66d9ef">FROM</span> [bigquery<span style="color:#f92672">-</span><span style="color:#66d9ef">public</span><span style="color:#f92672">-</span><span style="color:#66d9ef">data</span>:google_analytics_sample.ga_sessions_20170801] <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">1000</span>
+</code></pre></div><p><a href="https://docs.google.com/spreadsheets/d/1Ef6TxSs1d2lDAPgfdGitS6b9_KIbZqhHikxUSgZ-yXk/edit?usp=sharing" rel="nofollow">View an export of the top 1000 rows on Google Sheets</a></p>
 <h3 id="stronga-note-on-unnesting-datastrong"><strong>A Note on Unnesting Data</strong></h3>
 <p>The <code>hits</code> and <code>customDimensions</code> columns inside each <code>ga_sessions_*</code> table are <em>REPEATED</em> fields. Unfortunately, at the moment apoc.load.jdbc does not handle these correctly. These can be <em>unnested</em> into individual rows using the <code>UNNEST</code> function. It means that the cypher query has to do slightly more work but we can get around the issue of multiple duplicates by using <code>MERGE</code> statements instead of <code>CREATE</code>.</p>
 <h3>
@@ -152,7 +152,7 @@ FROM [bigquery-public-data:google_analytics_sample.ga_sessions_20170801] LIMIT 1
 <a id="user-content-importing-to-neo4j-using-apoc--jdbc" class="anchor" href="#importing-to-neo4j-using-apoc--jdbc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing to Neo4j using APOC & JDBC
 </h2>
 <p>In order to connect to a JDBC source, we need to build up a connection string. APOC includes a <code>apoc.load.jdbc</code> function that yields a stream of <code>row</code>s, each property of which can be accessed through dot or square bracket notation.</p>
-<pre><code>CALL apoc.load.jdbc(connectionString, queryOrTable)
+<pre><code class="language-cypher" data-lang="cypher">CALL apoc.load.jdbc(connectionString, queryOrTable)
 YIELD row
 RETURN row.property
 </code></pre><h4>
@@ -175,7 +175,7 @@ RETURN row.property
 <pre><code class="language-conf" data-lang="conf"># BigQuery Connection String
 apoc.jdbc.BigQuery.url=jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;ProjectId=neo4j-bigquery-test;OAuthType=0;OAuthServiceAcctEmail=neo4j-bigquery-test@neo4j-bigquery-test.iam.gserviceaccount.com;OAuthPvtKeyPath=/path/to/neo4j-bigquery-test-327e650dbfe6.json
 </code></pre><p>This makes subsequent calls simpler and protects queries from changes to keys in the future.</p>
-<pre><code>CALL apoc.load.jdbc('BigQuery', queryOrTable)
+<pre><code class="language-cypher" data-lang="cypher">CALL apoc.load.jdbc('BigQuery', queryOrTable)
 YIELD row
 </code></pre><p>Much nicer.</p>
 <h3>
@@ -184,7 +184,7 @@ YIELD row
 <p>
 Let&#8217;s take the query above and run it through Neo4j with our credentials. When running the query through JDBC, you&#8217;ll need to change the format of the table names from <code>[project:dataset.table]</code> to <code>project.dataset.table</code> for example<br /> <code>bigquery-public-data.google_analytics_sample.ga_sessions_20170801</code>.
 </p>
-<pre><code>CALL apoc.load.jdbc('BigQuery', 'SELECT
+<pre><code class="language-cypher" data-lang="cypher">CALL apoc.load.jdbc('BigQuery', 'SELECT
   fullVisitorId,
   visitorId,
   visitNumber,
@@ -202,57 +202,65 @@ YIELD row
 </code></pre><p>Now we can use the row to merge the <code>:Visitor</code>, <code>:Visit</code> and <code>:Hit</code> nodes before merging the relationships together.</p>
 <p>The start time of the visit is stored as seconds since epoch, so we can store this as a <a href="https://www.adamcowley.co.uk/neo4j/temporal-native-dates/" rel="nofollow">DateTime property introduced in Neo4j 3.4</a>, setting the <code>epochSeconds</code> value in the constructor.</p>
 <p>There is no natural key for the hit, so I have combined the visit’s unique ID and the hit number to make a unique key. Where the <code>isInteraction</code> property is free, I have used the foreach hack to set a conditional label to signify that this was an event rather than a pageview.</p>
-<pre><code>// ...
+<pre><code class="language-cypher" data-lang="cypher">// ...
 YIELD row
 
 MERGE (visitor:Visitor { fullVisitorId: row.fullVisitorId })
 SET visitor.visitorId = row.visitorId
 MERGE (visit:Visit { visitId: row.visitId })
 SET
-visit.number = toInteger(row.visitNumber),
-visit.startedAt = datetime({ epochSeconds: toInteger(row.visitStartTime) })
+      visit.number = toInteger(row.visitNumber),
+      visit.startedAt = datetime({ epochSeconds: toInteger(row.visitStartTime) })
 
 
 MERGE (hit:Hit { hitId: row.visitId + '-'+ row.hitNumber })
 SET
-hit.number = toInteger(row.hitNumber),
-hit.timestamp = datetime({ epochSeconds: toInteger(row.time) })
+      hit.number = toInteger(row.hitNumber),
+      hit.timestamp = datetime({ epochSeconds: toInteger(row.time) })
 
 
-Foreach Hack to set Interaction label
-FOREACH (run IN CASE WHEN hit.isInteraction = 'tru [1] ELSE [] END |
-  SET hit:Interaction
+// Foreach Hack to set Interaction label
+FOREACH (run IN CASE WHEN hit.isInteraction = 'true' THEN [1] ELSE [] END |
+      SET hit:Interaction
 )
+
 MERGE (host:Host { hostname: tname })
 MERGE (page:Page { url: row.hostname + row.pagePath })
-ge.hostname = row.hostname, page.path = row.pagePath
+SET page.hostname = row.hostname, page.path = row.pagePath
+
 MERGE (host)-[:HAS_PAGE]-&gt;(page)
 MERGE (visitor)-[:HAS_VISIT]-&gt;(visit)
-(visit)-[:HAS_HIT]-&gt;(hit)
+MERGE (visit)-[:HAS_HIT]-&gt;(hit)
 MERGE (hit)-[:FOR_PAGE]-&gt;(page);
 </code></pre><h3>
 <a id="user-content-linked-lists" class="anchor" href="#linked-lists" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Linked Lists
 </h3>
 <p>Linked Lists of nodes are useful for a number of situations. Because we have numbers on each hit and visit, we can query, collect and connect them together. This will be useful when analysing user behaviour.</p>
-<pre><code>MATCH (visitor:Visitor)-[:HAS_VISIT]-&gt;(visit)
+<pre><code class="language-cypher" data-lang="cypher">MATCH (visitor:Visitor)-[:HAS_VISIT]-&gt;(visit)
+
 // Order visits in ascending order
 WITH visitor, visit ORDER BY visit.number ASC
+
 // Collect the visits
-isitor, collect(visit) AS visits
+WITH visitor, collect(visit) AS visits
+
 // Unwind the ordered collection
- range(0, size(visits)-2) AS idx
+UNWIND range(0, size(visits)-2) AS idx
 WITH visits[idx] AS this, visits[idx+1] AS next
 MERGE (this)-[:NEXT_VISIT]-&gt;(next)
 </code></pre><p>I use this technique quite often to create linked lists. First, match the nodes that you are interested in before putting them into the correct order. Next, collect up the nodes – this allows you to calculate the size of the collection and unwind a range of indexes that can be used to create aliases between the two nodes.</p>
 <p>With larger datasets, you sometimes need to be a little more cute. Using a <code>:LAST_HIT</code> relationship and identifying new nodes with a temporary label would cut down the number of nodes and relationships touched by the query on a larger dataset.</p>
 <p>We can do the same to link up the visits.</p>
-<pre><code>MATCH (visit:Visit)-[:HAS_HIT]-&gt;(hit)
+<pre><code class="language-cypher" data-lang="cypher">MATCH (visit:Visit)-[:HAS_HIT]-&gt;(hit)
+
 // Order visits in ascending ord
 WITH visit, hit ORDER BY hit.number ASC
+
 // Collect the visits
-isit, collect(hit) AS hits
+WITH visit, collect(hit) AS hits
+
 // Unwind the ordered collection
- range(0, size(hits)-2) AS idx
+UNWIND range(0, size(hits)-2) AS idx
 WITH hits[idx] AS this, hits[idx+1] AS next
 MERGE (this)-[:NEXT_HIT]-&gt;(next)
 </code></pre><h2>
@@ -262,7 +270,7 @@ MERGE (this)-[:NEXT_HIT]-&gt;(next)
 <h3>
 <a id="user-content-what-pages-are-users-returning-to" class="anchor" href="#what-pages-are-users-returning-to" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What pages are users visiting?
 </h3>
-<pre><code>MATCH (v:Visitor)-[:HAS_VISIT]-&gt;()-[:HAS_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p:Page)
+<pre><code class="language-cypher" data-lang="cypher">MATCH (v:Visitor)-[:HAS_VISIT]-&gt;()-[:HAS_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p:Page)
 WHERE v.fullVisitorId = {fullVisitorId}
 RETURN v.fullVisitorId, p.path, count(*) as visits
 ORDER BY visits DESC
@@ -351,8 +359,8 @@ ORDER BY visits DESC
 <p>
   The <code>:NEXT_HIT</code> relationship allows us to see where a user goes next during their visit.
 </p>
-<pre><code>MATCH (p1:Page)&lt;-[:FOR_PAGE]-()-[:NEXT_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p2)
-WHERE p1 &amp;lt;&amp;gt; p2
+<pre><code class="language-cypher" data-lang="cypher">MATCH (p1:Page)&lt;-[:FOR_PAGE]-()-[:NEXT_HIT]-&gt;()-[:FOR_PAGE]-&gt;(p2)
+WHERE p1 &lt;&gt; p2
 RETURN p1.url, p2.url, count(*) as total
 ORDER BY total DESC
 LIMIT 5
@@ -430,7 +438,7 @@ LIMIT 5
 <p>
   Excluding sessions with a single pageview, where are users exiting the site? By matching a hit where there is both an incoming <code>:NEXT_HIT</code> relationship and no outgoing <code>:NEXT_HIT</code> relationship, we can identify page a user has left the site from.
 </p>
-<pre><code>MATCH (h:Hit)-[:FOR_PAGE]-&gt;(p:Page)
+<pre><code class="language-cypher" data-lang="cypher">MATCH (h:Hit)-[:FOR_PAGE]-&gt;(p:Page)
 WHERE ( ()-[:NEXT_HIT]-&gt;(h) ) AND NOT ( (h)-[:NEXT_HIT]-&gt;() )
 RETURN p.path, count(h) as exists
 ORDER BY exists DESC LIMIT 10
