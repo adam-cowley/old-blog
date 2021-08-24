@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>java on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>java on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/java/</link>
-    <description>Recent content in java on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in java on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Wed, 03 Jul 2019 14:21:20 +0100</lastBuildDate>
@@ -17,7 +17,8 @@
       <pubDate>Wed, 03 Jul 2019 14:21:20 +0100</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</guid>
-      <description>Ever since reading the ODBMS interview with David Fox of Adobe, I&amp;rsquo;ve been eager to work on a large scale social network. By switching the underlying database for the Behance social feed from Cassandra to Neo4j,they were able to reduce the number of servers from 48 down to a 3 server Neo4j cluster as well as reduce the operational burden of fanning out writes in order to scale reads.</description>
+      <description>Ever since reading the ODBMS interview with David Fox of Adobe, I&amp;rsquo;ve been eager to work on a large scale social network. By switching the underlying database for the Behance social feed from Cassandra to Neo4j,they were able to reduce the number of servers from 48 down to a 3 server Neo4j cluster as well as reduce the operational burden of fanning out writes in order to scale reads.
+ At Behance, they managed to reduce:</description>
     </item>
     
     <item>
@@ -26,8 +27,8 @@
       <pubDate>Tue, 13 Feb 2018 15:18:29 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/</guid>
-      <description>By choice, I&amp;#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I&amp;#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp;amp; Procedures in Neo4j.
-However, since being introduced to Spring, I&amp;#8217;ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes.</description>
+      <description>By choice, I’d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I’ve become exposed to Java on a daily basis, writing User Defined Functions &amp;amp; Procedures in Neo4j.
+However, since being introduced to Spring, I’ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes.</description>
     </item>
     
   </channel>

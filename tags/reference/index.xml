@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>reference on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>reference on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/reference/</link>
-    <description>Recent content in reference on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in reference on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Fri, 16 Jun 2017 13:25:43 +0000</lastBuildDate>
@@ -37,8 +37,8 @@ Basic Import To import a module into a script, you can use the import keyword. A
       <pubDate>Thu, 03 Mar 2016 10:21:09 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/</guid>
-      <description>Over the past couple of months I&amp;#8217;ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I&amp;#8217;ve uncovered quite a few gotcha&amp;#8217;s along the way.
-One of the major differences is the Asynchronous nature of JavaScript. If you&amp;#8217;ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
+      <description>Over the past couple of months I’ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I’ve uncovered quite a few gotcha’s along the way.
+One of the major differences is the Asynchronous nature of JavaScript. If you’ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
     </item>
     
   </channel>

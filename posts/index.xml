@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>Posts on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/posts/</link>
-    <description>Recent content in Posts on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in Posts on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Thu, 20 Feb 2020 02:20:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Feb 2021 10:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Importing Wikidata into Neo4j Using Neosemantics</title>
+      <link>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</link>
+      <pubDate>Thu, 18 Feb 2021 10:00:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</guid>
+      <description>Recently, I&amp;rsquo;ve spent quite a bit of time working on the ecosystem around Neosemantics, a toolkit for importing RDF data into Neo4j. A few weeks ago we released a Graph App which provides a UI to help you learn how to use the procedures provided in the library. I&amp;rsquo;ve also spent a couple of sessions recently with Jesus Barassa on the Neo4j Twitch Channel demonstrating how to use the Graph App and the library in general.</description>
+    </item>
     
     <item>
       <title>Seeding Neo4j using a Backup on Docker</title>
@@ -67,7 +76,8 @@ For this example, I will also be using Vue.js on top of an express server commun
       <pubDate>Wed, 03 Jul 2019 14:21:20 +0100</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/social-feed-cursor-based-pagination/</guid>
-      <description>Ever since reading the ODBMS interview with David Fox of Adobe, I&amp;rsquo;ve been eager to work on a large scale social network. By switching the underlying database for the Behance social feed from Cassandra to Neo4j,they were able to reduce the number of servers from 48 down to a 3 server Neo4j cluster as well as reduce the operational burden of fanning out writes in order to scale reads.</description>
+      <description>Ever since reading the ODBMS interview with David Fox of Adobe, I&amp;rsquo;ve been eager to work on a large scale social network. By switching the underlying database for the Behance social feed from Cassandra to Neo4j,they were able to reduce the number of servers from 48 down to a 3 server Neo4j cluster as well as reduce the operational burden of fanning out writes in order to scale reads.
+ At Behance, they managed to reduce:</description>
     </item>
     
     <item>
@@ -105,7 +115,7 @@ However, for those with deep pockets and a Google Analytics 360 account, you can
       
       <guid>http://www.adamcowley.co.uk/neo4j/temporal-native-dates/</guid>
       <description>With Neo4j 3.4 GA now out in the wild, a few people have asked me about the new Temporal data types that have been introduced. In this post I will go over the a few of the new additions and provide a working example.
-TL;DR: Jump to&amp;#8230;  Clocks Dates Times Local Dates and Times Durations Truncating Values Config Changes Converting Dates Working Example  When I first started using Neo4j back in 2014, I can remember one thing was missing &amp;#8211; support for native date datatype.</description>
+TL;DR: Jump to…  Clocks Dates Times Local Dates and Times Durations Truncating Values Config Changes Converting Dates Working Example  When I first started using Neo4j back in 2014, I can remember one thing was missing – support for native date datatype.</description>
     </item>
     
     <item>
@@ -114,7 +124,7 @@ TL;DR: Jump to&amp;#8230;  Clocks Dates Times Local Dates and Times Durations Tr
       <pubDate>Fri, 02 Mar 2018 19:15:42 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/using-the-neo4j-driver-with-nodejs/</guid>
-      <description>After writing all about how to use the official Neo4j Drivers in a Spring application, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS. Over the past few years I&amp;#8217;ve written many applications in NodeJS that talk to Neo4j applications, to the point where I built an OGM to take care of the frustrating CRUD boilerplate when setting up a Neo4j project in node.</description>
+      <description>After writing all about how to use the official Neo4j Drivers in a Spring application, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS. Over the past few years I’ve written many applications in NodeJS that talk to Neo4j applications, to the point where I built an OGM to take care of the frustrating CRUD boilerplate when setting up a Neo4j project in node.</description>
     </item>
     
     <item>
@@ -124,8 +134,7 @@ TL;DR: Jump to&amp;#8230;  Clocks Dates Times Local Dates and Times Durations Tr
       
       <guid>http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/</guid>
       <description>In my last post, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the Neo4j-OGM to encapsulate your business logic into java objects that can be mapped directly to the graph.
-&amp;nbsp;
-Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.</description>
+ Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.</description>
     </item>
     
     <item>
@@ -134,8 +143,8 @@ Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map P
       <pubDate>Tue, 13 Feb 2018 15:18:29 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/using-the-neo4j-driver-in-spring-boot/</guid>
-      <description>By choice, I&amp;#8217;d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I&amp;#8217;ve become exposed to Java on a daily basis, writing User Defined Functions &amp;amp; Procedures in Neo4j.
-However, since being introduced to Spring, I&amp;#8217;ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes.</description>
+      <description>By choice, I’d normally steer clear of Java if I wanted to write a lightweight application, and instead write something with Node. But since joining Neo4j last summer, I’ve become exposed to Java on a daily basis, writing User Defined Functions &amp;amp; Procedures in Neo4j.
+However, since being introduced to Spring, I’ve been impressed by how quickly you can get a REST API up and running. Starting with Spring Intializr, and after a few @Annotations, you can have a production grade application with security up in minutes.</description>
     </item>
     
     <item>
@@ -164,7 +173,7 @@ My task for the evening was to pull Twitter information into our Graph. Being r
       <pubDate>Mon, 03 Apr 2017 13:48:37 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-4-pagerank-with-apoc/</guid>
-      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven’t already done so, check out the posts below:
  Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  PageRank with APOC Since the 3.0 release of Neo4j, the system has supported Procedures. Unlike Unmanaged Extensions which are called via the REST API, Procedures can be invoked directly through a cypher statement.</description>
     </item>
     
@@ -174,8 +183,8 @@ My task for the evening was to pull Twitter information into our Graph. Being r
       <pubDate>Thu, 09 Mar 2017 16:30:51 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-3-collaborative-filtering/</guid>
-      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
- Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Collaborative Filtering In it&amp;#8217;s simplest terms, Collaborative Filtering is a method of making automated predictions for a user based on the behaviour and preferences of other users.</description>
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven’t already done so, check out the posts below:
+ Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Collaborative Filtering In it’s simplest terms, Collaborative Filtering is a method of making automated predictions for a user based on the behaviour and preferences of other users.</description>
     </item>
     
     <item>
@@ -184,7 +193,7 @@ My task for the evening was to pull Twitter information into our Graph. Being r
       <pubDate>Tue, 07 Mar 2017 15:50:49 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/</guid>
-      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven’t already done so, check out the posts below:
  Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Content Based Recommendations Now that we have some data in our Database, we can use the information to create recommendations for the user.</description>
     </item>
     
@@ -194,8 +203,8 @@ My task for the evening was to pull Twitter information into our Graph. Being r
       <pubDate>Tue, 07 Mar 2017 13:48:47 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/</guid>
-      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
- Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Neo4j Recommendations for WordPress WordPress is arguably the world&amp;#8217;s most popular CMS with reportedly almost a quarter of the internet running on a WordPress install.</description>
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven’t already done so, check out the posts below:
+ Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Neo4j Recommendations for WordPress WordPress is arguably the world’s most popular CMS with reportedly almost a quarter of the internet running on a WordPress install.</description>
     </item>
     
     <item>
@@ -214,8 +223,8 @@ Basic Import To import a module into a script, you can use the import keyword. A
       <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/</guid>
-      <description>Having practised Test Driven Development for the last couple of years, I&amp;#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
-Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&amp;#8217;t hard to replicate.</description>
+      <description>Having practised Test Driven Development for the last couple of years, I’ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn’t hard to replicate.</description>
     </item>
     
     <item>
@@ -224,8 +233,8 @@ Laravel, a framework I have used for the past few years, has come with a gulp ex
       <pubDate>Thu, 03 Mar 2016 10:21:09 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/</guid>
-      <description>Over the past couple of months I&amp;#8217;ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I&amp;#8217;ve uncovered quite a few gotcha&amp;#8217;s along the way.
-One of the major differences is the Asynchronous nature of JavaScript. If you&amp;#8217;ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
+      <description>Over the past couple of months I’ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I’ve uncovered quite a few gotcha’s along the way.
+One of the major differences is the Asynchronous nature of JavaScript. If you’ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
     </item>
     
   </channel>

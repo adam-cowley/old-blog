@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Cypher on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>Cypher on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/cypher/</link>
-    <description>Recent content in Cypher on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in Cypher on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Wed, 06 Sep 2017 11:55:37 +0000</lastBuildDate>
@@ -37,7 +37,7 @@ My task for the evening was to pull Twitter information into our Graph. Being r
       <pubDate>Tue, 07 Mar 2017 15:50:49 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/neo4j/wordpress-recommendations-neo4j-part-2-content-based/</guid>
-      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven&amp;#8217;t already done so, check out the posts below:
+      <description>This post is part of a series on building a recommendation engine with WordPress. If you haven’t already done so, check out the posts below:
  Part 1: Hooks &amp;amp; Data Modelling Part 2: Content Based Recommendations Part 3: Collaborative Filtering WordPress Recommendations with Neo4j – Part 4: PageRank with APOC Procedures  Content Based Recommendations Now that we have some data in our Database, we can use the information to create recommendations for the user.</description>
     </item>
     

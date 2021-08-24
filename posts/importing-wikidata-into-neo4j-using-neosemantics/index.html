@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Importing Wikidata into Neo4j Using Neosemantics - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Importing Wikidata into Neo4j Using Neosemantics" />
+<meta property="og:description" content="Recently, I&rsquo;ve spent quite a bit of time working on the ecosystem around Neosemantics, a toolkit for importing RDF data into Neo4j. A few weeks ago we released a Graph App which provides a UI to help you learn how to use the procedures provided in the library. I&rsquo;ve also spent a couple of sessions recently with Jesus Barassa on the Neo4j Twitch Channel demonstrating how to use the Graph App and the library in general." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/posts/importing-wikidata-into-neo4j-using-neosemantics/" />
+<meta property="article:published_time" content="2021-02-18T10:00:00+00:00" />
+<meta property="article:modified_time" content="2021-02-18T10:00:00+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Importing Wikidata into Neo4j Using Neosemantics"/>
+<meta name="twitter:description" content="Recently, I&rsquo;ve spent quite a bit of time working on the ecosystem around Neosemantics, a toolkit for importing RDF data into Neo4j. A few weeks ago we released a Graph App which provides a UI to help you learn how to use the procedures provided in the library. I&rsquo;ve also spent a couple of sessions recently with Jesus Barassa on the Neo4j Twitch Channel demonstrating how to use the Graph App and the library in general."/>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+
+	
+	
+</head>
+
+<body>
+		<header class="header clear" role="banner" id="header">
+		<div class="container">
+			<h1 class="logo">
+				<a href="/">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+				</a>
+			</h1>
+			<nav class="nav" role="navigation">
+				<ul>
+					
+					<li>
+						<a href="/categories/javascript/">javascript</a>
+					</li>
+					
+					<li>
+						<a href="/categories/neo4j/">neo4j</a>
+					</li>
+					<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="main">
+
+		<main role="main">
+
+		<section>
+
+
+
+
+
+	<div class="introduction">
+		<div class="container">
+			
+			<h1>Importing Wikidata into Neo4j Using Neosemantics</h1>
+		</div>
+	</div>
+
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2021-02-18 10:00">
+						18/02/2021 10:00
+					</time>
+				</p>
+
+				<p>Recently, I&rsquo;ve spent quite a bit of time working on the ecosystem around <a href="https://github.com/neo4j-labs/neosemantics">Neosemantics</a>, a toolkit for importing RDF data into Neo4j.  A few weeks ago we <a href="https://medium.com/neo4j/how-i-built-the-neosemantics-n10s-graph-app-b7ada7b8d008">released a Graph App</a> which provides a UI to help you learn how to use the procedures provided in the library.  I&rsquo;ve also spent a couple of sessions recently with <a href="https://twitter.com/BarrasaDV">Jesus Barassa</a> on the <a href="https://twitch.com/neo4j_">Neo4j Twitch Channel</a>  demonstrating how to use the Graph App and the library in general.</p>
+<p>But despite this, and apart from a frustrating couple of days in early 2017, I&rsquo;ve not actually looked into RDF or SPARQL in any real detail.  So I thought I&rsquo;d spend a few hours trying to learn how to query using  and import some data for myself.</p>
+<p>So following on from the session on <a href="https://www.twitch.tv/videos/639121866">import dbpedia data using the query service</a> I thought I&rsquo;d spend a few hours experimenting with the data myself.</p>
+<h2 id="the-goal">The Goal</h2>
+<p>As I mentioned in the video, I&rsquo;m a huge fan of football and data so the opportunity to combine these passions is an opportunity too good to pass up.  I&rsquo;ve found from previous experiments that (free) Football data can be hard to come by and I&rsquo;ve often had to resort to scraping HTML.</p>
+<h3 id="a-quick-intro-to-sparql">A Quick Intro to SPARQL</h3>
+<p>I&rsquo;m by no means an expert on SPARQL but here is my take on it.  A basic query will look something like the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">SELECT</span> ?subject
+<span style="color:#66d9ef">WHERE</span> {
+  ?subject <span style="color:#960050;background-color:#1e0010">predicate</span> <span style="color:#960050;background-color:#1e0010">object</span>;
+}
+</code></pre></div><p>The <code>SELECT</code> section of the query is similar to an SQL query, where you would specify a list of variables that you would like to return from the query.  You can also say <code>SELECT *</code> to return everything that you have defined in the query.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">SELECT</span> ?subject
+</code></pre></div><p>The <code>WHERE</code> section is where the magic happens.  In this clause we&rsquo;re building up a set of <a href="https://en.wikipedia.org/wiki/Semantic_triple">triples</a> which will provide the basis of the query.    Triples are define a <code>subject</code>, <code>predicate</code> and <code>object</code>, where each of these can be a literal value or something that belongs to a schema.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">WHERE</span> {
+  ?subject <span style="color:#960050;background-color:#1e0010">predicate</span> <span style="color:#960050;background-color:#1e0010">object</span>;
+}
+</code></pre></div><p>Prepending text with a question mark will turn it into a variable, in this case <code>?subject</code>.  These can then be used in the <code>SELECT</code> to return the value.</p>
+<p>Say for example, we want to find all people who own a dog with brown hair.  We could search like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">PREFIX</span> schema: &lt;http://www.adamcowley.co.uk/ontology#&gt;
+
+<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span>
+<span style="color:#66d9ef">WHERE</span> {
+    ?person <span style="color:#66d9ef">a</span> schema:<span style="color:#f92672">person</span> .
+    ?person rdf:<span style="color:#f92672">label</span> ?name
+
+    ?person schema:<span style="color:#f92672">owns</span> ?dog .
+    ?dog schema:<span style="color:#f92672">hair-colour</span> ?hairColour . <span style="color:#66d9ef">filter</span>(?hairColour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;brown&#39;</span>)
+
+    ?dog rdf:<span style="color:#f92672">label</span> ?dogName
+}
+</code></pre></div><p>Let&rsquo;s break that down:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">PREFIX</span> ac: &lt;http://www.adamcowley.co.uk/ontology#&gt;
+<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span>
+</code></pre></div><p>Firstly I&rsquo;m defining a <code>PREFIX</code> - basically a short hand to say that anything that is defined as <code>ac:</code> belongs to my own Ontology so I don&rsquo;t have to type it out every time.  Then, I&rsquo;m being lazy and saying to return any variable that I define in the WHERE clause.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">WHERE</span> {
+    ?person <span style="color:#66d9ef">a</span> ac:<span style="color:#f92672">person</span> .
+</code></pre></div><p>The <code>?person</code> entity is an instance of a <code>person</code> as defined in my schema.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql">    ?person rdf:<span style="color:#f92672">label</span> ?name
+</code></pre></div><p>The <code>?person</code> entity will have an <code>rdf:label</code> which I assign to the variable <code>?name</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql">    ?person ac:<span style="color:#f92672">owns</span> ?dog .
+    ?dog rdf:<span style="color:#f92672">label</span> ?dogName
+</code></pre></div><p>The <code>?person</code> entity will have a relationship to an entity which I assign variable <code>?dog</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql">    ?dog ac:<span style="color:#f92672">hair-colour</span> ?hairColour . <span style="color:#66d9ef">filter</span>(?hairColour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;brown&#39;</span>)
+}
+</code></pre></div><p>The <code>?dog</code> entity will have a hair-colour property which I assign the variable <code>?hairColour</code>.    The <code>filter</code> function will ensure that hte value of <code>?hairColour</code> will be <code>brown</code>.</p>
+<p>If you want a more comprehensive introduction then <a href="https://www.youtube.com/watch?v=b3ft3CzkLYk">this tutorial</a> is a great place to start.</p>
+<h3 id="wikidata-query-service">Wikidata Query Service</h3>
+<p>In the video we queried <a href="http://dbpedia.org/">dbpedia</a>, so I thought I would test myself with the Wikidata.  The <a href="https://query.wikidata.org/">Wikidata Query Service</a> allows you to run cypher queries and will display the results in a number of formats, from table view to charts and timelines.</p>
+<p>The Wikidata Query Service also makes it much easier to query than DBPedia.  A number common prefixes are are automatically included so you don&rsquo;t need to define them, and the editor also features auto-completion so you don&rsquo;t need to memorise any properties.</p>
+<video controls>
+  <source src="/uploads/importing-wikipedia-neo4j/player-member-of-team.mov">
+</video>
+<p>Typing <code>Ctrl</code> + <code>Space</code> will enable auto-completion.</p>
+<h3 id="finding-football-players">Finding Football Players</h3>
+<p>So, back to the task.  Firstly, it makes sense to get a list of clubs.  So using auto-complete I put together a query to find every entity (<code>?team</code>) that is an <strong>instance of</strong> (<a href="https://www.wikidata.org/wiki/Property:P31">wdt:P31</a>) an <strong>Association Football Club</strong> (<a href="https://www.wikidata.org/wiki/Q15944511">wd:Q15944511</a>).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">WHERE</span> {
+  ?team wdt:<span style="color:#f92672">P31</span> wd:<span style="color:#f92672">Q15944511</span> .
+}
+<span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">24</span>
+</code></pre></div><p>This query on it&rsquo;s own doesn&rsquo;t give too much information - just a list of entities.  But the Wikidata Query Service has a <strong>Graph</strong> view which displays the triples in a forced graph layout (much closer to what I&rsquo;m used to with Neo4j).</p>
+<p><img src="/uploads/importing-wikipedia-neo4j/wikidata-graph-view.jpg" alt="A Graph View of Wikidata Triples"></p>
+<p>This gives you valuable insight into what you should be typing into the auto-complete in order to build the triples.  From the graph I can see <strong>league</strong> (<a href="https://www.wikidata.org/wiki/Property:P118">wdt:P118</a>) and the entity for La Liga (<a href="https://www.wikidata.org/wiki/Q324867">wd:Q324867</a>) which I can use to filter the list of clubs.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">SELECT</span> ?team ?teamLabel ?league ?leagueLabel
+<span style="color:#66d9ef">WHERE</span> {
+  ?team wdt:<span style="color:#f92672">P31</span> wd:<span style="color:#f92672">Q476028</span> .
+  ?team wdt:<span style="color:#f92672">P118</span> ?league . <span style="color:#66d9ef">filter</span>( ?league <span style="color:#f92672">=</span> wd:<span style="color:#f92672">Q324867</span> )
+  <span style="color:#66d9ef">SERVICE</span> wikibase:<span style="color:#f92672">label</span> { bd:<span style="color:#f92672">serviceParam</span> wikibase:<span style="color:#f92672">language</span> <span style="color:#e6db74">&#34;[AUTO_LANGUAGE],en&#34;</span>. }
+}
+<span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>
+</code></pre></div><table>
+<thead>
+<tr>
+<th>team</th>
+<th>teamLabel</th>
+<th>league</th>
+<th>leagueLabel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wd:Q7156</td>
+<td>FC Barcelona</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8682</td>
+<td>Real Madrid CF</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8687</td>
+<td>Athletic Club</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8701</td>
+<td>Atlético Madrid</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8723</td>
+<td>Real Betis Balompié</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8749</td>
+<td>Celta Vigo</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8780</td>
+<td>RCD Espanyol de Barcelona</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8806</td>
+<td>Getafe CF</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8812</td>
+<td>Granada CF</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+<tr>
+<td>wd:Q8823</td>
+<td>Levante UD</td>
+<td>wd:Q324867</td>
+<td>La Liga</td>
+</tr>
+</tbody>
+</table>
+<p>Looks good!  The next step in order to import this data into neo4j is to <code>CONSTRUCT</code> a graph from the triplets.  The construct part of the query allows you to define which triples are included in the graph.</p>
+<p>By default, neosemantics will convert any <code>rdfs:type</code> into the label but because this data seems to be sparse or non-existent in most entities, I&rsquo;ve had to construct my own <em>(fake)</em> schema prefix.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">PREFIX</span> neo: &lt;http://neo4j/myvocabulary/&gt;
+<span style="color:#66d9ef">CONSTRUCT</span> {
+  ?team <span style="color:#66d9ef">a</span> neo:<span style="color:#f92672">FootballTeam</span> ;
+          rdfs:<span style="color:#f92672">label</span> ?name .
+  ?team wdt:<span style="color:#f92672">P118</span> ?league .
+  ?league <span style="color:#66d9ef">a</span> neo:<span style="color:#f92672">FootballLeague</span> ;
+          wdt:<span style="color:#f92672">P1448</span> ?leagueName .
+}
+<span style="color:#66d9ef">WHERE</span> {
+  ?team wdt:<span style="color:#f92672">P31</span> wd:<span style="color:#f92672">Q476028</span> .
+  ?team rdfs:<span style="color:#f92672">label</span> ?name . <span style="color:#66d9ef">filter</span>(<span style="color:#a6e22e">lang</span>(?name) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;en&#34;</span>) .
+  ?team wdt:<span style="color:#f92672">P118</span> ?league . <span style="color:#66d9ef">filter</span>( ?league <span style="color:#f92672">=</span> wd:<span style="color:#f92672">Q324867</span> )
+  ?league rdfs:<span style="color:#f92672">label</span> ?leagueName . <span style="color:#66d9ef">filter</span>(<span style="color:#a6e22e">lang</span>(?leagueName) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;en&#34;</span>)
+}
+</code></pre></div><p>Let&rsquo;s break that down again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql"><span style="color:#66d9ef">PREFIX</span> neo: &lt;http://neo4j/myvocabulary/&gt;
+<span style="color:#66d9ef">CONSTRUCT</span> {
+  ?team <span style="color:#66d9ef">a</span> neo:<span style="color:#f92672">FootballTeam</span> ;
+          rdfs:<span style="color:#f92672">label</span> ?name .
+</code></pre></div><p>The first line creates a prefix called neo.  The URL doesn&rsquo;t matter too much, the <code>handleVocabUris</code> config in Neosemantics will eventually cause this to be stripped away, leaving just the trailing value.</p>
+<p>The next line defines <code>?team</code> as a <code>neo:FootballTeam</code> - now Neosemantics will recognise this as an <code>rdfs:type</code> and use it as a label.  The last line includes <code>rdfs:label</code> in the result.</p>
+<p>Now, for the league:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sparql" data-lang="sparql">  ?team wdt:<span style="color:#f92672">P118</span> ?league .
+  ?league <span style="color:#66d9ef">a</span> neo:<span style="color:#f92672">FootballLeague</span> ;
+          wdt:<span style="color:#f92672">P1448</span> ?leagueName .
+}
+</code></pre></div><p>The first line defines the relationship between the <code>?team</code> and the <code>?league</code>, the second sets the type to <code>FootballLeague</code>, and third line includes the &ldquo;Official Name&rdquo; of the league in the import.</p>
+<p>Running the query again will show the graph rather than a table of results:</p>
+<table>
+<thead>
+<tr>
+<th>subject</th>
+<th>predicate</th>
+<th>object</th>
+<th>context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wd:Q7156</td>
+<td>rdf:type</td>
+<td><a href="http://neo4j/myvocabulary/FootballTeam">http://neo4j/myvocabulary/FootballTeam</a></td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q7156</td>
+<td>rdfs:label</td>
+<td>FC Barcelona</td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q7156</td>
+<td>wdt:P118</td>
+<td>wd:Q324867</td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q324867</td>
+<td>rdf:type</td>
+<td><a href="http://neo4j/myvocabulary/FootballLeague">http://neo4j/myvocabulary/FootballLeague</a></td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q324867</td>
+<td>wdt:P1448</td>
+<td>La Liga</td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q8687</td>
+<td>rdf:type</td>
+<td><a href="http://neo4j/myvocabulary/FootballTeam">http://neo4j/myvocabulary/FootballTeam</a></td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q8687</td>
+<td>rdfs:label</td>
+<td>Athletic Club</td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q8687</td>
+<td>wdt:P118</td>
+<td>wd:Q324867</td>
+<td></td>
+</tr>
+<tr>
+<td>wd:Q8749</td>
+<td>rdf:type</td>
+<td><a href="http://neo4j/myvocabulary/FootballTeam">http://neo4j/myvocabulary/FootballTeam</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="preparing-the-data-for-neo4j">Preparing the Data for Neo4j</h2>
+<p>Running the import procedures would import the data into Neo4j, but without mapping the Wikidata properties to values in the graph it wouldn&rsquo;t make much sense.  By configuring Neosemantics with <code>handleVocabUris</code> set to <code>MAP</code>, you are able to create mappings.  This means that when the data is imported into Neo4j it will have more meaning, and no data is lost if/when you choose to <a href="https://neo4j.com/docs/labs/nsmntx/current/export/">export it</a>.</p>
+<p>Because I&rsquo;m starting with a new graph from scratch, I can run the <strong>init</strong> procedure with <code>handleVocabUris</code> set to <code>MAP</code>.</p>
+<pre><code class="language-cypher" data-lang="cypher">CALL n10s.graphconfig.init({
+  handleVocabUris: 'MAP'
+})
+</code></pre><p>To preview how the data would look in the graph, you can use the <code>n10s.rdf.preview.fetch</code> procedure.  Wikidata has a <code>/sparql</code> endpoint that you can send a query to and receive an RDF response.  The endpoint takes the query as a search parameter - so by urlencoding the SPARQL query I can provide that as the first parameter of the procedure.</p>
+<pre><code class="language-cypher" data-lang="cypher">WITH 'PREFIX neo: &lt;http://neo4j/myvocabulary/&gt;
+CONSTRUCT {
+  ?team a neo:FootballTeam ;
+          rdfs:label ?name .
+  ?team wdt:P118 ?league .
+  ?league a neo:FootballLeague ;
+          wdt:P1448 ?leagueName .
+}
+WHERE {
+  ?team wdt:P31 wd:Q476028 .
+  ?team rdfs:label ?name . filter(lang(?name) = &quot;en&quot;) .
+  ?team wdt:P118 ?league . filter( ?league = wd:Q324867 )
+  ?league rdfs:label ?leagueName . filter(lang(?leagueName) = &quot;en&quot;)
+}' AS sparql
+CALL n10s.rdf.preview.fetch(
+  &quot;https://query.wikidata.org/sparql?query=&quot; +  apoc.text.urlencode(sparql),
+  &quot;JSON-LD&quot;,  { headerParams: { Accept: &quot;application/ld+json&quot; } }
+)
+YIELD nodes, relationships
+RETURN nodes, relationships
+</code></pre><p><img src="/uploads/importing-wikipedia-neo4j/first-preview.jpg" alt="First view of the Wikidata Triples in Neo4j"></p>
+<p>This looks <em>OK</em>, but a closer look at the properties reveals a  <code>P1448</code> property on the <code>:FootballLeague</code> nodes, which won&rsquo;t make much sense to anyone looking at the graph for the first time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;P1448&#34;</span>: <span style="color:#e6db74">&#34;La Liga&#34;</span>,
+  <span style="color:#f92672">&#34;uri&#34;</span>: <span style="color:#e6db74">&#34;http://www.wikidata.org/entity/Q324867&#34;</span>
+}
+</code></pre></div><p>For this, I&rsquo;ll need to create a namespace and then define some mappings.  In the raw RDF, you can see that the <code>wds:</code> prefix stands for <code>http://www.wikidata.org/prop/direct/</code> - so I&rsquo;ll need to create a mapping from the URL to the prefix.</p>
+<p><strong>Note: The Neosemantics Graph App will generate these Cypher statements for you.</strong></p>
+<pre><code class="language-cypher" data-lang="cypher">CALL n10s.nsprefixes.add('wds', 'http://www.wikidata.org/prop/direct/');
+</code></pre><p>Now that the prefix has been set up, I can create mappings for <code>P118</code> and <code>P1448</code>.  The <code>n10s.mapping.add</code> procedure takes two arguments, the full URI of the property and then the name that it should be mapped to in  Neo4j.</p>
+<ul>
+<li><code>P118</code> is a relationship between the team and the league, so following neo4j conventions I will rename that to <code>IN_LEAGUE</code></li>
+<li><code>P1448</code> represents the &ldquo;Official Name&rdquo; of the league, so  I will rename that to <code>officialName</code></li>
+<li><code>rdfs:label</code></li>
+</ul>
+<pre><code class="language-cypher" data-lang="cypher">CALL n10s.mapping.add('http://www.wikidata.org/prop/direct/P118', 'IN_LEAGUE');
+CALL n10s.mapping.add('http://www.wikidata.org/prop/direct/P1448', 'officialName');
+</code></pre><p>Calling the name of each node <em>label</em> is also fine, but I&rsquo;d prefer to call it <em>name</em>.  To do this, I will have to create a prefix for <code>rdfs</code> (<code>http://www.w3.org/2000/01/rdf-schema#</code>) and then a mapping for <code>label</code></p>
+<pre><code class="language-cypher" data-lang="cypher">CALL n10s.nsprefixes.add('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
+CALL n10s.mapping.add('http://www.w3.org/2000/01/rdf-schema#label', 'name');
+</code></pre><p>After running the <code>n10s.rdf.preview.fetch</code> again, the mappings will now have been applied to the team, league and the relationship between them:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;officialName&#34;</span>: <span style="color:#e6db74">&#34;La Liga&#34;</span>,
+  <span style="color:#f92672">&#34;uri&#34;</span>: <span style="color:#e6db74">&#34;http://www.wikidata.org/entity/Q324867&#34;</span>
+}
+{
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Atlético Madrid&#34;</span>,
+  <span style="color:#f92672">&#34;uri&#34;</span>: <span style="color:#e6db74">&#34;http://www.wikidata.org/entity/Q8701&#34;</span>
+}
+</code></pre></div><h2 id="actually-importing-the-data">Actually importing the Data</h2>
+<p>Mapping is an iterative process that may take some time, but it&rsquo;s well worth the effort.  Once you are happy with the mappings, you can replace <code>preview</code> with <code>import</code> in the previous query and the yielded fields to import the data.</p>
+<pre><code class="language-cypher" data-lang="cypher">WITH 'PREFIX neo: &lt;http://neo4j/myvocabulary/&gt;
+CONSTRUCT {
+  ?team a neo:FootballTeam ;
+          rdfs:label ?name .
+  ?team wdt:P118 ?league .
+  ?league a neo:FootballLeague ;
+          wdt:P1448 ?leagueName .
+}
+WHERE {
+  ?team wdt:P31 wd:Q476028 .
+  ?team rdfs:label ?name . filter(lang(?name) = &quot;en&quot;) .
+  ?team wdt:P118 ?league . filter( ?league = wd:Q324867 )
+  ?league rdfs:label ?leagueName . filter(lang(?leagueName) = &quot;en&quot;)
+}' AS sparql
+
+CALL n10s.rdf.import.fetch(
+
+&quot;https://query.wikidata.org/sparql?query=&quot; +  apoc.text.urlencode(sparql),  &quot;JSON-LD&quot;,  { headerParams: { Accept: &quot;application/ld+json&quot;}})
+YIELD terminationStatus, triplesLoaded, triplesParsed
+RETURN terminationStatus, triplesLoaded, triplesParsed
+</code></pre><table>
+<thead>
+<tr>
+<th>terminationStatus</th>
+<th>triplesLoaded</th>
+<th>triplesParsed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;OK&rdquo;</td>
+<td>80</td>
+<td>80</td>
+</tr>
+</tbody>
+</table>
+<p>The number of triplets loaded may vary compared to the number of nodes and relationships, but that is fine.  Some triplets will become nodes, but they may also become relationships or properties.  Each of these nodes will have a <code>:Resource</code> label assigned to them to signify which can then be used to query an RDF entity.</p>
+<p>For example, I could query for the La Liga entity with the following cypher:</p>
+<pre><code class="language-cypher" data-lang="cypher">MATCH (league:Resource {uri: &quot;http://www.wikidata.org/entity/Q324867&quot;})&lt;-[:IN_LEAGUE]-(team)
+RETURN league, team
+</code></pre><p><img src="/uploads/importing-wikipedia-neo4j/imported-data.jpg" alt="La Liga node surrounded by Team nodes in a forced graph layout"></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Sites like Wikidata and DBpedia hold data far beyond Football and  having an easy way to extract the data makes life so much easier.  Mark Needham has also used Neosemantics to <a href="https://markhneedham.com/blog/2020/04/21/quick-graph-covid-19-taxonomy/">extract Coronavirus related data from dbpedia</a>.  Many other services including the British Library also have RDF endpoints that could be queried using a similar process.</p>
+<p>I may be blowing my own horn, but this would have been a lot more difficult without the Neosemantics <a href="https://neo4j.com/developer/graph-apps/">Graph App</a>.  The Graph App provides you with a set of forms which allow you to build up a query and preview the results as you go.  Once you&rsquo;re done</p>
+<p>You can install the Graph App to <a href="https://neo4j.com/developer/neo4j-desktop">Neo4j Desktop</a> by opening install.graphapp.io and click <strong>Install</strong> under the Neosemantics app.</p>
+<!-- For more content like this, check out the [Neo4j Twitch channel](https://twitch.com/neo4j_). -->
+
+
+				
+
+				
+
+
+
+			</article>
+		</section>
+	</div>
+
+	
+			</section>
+		</main>
+
+		<footer class="footer" role="contentinfo">
+			
+
+			<div class="container">
+				<p class="copyright">
+					Copyright &copy; 2019  Adam Cowley.
+				</p>
+			</div>
+			<div class="social">
+				<div class="container">
+					<ul>
+						<li>
+        <a href="http://twitter.com/adamcowley" target="_blank">
+            <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
+        </a>
+    </li>
+    <li>
+        <a href="https://www.linkedin.com/in/adamcowley/" target="_blank">
+            <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve" style="enable-background:new 0 0 100 100; width: 18px;height: 26px;">
+<path id="LinkedIn__x28_alt_x29_" d="M87.877,5.608H11.174c-3.673,0-6.65,2.886-6.65,6.448v77.101c0,3.562,2.978,6.451,6.65,6.451
+h76.703c3.673,0,6.646-2.89,6.646-6.451V12.056C94.523,8.495,91.55,5.608,87.877,5.608z M31.809,80.944H18.211V40.31h13.598V80.944z
+M25.011,34.759H24.92c-4.56,0-7.516-3.119-7.516-7.023c0-3.983,3.043-7.017,7.693-7.017c4.651,0,7.512,3.033,7.602,7.017
+C32.699,31.641,29.749,34.759,25.011,34.759z M80.827,80.944H67.233v-21.74c0-5.464-1.97-9.191-6.886-9.191
+c-3.761,0-5.993,2.515-6.973,4.942c-0.364,0.868-0.453,2.08-0.453,3.292v22.696H39.329c0,0,0.178-36.823,0-40.634h13.593v5.761
+c1.805-2.768,5.029-6.717,12.249-6.717c8.947,0,15.656,5.804,15.656,18.291V80.944z M52.834,46.199
+c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
+</svg>
+        </a>
+    </li>
+					</ul>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-3764211-9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-3764211-9');
+</script>
+
+
+
+<script src="/js/parts/scripts.js"></script>
+
+</body>
+</html>

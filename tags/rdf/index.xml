@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rdf on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
+    <link>http://www.adamcowley.co.uk/tags/rdf/</link>
+    <description>Recent content in rdf on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Thu, 18 Feb 2021 10:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.adamcowley.co.uk/tags/rdf/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Importing Wikidata into Neo4j Using Neosemantics</title>
+      <link>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</link>
+      <pubDate>Thu, 18 Feb 2021 10:00:00 +0000</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</guid>
+      <description>Recently, I&amp;rsquo;ve spent quite a bit of time working on the ecosystem around Neosemantics, a toolkit for importing RDF data into Neo4j. A few weeks ago we released a Graph App which provides a UI to help you learn how to use the procedures provided in the library. I&amp;rsquo;ve also spent a couple of sessions recently with Jesus Barassa on the Neo4j Twitch Channel demonstrating how to use the Graph App and the library in general.</description>
+    </item>
+    
+  </channel>
+</rss>

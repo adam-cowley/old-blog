@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>spring data neo4j on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>spring data neo4j on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/spring-data-neo4j/</link>
-    <description>Recent content in spring data neo4j on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in spring data neo4j on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Wed, 21 Feb 2018 10:54:24 +0000</lastBuildDate>
@@ -18,8 +18,7 @@
       
       <guid>http://www.adamcowley.co.uk/neo4j/using-neo4j-ogm-spring-boot/</guid>
       <description>In my last post, I detailed how to use the official Neo4j drivers within a Spring Boot application. In this post, I will take it one step further by explaining how to you cam utilise the Neo4j-OGM to encapsulate your business logic into java objects that can be mapped directly to the graph.
-&amp;nbsp;
-Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.</description>
+ Neo4j OGM is an Object-Graph Mapping Library built in Java that allows you map Plain-Old-Java-Objects to nodes in the Neo4j database.</description>
     </item>
     
   </channel>

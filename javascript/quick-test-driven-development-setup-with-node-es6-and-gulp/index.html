@@ -2,22 +2,22 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Quick TDD setup with Node, ES6, Gulp and Mocha - Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Quick TDD setup with Node, ES6, Gulp and Mocha - Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta property="og:title" content="Quick TDD setup with Node, ES6, Gulp and Mocha" />
-<meta property="og:description" content="Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
-Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate." />
+<meta property="og:description" content="Having practised Test Driven Development for the last couple of years, I’ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn’t hard to replicate." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/" />
 <meta property="article:published_time" content="2016-06-03T16:14:47+00:00" />
 <meta property="article:modified_time" content="2016-06-03T16:14:47+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Quick TDD setup with Node, ES6, Gulp and Mocha"/>
-<meta name="twitter:description" content="Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
-Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate."/>
+<meta name="twitter:description" content="Having practised Test Driven Development for the last couple of years, I’ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn’t hard to replicate."/>
 
 
 	
-	<link rel="stylesheet" type="text/css" media="screen" href="/css/adamcowley.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="/css/adamcowley.css" />
 
 	
 	
@@ -28,9 +28,10 @@ Laravel, a framework I have used for the past few years, has come with a gulp ex
 		<div class="container">
 			<h1 class="logo">
 				<a href="/">
-					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS">
+					<img src="/img/ac-green.svg" alt="Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS">
 				</a>
 			</h1>
+			
 			<nav class="nav" role="navigation">
 				<ul>
 					
@@ -60,6 +61,14 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 </svg>
         </a>
     </li>
+    <li>
+        <a href="https://github.com/adam-cowley" target="_blank">
+            <svg width="20px" height="25px" viewBox="0 0 256 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid">
+                <g>
+                    <path d="M128.00106,0 C57.3172926,0 0,57.3066942 0,128.00106 C0,184.555281 36.6761997,232.535542 87.534937,249.460899 C93.9320223,250.645779 96.280588,246.684165 96.280588,243.303333 C96.280588,240.251045 96.1618878,230.167899 96.106777,219.472176 C60.4967585,227.215235 52.9826207,204.369712 52.9826207,204.369712 C47.1599584,189.574598 38.770408,185.640538 38.770408,185.640538 C27.1568785,177.696113 39.6458206,177.859325 39.6458206,177.859325 C52.4993419,178.762293 59.267365,191.04987 59.267365,191.04987 C70.6837675,210.618423 89.2115753,204.961093 96.5158685,201.690482 C97.6647155,193.417512 100.981959,187.77078 104.642583,184.574357 C76.211799,181.33766 46.324819,170.362144 46.324819,121.315702 C46.324819,107.340889 51.3250588,95.9223682 59.5132437,86.9583937 C58.1842268,83.7344152 53.8029229,70.715562 60.7532354,53.0843636 C60.7532354,53.0843636 71.5019501,49.6441813 95.9626412,66.2049595 C106.172967,63.368876 117.123047,61.9465949 128.00106,61.8978432 C138.879073,61.9465949 149.837632,63.368876 160.067033,66.2049595 C184.49805,49.6441813 195.231926,53.0843636 195.231926,53.0843636 C202.199197,70.715562 197.815773,83.7344152 196.486756,86.9583937 C204.694018,95.9223682 209.660343,107.340889 209.660343,121.315702 C209.660343,170.478725 179.716133,181.303747 151.213281,184.472614 C155.80443,188.444828 159.895342,196.234518 159.895342,208.176593 C159.895342,225.303317 159.746968,239.087361 159.746968,243.303333 C159.746968,246.709601 162.05102,250.70089 168.53925,249.443941 C219.370432,232.499507 256,184.536204 256,128.00106 C256,57.3066942 198.691187,0 128.00106,0 Z M47.9405593,182.340212 C47.6586465,182.976105 46.6581745,183.166873 45.7467277,182.730227 C44.8183235,182.312656 44.2968914,181.445722 44.5978808,180.80771 C44.8734344,180.152739 45.876026,179.97045 46.8023103,180.409216 C47.7328342,180.826786 48.2627451,181.702199 47.9405593,182.340212 Z M54.2367892,187.958254 C53.6263318,188.524199 52.4329723,188.261363 51.6232682,187.366874 C50.7860088,186.474504 50.6291553,185.281144 51.2480912,184.70672 C51.8776254,184.140775 53.0349512,184.405731 53.8743302,185.298101 C54.7115892,186.201069 54.8748019,187.38595 54.2367892,187.958254 Z M58.5562413,195.146347 C57.7719732,195.691096 56.4895886,195.180261 55.6968417,194.042013 C54.9125733,192.903764 54.9125733,191.538713 55.713799,190.991845 C56.5086651,190.444977 57.7719732,190.936735 58.5753181,192.066505 C59.3574669,193.22383 59.3574669,194.58888 58.5562413,195.146347 Z M65.8613592,203.471174 C65.1597571,204.244846 63.6654083,204.03712 62.5716717,202.981538 C61.4524999,201.94927 61.1409122,200.484596 61.8446341,199.710926 C62.5547146,198.935137 64.0575422,199.15346 65.1597571,200.200564 C66.2704506,201.230712 66.6095936,202.705984 65.8613592,203.471174 Z M75.3025151,206.281542 C74.9930474,207.284134 73.553809,207.739857 72.1039724,207.313809 C70.6562556,206.875043 69.7087748,205.700761 70.0012857,204.687571 C70.302275,203.678621 71.7478721,203.20382 73.2083069,203.659543 C74.6539041,204.09619 75.6035048,205.261994 75.3025151,206.281542 Z M86.046947,207.473627 C86.0829806,208.529209 84.8535871,209.404622 83.3316829,209.4237 C81.8013,209.457614 80.563428,208.603398 80.5464708,207.564772 C80.5464708,206.498591 81.7483088,205.631657 83.2786917,205.606221 C84.8005962,205.576546 86.046947,206.424403 86.046947,207.473627 Z M96.6021471,207.069023 C96.7844366,208.099171 95.7267341,209.156872 94.215428,209.438785 C92.7295577,209.710099 91.3539086,209.074206 91.1652603,208.052538 C90.9808515,206.996955 92.0576306,205.939253 93.5413813,205.66582 C95.054807,205.402984 96.4092596,206.021919 96.6021471,207.069023 Z" fill="#0B4F71"></path>
+                </g>
+            </svg>        </a>
+    </li>
 				</ul>
 			</nav>
 		</div>
@@ -77,7 +86,7 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 	<div class="introduction">
 		<div class="container">
-			
+
 			<h1>Quick TDD setup with Node, ES6, Gulp and Mocha</h1>
 		</div>
 	</div>
@@ -91,24 +100,16 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 					</time>
 				</p>
 
-				
-
-<p>Having practised Test Driven Development for the last couple of years, I&#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.</p>
-
-<p>Laravel, a framework I have used for the past few years, has come with a gulp extension called <a href="https://laravel.com/docs/master/elixir">Elixir</a> since version 5.0 which is a massive timesaver. Simply type <code>gulp tdd</code>  into the command line and your tests will run automatically. Luckily, this effect isn&#8217;t hard to replicate.</p>
-
-<p>Of course, there are a number of testing frameworks out there for testing NodeJS applications which go beyond the scope of this post. Suffice to say, I&#8217;ve tried a few and combining the Mocha testing framework with Chai&#8217;s assertion library has been the one that stuck with me.</p>
-
+				<p>Having practised Test Driven Development for the last couple of years, I’ve found testing one of the most frustrating things about Node compared to other programming languages.</p>
+<p>Laravel, a framework I have used for the past few years, has come with a gulp extension called <a href="https://laravel.com/docs/master/elixir">Elixir</a> since version 5.0 which is a massive timesaver. Simply type <code>gulp tdd</code>  into the command line and your tests will run automatically. Luckily, this effect isn’t hard to replicate.</p>
+<p>Of course, there are a number of testing frameworks out there for testing NodeJS applications which go beyond the scope of this post. Suffice to say, I’ve tried a few and combining the Mocha testing framework with Chai’s assertion library has been the one that stuck with me.</p>
 <h2 id="setting-up">Setting up</h2>
-
 <p>Getting up and running is easy with Gulp, simply load in the <code>gulp-mocha</code> package using <code>npm</code>. This will load the dependencies and add to the devDependencies options to your <code>package.json</code> file and make sure they are available.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install --save-dev gulp gulp-mocha babel-register babel-preset-es2015 chai</code></pre></div>
-<p>Inside <code>package.json</code> you should now see your dependencies. By requiring babel-register, we are able to test ES6 features straight away.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install --save-dev gulp gulp-mocha babel-register babel-preset-es2015 chai
+</code></pre></div><p>Inside <code>package.json</code> you should now see your dependencies. By requiring babel-register, we are able to test ES6 features straight away.</p>
 <p>
     At this point, we also need to register the es2015 default. This can be done by <a href="https://babeljs.io/docs/usage/babelrc/">creating a <code>.babelrc</code> file</a> in the root directory of the project or by adding our settings to the <code>package.json</code> file</a>.   For berevity, let&#8217;s add the es2015 preset into our <code>package.json</code> file. Once finished, your <code>package.json</code> file should resembling the contents below.
 </p>
-
 <div class="file">
   <span>package.json</span>
 </div>
@@ -123,13 +124,11 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
   <span style="color:#f92672">&#34;babel&#34;</span>: {
     <span style="color:#f92672">&#34;presets&#34;</span>: [<span style="color:#e6db74">&#34;es2015&#34;</span>]
   }
-}</code></pre></div>
-<h2>
+}
+</code></pre></div><h2>
     Some Code to Test
 </h2>
-
-<p>Now, let&#8217;s create something to test. As a simple example, let&#8217;s create a function that will sum the list of arguments. This is a good demonstration of the spread operator that exists within ES6.</p>
-
+<p>Now, let’s create something to test. As a simple example, let’s create a function that will sum the list of arguments. This is a good demonstration of the spread operator that exists within ES6.</p>
 <div class="file">
   <span>src/sum.js</span>
 </div>
@@ -138,31 +137,26 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
     <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">total</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">current</span>;
   });
 }
-</code></pre></div>
-<h2>
+</code></pre></div><h2>
       Running Tests
 </h2>
-
 <p>
       Now we have some code, let&#8217;s write out first test. Mocha can be run directly via command line by installing the <code>mocha</code> package globally in <code>npm</code>.
 </p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install -g mocha</code></pre></div>
-<p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install -g mocha
+</code></pre></div><p>
 Because we&#8217;re using ES6 features, we will need to use the <code>--compilers</code> option when running our tests otherwise node will throw an <code>Unexpected token "import"</code> error. Here we are telling mocha to use babel core when it encounters any <code>js</code> files.
 </p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-hs" data-lang="hs"><span style="color:#a6e22e">mocha</span> <span style="color:#75715e">--compilers js:babel-core/register</span></code></pre></div>
-<p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-hs" data-lang="hs"><span style="color:#a6e22e">mocha</span> <span style="color:#75715e">--compilers js:babel-core/register</span>
+</code></pre></div><p>
 Running this now, we should receive an error telling us that mocha cannot resolve the path or pattern.
 </p>
-
 <h2>
 Writing a Test
 </h2>
-
 <p>
 By default, mocha looks for tests in the <code>test/</code> directory. You can change this by adding a specific path or pattern to your mocha call but for now let&#8217;s stick with the defaults. Let&#8217;s create a simple test.
 </p>
-
 <div class="file">
 <span>test/sum.spec.js</span>
 </div>
@@ -174,41 +168,25 @@ By default, mocha looks for tests in the <code>test/</code> directory. You can c
     <span style="color:#a6e22e">expect</span>(<span style="color:#a6e22e">result</span>).<span style="color:#a6e22e">to</span>.<span style="color:#a6e22e">equal</span>(<span style="color:#ae81ff">2</span>);
   })
 })
-</code></pre></div>
-<p>If we have done everything right, we should be able to run our test via the command line and get a successful response.</p>
+</code></pre></div><p>If we have done everything right, we should be able to run our test via the command line and get a successful response.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mocha --compilers js:babel-core/register
   src/sum.js
-    ✓ should add <span style="color:#ae81ff">1</span> + <span style="color:#ae81ff">1</span> to make two</code></pre></div>
-<h2>
+    ✓ should add <span style="color:#ae81ff">1</span> + <span style="color:#ae81ff">1</span> to make two
+</code></pre></div><h2>
 Automating with Gulp
 </h2>
-
 <p>
 Now we&#8217;ve got our test suite, we can use gulp to automatically run the suite.
 </p>
-
 <p>
 To access gulp via the command line, we will need to install it globally using npm.<br />
-
-
-
-```sh
-npm install -g gulp
-```
-
-
-Once installed, we can run any task we have defined in the <code>gulpfile.js</code> file via the command line. For example, to run the <code>taskname</code> task we would type the following.
-
-```sh
-gulp taskname
-```
-
-<br /> If no task name is supplied, gulp will attempt to run a task named <code>default</code>.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install -g gulp
+</code></pre></div><p>Once installed, we can run any task we have defined in the <code>gulpfile.js</code> file via the command line. For example, to run the <code>taskname</code> task we would type the following.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">gulp taskname
+</code></pre></div><p><br /> If no task name is supplied, gulp will attempt to run a task named <code>default</code>.</p></p>
 <p>
   Let&#8217;s create a task within our gulpfile to allow us to run our test suite with mocha.
 </p>
-
 <div class="file">
 <span>gulpfile.js</span>
 </div>
@@ -221,38 +199,30 @@ gulp taskname
       <span style="color:#a6e22e">compilers</span><span style="color:#f92672">:</span><span style="color:#a6e22e">babel</span>
   }));
 });
-</code></pre></div>
-<p>
+</code></pre></div><p>
 Firstly, we&#8217;re importing the gulp, mocha and babel dependencies in to our gulp file for use. Next, we&#8217;ve created a task called <code>test</code> which will use the <code>gulp.src</code> function to find all files matching the supplied pattern and then pipe the contents into our mocha testing framework. By passing the babel dependency through will ensure that mocha will interpret our ES6 code correctly.
 </p>
-
 <p>
 If we run this gulp task, we should receive a message telling us our tests are passing.
 </p>
-
 <pre><code>[09:00:00] Using gulpfile ~/_/gulpfile.js
 [09:00:00] Starting 'test'...
   src/sum.js
     ✓ should add 1 + 1 to make two
   1 passing (6ms)
 [09:00:00] Finished 'test' after 245 ms
-</code></pre>
-
-<p>
+</code></pre><p>
 Great, but right now we&#8217;re no further forward than when we were running mocha manually. By utilising <code>gulp.watch()</code>, we can listen for changes in our file and subsequently run our gulp tasks. Let&#8217;s take advantage of this by creating a new task which will watch for changes in our files and run our test suite.
 </p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;tdd&#39;</span>, <span style="color:#66d9ef">function</span>() {
   <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">watch</span>([<span style="color:#e6db74">&#39;src/*.js&#39;</span>,<span style="color:#e6db74">&#39;test/*.js&#39;</span>], [<span style="color:#e6db74">&#39;test&#39;</span>]);
 })
-</code></pre></div>
-<p>
+</code></pre></div><p>
   When changes are made to any of the <code>.js</code> files in the <code>src/</code> or <code>test/</code> directories our entire test suite will re-run and instantly identify any problems with our changes.
 </p>
-
 <h2>
   Extra Credit &#8211; Single Tests
 </h2>
-
 <p>
   This approach is great for smaller test suites but as your TDD project grows, running hundreds to thousands of tests for each change can grind your productivity to a halt. <code>gulp.watch</code> also emits a <code>change</code> event that passes through information on the file that has been changed. We can use this to listen for changes to our test suites and only run the suite that has been changed. For this I will create a <code>tdd-single</code> task.
 </p>
@@ -265,35 +235,29 @@ Great, but right now we&#8217;re no further forward than when we were running mo
         }))
     });
 });
-</code></pre></div>
-<p>
+</code></pre></div><p>
 This is perfect for unit testing scenarios where you are individual units of source code.
 </p>
-
 <h2>
 Conclusion
 </h2>
-
 <p>
 TDD is becoming a more and more important part of the development process for ensuring quality. Gulp and Mocha work hand in hand to allow you to quickly create a solid testing environment and will save you headaches in the long run when trying to debug your code.
 </p>
-
 <p>
 The source for this blog post is <a href="https://github.com/adam-cowley/quick-tdd-node" target="_blank">available on github</a>.
 </p>
-
 <p>
 Happy testing!
 </p>
 
-
 				
 
 				
 
 
 
-    <i class="lnr lnr-tag tag-icon"></i>
+    
     <ul class="tags">
         
         <li>
@@ -323,17 +287,16 @@ Happy testing!
 		</main>
 
 		<footer class="footer" role="contentinfo">
-			
+
 
 			<div class="container">
 				<p class="copyright">
-					Copyright &copy; 2020 Adam Cowley.
+					Copyright &copy; 2021 Adam Cowley.
 				</p>
-			</div>
-			<div class="social">
-				<div class="container">
-					<ul>
-						<li>
+				<div class="social">
+					<div class="container">
+						<ul>
+							<li>
         <a href="http://twitter.com/adamcowley" target="_blank">
             <svg style="height:24px;width:24px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve"> <path id="Twitter__x28_alt_x29_" d="M84.803,46.564c5.055-0.417,8.483-2.715,9.803-5.833c-1.824,1.12-7.484,2.341-10.61,1.178 	c-0.153-0.734-0.324-1.432-0.492-2.062c-2.382-8.746-10.537-15.792-19.082-14.941c0.691-0.279,1.392-0.539,2.092-0.772 	c0.94-0.337,6.459-1.235,5.59-3.183c-0.733-1.713-7.475,1.295-8.744,1.688c1.675-0.63,4.447-1.714,4.743-3.64 	c-2.567,0.352-5.087,1.566-7.034,3.331c0.703-0.757,1.236-1.679,1.349-2.672C55.57,24.033,51.57,32.853,48.333,41.408 	c-2.542-2.463-4.795-4.403-6.816-5.48c-5.67-3.041-12.449-6.213-23.091-10.164c-0.327,3.521,1.741,8.203,7.7,11.316 	c-1.291-0.173-3.652,0.213-5.54,0.665c0.769,4.034,3.28,7.357,10.079,8.964c-3.107,0.205-4.713,0.912-6.168,2.436 	c1.415,2.805,4.868,6.107,11.08,5.429c-6.906,2.977-2.816,8.49,2.804,7.667C28.794,72.143,13.679,71.416,5,63.134 	c22.661,30.879,71.921,18.262,79.262-11.481c5.499,0.047,8.733-1.905,10.738-4.057C91.831,48.134,87.239,47.578,84.803,46.564z"></path> </svg>
         </a>
@@ -352,7 +315,16 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 </svg>
         </a>
     </li>
-					</ul>
+    <li>
+        <a href="https://github.com/adam-cowley" target="_blank">
+            <svg width="20px" height="25px" viewBox="0 0 256 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid">
+                <g>
+                    <path d="M128.00106,0 C57.3172926,0 0,57.3066942 0,128.00106 C0,184.555281 36.6761997,232.535542 87.534937,249.460899 C93.9320223,250.645779 96.280588,246.684165 96.280588,243.303333 C96.280588,240.251045 96.1618878,230.167899 96.106777,219.472176 C60.4967585,227.215235 52.9826207,204.369712 52.9826207,204.369712 C47.1599584,189.574598 38.770408,185.640538 38.770408,185.640538 C27.1568785,177.696113 39.6458206,177.859325 39.6458206,177.859325 C52.4993419,178.762293 59.267365,191.04987 59.267365,191.04987 C70.6837675,210.618423 89.2115753,204.961093 96.5158685,201.690482 C97.6647155,193.417512 100.981959,187.77078 104.642583,184.574357 C76.211799,181.33766 46.324819,170.362144 46.324819,121.315702 C46.324819,107.340889 51.3250588,95.9223682 59.5132437,86.9583937 C58.1842268,83.7344152 53.8029229,70.715562 60.7532354,53.0843636 C60.7532354,53.0843636 71.5019501,49.6441813 95.9626412,66.2049595 C106.172967,63.368876 117.123047,61.9465949 128.00106,61.8978432 C138.879073,61.9465949 149.837632,63.368876 160.067033,66.2049595 C184.49805,49.6441813 195.231926,53.0843636 195.231926,53.0843636 C202.199197,70.715562 197.815773,83.7344152 196.486756,86.9583937 C204.694018,95.9223682 209.660343,107.340889 209.660343,121.315702 C209.660343,170.478725 179.716133,181.303747 151.213281,184.472614 C155.80443,188.444828 159.895342,196.234518 159.895342,208.176593 C159.895342,225.303317 159.746968,239.087361 159.746968,243.303333 C159.746968,246.709601 162.05102,250.70089 168.53925,249.443941 C219.370432,232.499507 256,184.536204 256,128.00106 C256,57.3066942 198.691187,0 128.00106,0 Z M47.9405593,182.340212 C47.6586465,182.976105 46.6581745,183.166873 45.7467277,182.730227 C44.8183235,182.312656 44.2968914,181.445722 44.5978808,180.80771 C44.8734344,180.152739 45.876026,179.97045 46.8023103,180.409216 C47.7328342,180.826786 48.2627451,181.702199 47.9405593,182.340212 Z M54.2367892,187.958254 C53.6263318,188.524199 52.4329723,188.261363 51.6232682,187.366874 C50.7860088,186.474504 50.6291553,185.281144 51.2480912,184.70672 C51.8776254,184.140775 53.0349512,184.405731 53.8743302,185.298101 C54.7115892,186.201069 54.8748019,187.38595 54.2367892,187.958254 Z M58.5562413,195.146347 C57.7719732,195.691096 56.4895886,195.180261 55.6968417,194.042013 C54.9125733,192.903764 54.9125733,191.538713 55.713799,190.991845 C56.5086651,190.444977 57.7719732,190.936735 58.5753181,192.066505 C59.3574669,193.22383 59.3574669,194.58888 58.5562413,195.146347 Z M65.8613592,203.471174 C65.1597571,204.244846 63.6654083,204.03712 62.5716717,202.981538 C61.4524999,201.94927 61.1409122,200.484596 61.8446341,199.710926 C62.5547146,198.935137 64.0575422,199.15346 65.1597571,200.200564 C66.2704506,201.230712 66.6095936,202.705984 65.8613592,203.471174 Z M75.3025151,206.281542 C74.9930474,207.284134 73.553809,207.739857 72.1039724,207.313809 C70.6562556,206.875043 69.7087748,205.700761 70.0012857,204.687571 C70.302275,203.678621 71.7478721,203.20382 73.2083069,203.659543 C74.6539041,204.09619 75.6035048,205.261994 75.3025151,206.281542 Z M86.046947,207.473627 C86.0829806,208.529209 84.8535871,209.404622 83.3316829,209.4237 C81.8013,209.457614 80.563428,208.603398 80.5464708,207.564772 C80.5464708,206.498591 81.7483088,205.631657 83.2786917,205.606221 C84.8005962,205.576546 86.046947,206.424403 86.046947,207.473627 Z M96.6021471,207.069023 C96.7844366,208.099171 95.7267341,209.156872 94.215428,209.438785 C92.7295577,209.710099 91.3539086,209.074206 91.1652603,208.052538 C90.9808515,206.996955 92.0576306,205.939253 93.5413813,205.66582 C95.054807,205.402984 96.4092596,206.021919 96.6021471,207.069023 Z" fill="#0B4F71"></path>
+                </g>
+            </svg>        </a>
+    </li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</footer>

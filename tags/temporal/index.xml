@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>temporal on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>temporal on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/temporal/</link>
-    <description>Recent content in temporal on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in temporal on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Mon, 04 Jun 2018 17:44:38 +0000</lastBuildDate>
@@ -27,7 +27,7 @@
       
       <guid>http://www.adamcowley.co.uk/neo4j/temporal-native-dates/</guid>
       <description>With Neo4j 3.4 GA now out in the wild, a few people have asked me about the new Temporal data types that have been introduced. In this post I will go over the a few of the new additions and provide a working example.
-TL;DR: Jump to&amp;#8230;  Clocks Dates Times Local Dates and Times Durations Truncating Values Config Changes Converting Dates Working Example  When I first started using Neo4j back in 2014, I can remember one thing was missing &amp;#8211; support for native date datatype.</description>
+TL;DR: Jump to…  Clocks Dates Times Local Dates and Times Durations Truncating Values Config Changes Converting Dates Working Example  When I first started using Neo4j back in 2014, I can remember one thing was missing – support for native date datatype.</description>
     </item>
     
   </channel>

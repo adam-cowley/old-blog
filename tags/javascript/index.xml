@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>javascript on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</title>
+    <title>javascript on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title>
     <link>http://www.adamcowley.co.uk/tags/javascript/</link>
-    <description>Recent content in javascript on Adam Cowley | Full Stack Development Lead specialising in Neo4j and Node JS</description>
+    <description>Recent content in javascript on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Mon, 04 Jun 2018 17:44:38 +0000</lastBuildDate>
@@ -26,7 +26,7 @@
       <pubDate>Fri, 02 Mar 2018 19:15:42 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/using-the-neo4j-driver-with-nodejs/</guid>
-      <description>After writing all about how to use the official Neo4j Drivers in a Spring application, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS. Over the past few years I&amp;#8217;ve written many applications in NodeJS that talk to Neo4j applications, to the point where I built an OGM to take care of the frustrating CRUD boilerplate when setting up a Neo4j project in node.</description>
+      <description>After writing all about how to use the official Neo4j Drivers in a Spring application, I thought it would make sense to also detail how to use Neo4j with my language of choice, NodeJS. Over the past few years I’ve written many applications in NodeJS that talk to Neo4j applications, to the point where I built an OGM to take care of the frustrating CRUD boilerplate when setting up a Neo4j project in node.</description>
     </item>
     
     <item>
@@ -45,8 +45,8 @@ Basic Import To import a module into a script, you can use the import keyword. A
       <pubDate>Fri, 03 Jun 2016 16:14:47 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/</guid>
-      <description>Having practised Test Driven Development for the last couple of years, I&amp;#8217;ve found testing one of the most frustrating things about Node compared to other programming languages.
-Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn&amp;#8217;t hard to replicate.</description>
+      <description>Having practised Test Driven Development for the last couple of years, I’ve found testing one of the most frustrating things about Node compared to other programming languages.
+Laravel, a framework I have used for the past few years, has come with a gulp extension called Elixir since version 5.0 which is a massive timesaver. Simply type gulp tdd into the command line and your tests will run automatically. Luckily, this effect isn’t hard to replicate.</description>
     </item>
     
     <item>
@@ -55,8 +55,8 @@ Laravel, a framework I have used for the past few years, has come with a gulp ex
       <pubDate>Thu, 03 Mar 2016 10:21:09 +0000</pubDate>
       
       <guid>http://www.adamcowley.co.uk/javascript/es6-promises-tips-and-tricks/</guid>
-      <description>Over the past couple of months I&amp;#8217;ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I&amp;#8217;ve uncovered quite a few gotcha&amp;#8217;s along the way.
-One of the major differences is the Asynchronous nature of JavaScript. If you&amp;#8217;ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
+      <description>Over the past couple of months I’ve started shifting my development focus away from PHP to Node. Node is a huge departure from PHP development and I’ve uncovered quite a few gotcha’s along the way.
+One of the major differences is the Asynchronous nature of JavaScript. If you’ve ever wondered why people say the MEAN stack is quick, this is why. Where PHP will run all code in sequence, JavaScript will run multiple requests at once, asynchronously.</description>
     </item>
     
   </channel>
