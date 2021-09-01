@@ -4,26 +4,46 @@
   
   <url>
     <loc>http://www.adamcowley.co.uk/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/analysing-football-events-neo4j/</loc>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
+    <loc>http://www.adamcowley.co.uk/tags/football/</loc>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/categories/neo4j/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.adamcowley.co.uk/tags/neo4j/</loc>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/posts/</loc>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/tags/</loc>
+    <lastmod>2021-08-30T11:01:43+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.adamcowley.co.uk/neo4j/importing-wikipedia-data-into-neo4j/</loc>
     <lastmod>2021-02-18T10:00:00+00:00</lastmod>
   </url>
   
@@ -33,17 +53,7 @@
   </url>
   
   <url>
-    <loc>http://www.adamcowley.co.uk/posts/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.adamcowley.co.uk/tags/rdf/</loc>
-    <lastmod>2021-02-18T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.adamcowley.co.uk/tags/</loc>
     <lastmod>2021-02-18T10:00:00+00:00</lastmod>
   </url>
   

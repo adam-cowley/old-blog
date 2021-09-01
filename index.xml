@@ -6,10 +6,19 @@
     <description>Recent content on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Thu, 18 Feb 2021 10:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 Aug 2021 11:01:43 +0100</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Analysing Football Events in a Graph Database</title>
+      <link>http://www.adamcowley.co.uk/neo4j/analysing-football-events-neo4j/</link>
+      <pubDate>Mon, 30 Aug 2021 11:01:43 +0100</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/neo4j/analysing-football-events-neo4j/</guid>
+      <description>As long as I can remember I&amp;rsquo;ve always wanted to be a gangster analyse sports data. There&amp;rsquo;s an interesting intersection between my love for football and data. I loved the movie Moneyball and I&amp;rsquo;ve read countless books on how data is being used by clubs to improve their recruitment processes. But aside from crunching some basic experiements with key metrics like goals and assists to help pick a fantasy football team for World Cup 2018 I hadn&amp;rsquo;t ever looked in any more detail.</description>
+    </item>
     
     <item>
       <title>Importing Wikidata into Neo4j Using Neosemantics</title>
