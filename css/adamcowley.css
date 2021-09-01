@@ -528,8 +528,25 @@ body.home .header.fixed a {
 body.home .header.fixed a:hover {
   border-color: #0B4F71;
 }
+.post .tags {
+  width: 100%;
+  text-align: center;
+}
+.post .tags::before {
+  display: block;
+  content: "";
+  margin: 4em auto 1em;
+  width: 8em;
+  border: 0px none;
+  border-top: 5px solid #E4E7EB;
+}
 .cv {
   padding-bottom: 4rem;
+}
+.cv h2 {
+  font-size: 1.2em;
+  border-bottom: 1px solid #E4E7EB;
+  padding-bottom: 0.5rem;
 }
 .cv .container {
   border-bottom: 1px solid #E4E7EB;
@@ -548,6 +565,35 @@ body.home .header.fixed a:hover {
 }
 .cv .header nav ul li a:hover {
   border-color: transparent;
+}
+.cv .info {
+  box-sizing: border-box;
+  width: 70%;
+  float: left;
+  padding-right: 2em;
+}
+.cv .info h2 {
+  page-break-before: always;
+}
+.cv aside {
+  width: 30%;
+  float: right;
+}
+.cv aside ul {
+  margin: 0;
+  padding: 0;
+}
+.cv aside ul li {
+  list-style-type: none;
+  margin: 0;
+}
+.cv aside ul li em {
+  display: block;
+  margin-bottom: 1em;
+}
+.cv aside ul li em a {
+  display: block;
+  color: #7B8794;
 }
 .cv h3 {
   margin-bottom: -0.8em;
@@ -613,6 +659,10 @@ body.home .header.fixed a:hover {
 }
 article {
   margin-bottom: 2em;
+}
+article h2,
+article h3 {
+  margin-top: 4em;
 }
 article img {
   max-width: 100%;
@@ -717,11 +767,11 @@ table tr th {
   padding-right: 0.5em;
 }
 .tags li a {
-  color: #2F8132;
+  color: #0B4F71;
   font-size: 0.9em;
 }
 .tags li a:hover {
-  color: #0B4F71;
+  color: #2F8132;
 }
 .header.fixed svg,
 .header.clear svg {

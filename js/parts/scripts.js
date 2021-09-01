@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
-	
+
 
 	var nav = document.getElementById('header');
 	var height = nav.clientHeight;
@@ -37,7 +37,7 @@
 
 	var t = document.getElementsByTagName('pre');
 	for (var i in t) {
-		
+
 		if (typeof t[i] == 'object') {
 			// hljs.highlightBlock(t[i])
 		}
@@ -46,7 +46,7 @@
 	// hljs.configure({useBR: true});
 	// hljs.initHighlightingOnLoad();
 /*
-		
+
 	var toggle_class = ' reveal ';
 
 	toggle.onclick = function() {
@@ -72,12 +72,12 @@
 				setTimeout(function(){
 					if ( el.className.indexOf(point_active) == -1 ) {
 						el.className += point_active;
-					}	
+					}
 				}, delay);
 			},
 			offset: (window_height/4)*3
 		});
 	})
 */
-	
+
 })();

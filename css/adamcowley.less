@@ -261,7 +261,6 @@ body.home {
 		right: 0;
 	}
 
-
 	.header.with-logo {
 		background: white; // rgba(red(@colour-background-primary), green(@colour-background-primary), blue(@colour-background-primary), .9);
 
@@ -291,8 +290,31 @@ body.home {
 	}
 }
 
+.post {
+	.tags {
+		width: 100%;
+		text-align: center;
+	}
+
+	.tags::before {
+		display: block;
+		content: "";
+
+		margin: 4em auto 1em;
+		width: 8em;
+		border: 0px none;
+		border-top: 5px solid @colour-background-secondary;
+	}
+}
+
 .cv {
 	padding-bottom: 4rem;
+
+	h2 {
+		font-size: 1.2em;
+		border-bottom: 1px solid @colour-background-secondary;
+		padding-bottom: .5rem;
+	}
 
 	.container {
 		border-bottom: 1px solid @colour-background-secondary;
@@ -308,14 +330,48 @@ body.home {
 		position: relative;
 		padding: 2em 0;
 
-
-
 		nav ul li a {
 			text-transform: none;
 
 			&:hover {
 				border-color: transparent;
 
+			}
+		}
+	}
+
+	.info {
+		box-sizing: border-box;
+		width: 70%;
+		float: left;
+		padding-right: 2em;
+
+		h2 {
+			page-break-before: always;
+		}
+	}
+
+	aside {
+		width: 30%;
+		float: right;
+
+		ul {
+			margin: 0;
+			padding: 0;
+
+			li {
+				list-style-type: none;
+				margin: 0;
+
+				em {
+					display: block;
+					margin-bottom: 1em;
+
+					a {
+						display: block;
+						color: #7B8794;
+					}
+				}
 			}
 		}
 	}
@@ -424,6 +480,10 @@ body.home {
 
 article {
 	margin-bottom: 2em;
+
+	h2, h3 {
+		margin-top: 4em;
+	}
 
 	img {
 		max-width:100%;
@@ -553,11 +613,11 @@ table {
 		padding-right: .5em;
 
 		a {
-			color: @brand-secondary;
+			color: @brand-primary;
 			font-size: .9em;
 
 			&:hover {
-				color: @brand-primary;
+				color: @brand-secondary;
 			}
 		}
 	}
