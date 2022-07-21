@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Mon, 30 Aug 2021 11:01:43 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 21 Jul 2022 09:00:00 +0100</lastBuildDate>
     
 	<atom:link href="http://www.adamcowley.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Starting Over - What would I learn?</title>
+      <link>http://www.adamcowley.co.uk/posts/starting-over-what-would-i-learn/</link>
+      <pubDate>Thu, 21 Jul 2022 09:00:00 +0100</pubDate>
+      
+      <guid>http://www.adamcowley.co.uk/posts/starting-over-what-would-i-learn/</guid>
+      <description>I was recently asked on a podcast, knowing what I know now, what advice I would give to someone starting out in development? Because it was a JS podcast, I tried to stick to JavaScript &amp;amp; front end topics and ended up butchering the answer.
+I&amp;rsquo;ve thought this question over many over times since the recording, and here is what I should have said.
+Learn Python If I were to start from scratch now, I would start by learning Python.</description>
+    </item>
     
     <item>
       <title>Analysing Football Events in a Graph Database</title>

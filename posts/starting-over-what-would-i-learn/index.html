@@ -2,16 +2,16 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Posts - Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="alternate" type="application/rss+xml" href="http://www.adamcowley.co.uk/posts/index.xml" title="Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS" />
-	<meta property="og:title" content="Posts" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://www.adamcowley.co.uk/posts/" />
-<meta property="og:updated_time" content="2022-07-21T09:00:00+01:00" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Starting Over - What would I learn? - Adam Cowley | Full Stack Developer specialising in Neo4j and Node JS</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Starting Over - What would I learn?" />
+<meta property="og:description" content="I was recently asked on a podcast what advice I would give to someone starting out in development today.  I botched the answer, this is what I should have said..." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.adamcowley.co.uk/posts/starting-over-what-would-i-learn/" />
+<meta property="article:published_time" content="2022-07-21T09:00:00+01:00" />
+<meta property="article:modified_time" content="2022-07-21T09:00:00+01:00" />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Posts"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="Starting Over - What would I learn?"/>
+<meta name="twitter:description" content="I was recently asked on a podcast what advice I would give to someone starting out in development today.  I botched the answer, this is what I should have said..."/>
 
 
 	
@@ -20,7 +20,6 @@
 	
 	
 </head>
-
 
 <body>
 		<header class="header clear" role="banner" id="header">
@@ -82,83 +81,109 @@ c0.024-0.038,0.056-0.084,0.088-0.128v0.128H52.834z" />
 
 
 
-		<div class="introduction">
-			<div class="container">
-				
-					<h1>All articles</h1>
-				
-			</div>
+
+	<div class="introduction">
+		<div class="container">
+
+			<h1>Starting Over - What would I learn?</h1>
 		</div>
+	</div>
 
-		<div class="container content archive">
-			<section>
+	<div class="container content single">
+		<section>
+			<article class="post">
+				<p class="date">
+					<time datetime="2022-07-21 09:00">
+						21/07/2022 09:00
+					</time>
+				</p>
+
+				<p>I was recently asked <a href="https://syntax.fm">on a podcast</a>, knowing what I know now, what advice I would give to someone starting out in development?  Because it was a JS podcast, I tried to stick to JavaScript &amp; front end topics and ended up butchering the answer.</p>
+<p>I&rsquo;ve thought this question over many over times since the recording, and here is what I should have said.</p>
+<h2 id="learn-python">Learn Python</h2>
+<p>If I were to start from scratch now, I would start by learning Python.</p>
+<p>I didn&rsquo;t learn Python until I joined <a href="https://neo4j.com">Neo4j</a>, and now I feel like I missed out on so much.  Python can be used for so many things.</p>
+<p>I like to think of Python as a gateway language, and that&rsquo;s not trying to be disparaging.   It&rsquo;s really easy to learn, there are no brackets and no semi-colons to contend with so you can concentrate on achieving your goal.</p>
+<p>I know friends whose children that are not even teenagers yet learning to write learning Python at school.  Imagine what these kids will be able to achieve when they get to working age!</p>
+<h3 id="great-ecosystem">Great Ecosystem</h3>
+<p>The ecosystem around Python is excellent, and there are some great open source libraries that you can use to do a really diverse range of things.  <a href="https://pandas.pydata.org/">Pandas</a> are great data analysis and DataFrames allow you to perform some pretty complex actions.  Once you have manipulated that data, you can quickly visualise in a multitude of ways with <a href="https://matplotlib.org/">matplotlib</a> with a couple of lines of code.</p>
+<h3 id="jupyter-notebooks">Jupyter Notebooks</h3>
+<p>You can do this all inside a <a href="https://jupyter.org/">Jupyter notebook</a> and share the results with anyone or write a tutorial that anyone can recreate.</p>
+<p>I&rsquo;ve spent a lot of time recently producing reporting on <a href="https://graphacademy.neo4j.com">GraphAcademy</a>, plotting enrolment numbers over time, identifying trends, and so on.  Previously, I would have tried to over-engineer a solution here by creating an SPA with Vue or React and plot the data with a library like Highcharts, Chart.js or Nivo Charts but that is extremely labour intensive.</p>
+<p>It&rsquo;s much easier to do this in Python.  Jupyter notebooks allow you to wrap code with comments and markdown so you can tell a story as you go and make things easy to understand.</p>
+<h3 id="python-for-aiml">Python for AI/ML</h3>
+<p>When we talk about building APIs with Node.js, the rational is that you use the same language in the backend as the UI.  The same rationality applies for Python and Machine Learning.</p>
+<p>I&rsquo;ve only scratched the surface on building machine learning models with <a href="https://scikit-learn.org/stable/">scikit-learn</a> and <a href="https://www.tensorflow.org/learn">TensorFlow</a> (my favourite is a Random Forest for predicting customer churn based on graph features) but these seem really straight forward to pick up.  You can use your trained models directly in a <a href="https://flask.palletsprojects.com/en/2.1.x/">Flask</a> API (or <a href="https://fastapi.tiangolo.com/">FastAPI</a>, etc) and run the algorithms in real-time on the fly.</p>
+<h3 id="in-a-microservices-architecture">In a Microservices Architecture</h3>
+<p>If you still want to write your APIs in Node.js or TypeScript, that you can use a <a href="https://microservices.io/">microservices architecture</a> or even <a href="https://graphql.org/">GraphQL resolvers</a> to combine the machine learning elements with a more traditional API.</p>
+<h2 id="learn-typescript">Learn TypeScript</h2>
+<p>Rather than learning vanilla JavaScript, I would probably go straight for <a href="https://www.typescriptlang.org/">TypeScript</a>.  When I first started with TypeScript, I was on the fence about the benefits.   Compared to JavaScript, it felt a little dogmatic and there was a reason why I wasn&rsquo;t using a type-safe language like Java.</p>
+<p>But the more I have worked with it, the more I have enjoyed the experience.  So much so that it is now engrained in me that it feels strange to write plain JavaScript without the types.</p>
+<p>You don&rsquo;t need to go all-in and define types and interfaces for absolutely everything. You can instead just sprinkle in the typescript features where they are needed.  Where and when you use these types will come with experience.</p>
+<p>I would go as far as to say that it has saved hours of debugging time and cut out a lot of silly mistakes.</p>
+<h2 id="has-react-has-won-the-battle">Has React has won the battle?</h2>
+<p>Over the years, I&rsquo;ve jumped between front-end frameworks.  One of my first Angular 1.<em>something</em> projects written around is still in production at a company. I tried earlier versions of React with class components, <code>componentDidMount()</code> etc and hated it.  Global state management was a mess.</p>
+<p>For a while I had a strong preference for Vue but the migration from version 2 to 3 has been a bit of a mess.   I first <a href="https://dev.to/adamcowley/how-to-build-an-authentication-into-a-vue3-application-200b">experimented with the Composition API</a> in 2020 when the concept was first introduced but it still doesn&rsquo;t seem to be widely adopted.</p>
+<p>From my experience consulting for Neo4j, and within Neo4j itself, it seems that React has won the battle.</p>
+<p>Since React hooks and functional components were introduced, it has also become a lot nicer to use.  I mean, sure, Redux and JSX can still be a bit of a hot mess at times but there are steps and architecture decisions you can take to mitigate this.</p>
+<p>After 6 months, what project doesn&rsquo;t feel like a mess anyway?!</p>
+<h2 id="data-thats-less-clear-to-me">Data? That&rsquo;s less clear to me</h2>
+<p>Maybe I&rsquo;m a little too close to the subject, but I don&rsquo;t see a one-size-fits-all solution for data.  Although I work with <a href="https://neo4j.com/docs/getting-started/current/graph-database/">Graph Databases</a> on a daily basis I&rsquo;m still of the opinion that you use the best tool for the job.  Instead of one definitive answer, let me throw out a few thoughts:</p>
+<ul>
+<li>
+<p><strong>Relational databases are still cool</strong> - I still love a relational database and they&rsquo;re not going anywhere any time soon.  I would recommend taking a look at <a href="https://www.postgresql.org/">PostgresQL</a> if you want an open-source relational database.</p>
+</li>
+<li>
+<p><strong><a href="https://en.wikipedia.org/wiki/NoSQL">NoSQL</a> is a broad term</strong> that covers a lot of database types: Document store; Key-value stores; Graphs; Wide-column Stores; Multi-model DBs.  They all have their own strengths and weaknesses.  It&rsquo;s worth at least understanding the strengths and weaknesses of each.  Beware, there can be a lot of hype and hyperbole.</p>
+<p><em>A special mention here for <a href="https://www.mongodb.com/">MongoDB</a> and <a href="https://redis.io/">Redis</a>.</em></p>
+</li>
+<li>
+<p><strong>Data Mobility is Important</strong>, especially in more complex architectures.  Understanding how streams of data can be consumed between applications is a great skill to have.</p>
+<p><em><a href="https://kafka.apache.org/">Kafka</a> would be my #1 choice for this.</em></p>
+</li>
+<li>
+<p><strong>Graphs are Everywhere</strong> - I&rsquo;m paid to have this opinion it&rsquo;s true so feel free to take it with a pinch of salt, and connections are becoming increasingly more important to AI &amp; ML.</p>
+<p>I would have no reservations about using Neo4j as the primary database in any new project I start.  In my experience they are as performant as a relational database and ACID transactions mean the data is as safe.  Ironically, relational databases are bad at handling <em>relationships</em>, so as the data complexity grows and more table joins are needed, you have paid upfront for the benefits of querying a graph.</p>
+<p><em>Add to the fact that they&rsquo;re pretty fun to work with and you&rsquo;re on to a winner.</em></p>
+</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<p>This is by no means an exhausted list of resources, but here are some of the resources I would recommend if you are getting started with anything I have mentioned above.</p>
+<ul>
+<li>
+<p>Python:</p>
+<ul>
+<li><a href="https://www.learnpython.org/">www.learnpython.org</a> is a great place</li>
+</ul>
+</li>
+<li>
+<p>JavaScript, Node.js, TypeScript:</p>
+<ul>
+<li>If you&rsquo;ve even heard of JavaScript, chances are you have heard of <a href="https://wesbos.com/">Wes Bos</a>.  Wes has released a number of courses and has a fun teaching style</li>
+<li><a href="https://ultimatecourses.com/">Ultimate Courses</a> has some great courses on JavaScript, TypeScript, React and Angular.</li>
+<li><a href="https://typescript-book.com/">TypeScript in 50 Lessons</a> by <a href="https://twitter.com/ddprrt">Stefan Baumgartner</a> is the perfect place to learn everything you need to know about TypeScript.</li>
+</ul>
+</li>
+<li>
+<p>Data:</p>
+<ul>
+<li><a href="https://university.mongodb.com/">MongoDB University</a> is a great place to learn MongoDB</li>
+<li>Of course, I have to mention <a href="https://graphacademy.neo4j.com">GraphAcademy</a> as a great place to start learning Neo4j.  We have <a href="https://graphacademy.neo4j.com/categories/beginners/">courses for beginners to Graph Databases</a> and <a href="https://graphacademy.neo4j.com/categories/developer/">courses for Developers learning Neo4j</a>.</li>
+</ul>
+</li>
+</ul>
+<p>If you have any questions, comments or criticisms, feel free to reach out to me on <a href="https://twitter.com/adamcowley">Twitter</a> or <a href="https://linkedin.com/in/adamcowley">LinkedIn</a>.</p>
+
 
 				
-				
-					<article class="post">
-						<h2>
-							<a href="/neo4j/wordpress-recommendations-neo4j-part-2-content-based/">WordPress Recommendations with Neo4j – Part 2: Content Based Recommendations</a>
-						</h2>
-						<p>
-							
-						</p>
-					</article>
-
-					
-					<article class="post">
-						<h2>
-							<a href="/neo4j/wordpress-recommendations-neo4j-part-1-data-modelling/">WordPress Recommendations with Neo4j – Part 1: Data Modelling</a>
-						</h2>
-						<p>
-							
-						</p>
-					</article>
-
-					
-					<article class="post">
-						<h2>
-							<a href="/javascript/es6-import-export-a-beginners-guide/">ES6 Import &amp; Export - A beginners guide</a>
-						</h2>
-						<p>
-							
-								Basic examples on how to use the Import and Export keywords in ES6
-							
-						</p>
-					</article>
-
-					
-					<article class="post">
-						<h2>
-							<a href="/javascript/quick-test-driven-development-setup-with-node-es6-and-gulp/">Quick TDD setup with Node, ES6, Gulp and Mocha</a>
-						</h2>
-						<p>
-							
-						</p>
-					</article>
-
-					
-					<article class="post">
-						<h2>
-							<a href="/javascript/es6-promises-tips-and-tricks/">ES6 Promises - 5 Things I Wish I Had Known</a>
-						</h2>
-						<p>
-							
-								Five things that I wish someone had told me before I started out with ES6 Promises
-							
-						</p>
-					</article>
-
-					
-				<div class="pagination">
-					
-					<a class="page-numbers" href="/posts/page/2/">&larr; Previous </a>
-					
-					
-				</section>
 
 				
-			</section>
-		</div>
+
+
+
+			</article>
+		</section>
+	</div>
 
 	
 			</section>
